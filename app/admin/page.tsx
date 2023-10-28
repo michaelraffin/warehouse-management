@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-  
+  import { Label } from "@/components/ui/label"
   const invoices = [
     {
       invoice: "INV001",
@@ -302,7 +302,10 @@ import {
     return (
         <>
         {sideNavigation()}
-      
+        <div className="ml-20 mt-20">
+            <h1 className="text-[40px] font-bold mb-20">Reports</h1>
+        {/* <Label htmlFor="email">Your email address</Label> */}
+        </div>
       <Table className="ml-20">
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
