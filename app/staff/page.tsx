@@ -10,9 +10,26 @@ import {
   } from "@/components/ui/table"
   import { Label } from "@/components/ui/label"
   import SideNavigation from "@/app/SideNavigation"
+  import moment from "moment"
   import HeaderPage from "@/app/LocalComponents/HeaderPage"
   import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
+  const staff = [
+    { id:1,
+      name:'Michael',
+      category:'Agent'
+    },
+    { id:2,
+      name:'Raffin',
+      category:'Warehouse'
+    }, { id:23,
+      name:'Michael',
+      category:'Agent'
+    }
+    , { id:123,
+      name:'Michael',
+      category:'Agent'
+    },
+  ]
   const invoices = [
     {
       invoice: "INV001",
@@ -62,7 +79,7 @@ import {
         <div className="">
     <SideNavigation/>
   
-    <HeaderPage title="Reports" subtitle="Generate your report"/>
+    <HeaderPage title="Staff" subtitle=""/>
         {/* <div className="ml-20 mt-20">
             <h1 className="text-[24px] mb">Reports</h1>
             <p className="text-xs mb-20">Generate your report </p>
@@ -132,12 +149,47 @@ import {
 </article>
         </div></div>
 
-          <Tabs defaultValue="account" className=" ml-24 bt-20 bg-white rounded-lg">
+          <Tabs defaultValue="Stockman" className="w-full ml-24 bt-20 bg-white rounded-lg">
   <TabsList className="rounded-full">
-    <TabsTrigger className="rounded-full" value="account">Stocks</TabsTrigger>
-    <TabsTrigger className="rounded-full" value="password">Restocks</TabsTrigger>
+  <TabsTrigger className="rounded-full" value="All">All</TabsTrigger>
+    <TabsTrigger className="rounded-full" value="Stockman">Stockman</TabsTrigger>
+    <TabsTrigger className="rounded-full" value="Cashier">Cashier</TabsTrigger>
+    <TabsTrigger className="rounded-full" value="Agent">Agent</TabsTrigger>
   </TabsList>
-  <TabsContent value="account">
+  <TabsContent value="All">
+  <div className="w-full ml-2 mt-10 grid grid-cols-4 gap-2 m-2">
+  {staff.map((staff) => (
+  <div
+ key={staff.id}
+  >
+ 
+      <div className="max-w-sm group static rounded overflow-hidden hover:shadow-lg bg-white transition duration-100 ease-in-out  {order.receiptImageLink === undefined ? 'border-red-500 border ' : ''} ">
+          <div className="px-6 py-4">
+            <div className="font-bold  mb-2">
+          <div className="flex grid-flow-col-2 justify-between place-items-center  mb-2">
+          {staff.name}
+              
+            <p className="text-xs font-light">{"Agent"}</p>
+          </div>
+          <div><p className="text-xs "><span className="text-gray-600"></span> {false === undefined ? 'no name': "order.deliveryDetails.customerName"}</p></div>
+          </div>
+          
+           <div className="grid grid-cols-4   mt-2 ">
+             
+          </div>
+          </div>
+          <div class="px-4 pt-4 pb-2">
+                  <span class="inline-block bg-white rounded-full px-3 font-light text-xs text-gray-400 mr-2 mb-2">{moment(Date()).format('LLLL')}</span>
+            <p class="text-xs font-light text-gray-100 ml-3 transition duration-100 ease-in-out  group-hover:font-bold group-hover:text-black inline-block top-2 right-4" stye="fontSize:20">Tap to view full detail of order</p>
+          </div>
+        </div>
+      </div>
+  ))
+  }
+  </div>
+
+  </TabsContent>
+  <TabsContent value="Stockman">
       <Table className="">
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
@@ -159,9 +211,9 @@ import {
           ))}
         </TableBody>
       </Table></TabsContent>
-  <TabsContent value="password">Change your password here.</TabsContent>
-</Tabs>
-
+ 
+  <TabsContent value="Cashier">Change your password here.</TabsContent>
+</Tabs> 
       </div>
     )
   }
