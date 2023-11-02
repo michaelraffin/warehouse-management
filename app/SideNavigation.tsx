@@ -14,7 +14,10 @@ function SideNavigation() {
                 className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               >  <span
               className="grid h-10 w-10 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600"
-            >  FLC
+            >  
+<img src="https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg"
+className=' w-6 h-6'
+/>
             </span></a>
               </div>
           
@@ -105,7 +108,7 @@ function SideNavigation() {
                         <span
                           className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
                         >
-                          request
+                          Request
                         </span>
                       </a>
                     </li>
@@ -203,7 +206,7 @@ function SideNavigation() {
                           className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
                         >
                         
-                          AI Products
+                          Products
                         </span>
                       </a>
                     </li>

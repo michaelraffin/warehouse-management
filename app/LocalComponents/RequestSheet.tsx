@@ -15,8 +15,13 @@ import { Textarea } from "@/components/ui/textarea"
  
 export default function RequestContent(props) {
 
-const didCancel = ()=>{
-props.void()
+const didTapped = (isCancel:boolean)=>{
+  if (isCancel) {
+    props.void()
+  } else {
+    // props.()
+  }
+
 }
   return (
     <Sheet>
@@ -55,11 +60,11 @@ props.void()
         
         <SheetFooter>
         <SheetClose asChild>
-        <Button onClick={didCancel} variant="destructive">Void</Button>
+        <Button onClick={()=>didTapped(true)} variant="destructive">Void</Button>
           </SheetClose>
          
           <SheetClose asChild>
-            <Button  onClick={didCancel} type="submit">Approve</Button>
+            <Button  onClick={()=>didTapped(false)} type="submit">Approve</Button>
           </SheetClose>
         
 
