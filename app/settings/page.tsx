@@ -159,10 +159,7 @@ setProducts(list)
             {invoice.id}
               </TableCell>
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>
-              <img src={invoice.img}
-
-className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
-/>
+              <img src={invoice.img} className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '  />
                 </TableCell>
               <TableCell>
                 

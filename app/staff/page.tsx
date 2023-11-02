@@ -1,4 +1,5 @@
 "use client" 
+import React, { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -13,6 +14,7 @@ import {
   import moment from "moment"
   import HeaderPage from "@/app/LocalComponents/HeaderPage"
   import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+  import { Input } from "@/components/ui/input"
   const staff = [
     { id:1,
       name:'Michael',
@@ -27,6 +29,13 @@ import {
     }
     , { id:123,
       name:'Michael',
+      category:'Agent'
+    },
+    , { id:112323,
+      name:'Mai mai',
+      category:'Agent'
+    },{ id:14132123,
+      name:'james',
       category:'Agent'
     },
   ]
@@ -74,7 +83,27 @@ import {
       paymentMethod: "Credit Card",
     },
   ]
-  export default function TableDemo() {
+  export default function StaffComponent() {
+    const [staffList,setStaff] = useState(staff)
+    const [refenceProducts,setReferenceProducts] = useState(staff)
+
+
+    const searchStaff = (e)=>{
+      
+      try {
+         
+        let searchedValue  = e.target.value.toLowerCase()
+        let personStaff = staff 
+        const filteredStaff = staff.filter(person => {
+          // Modify the condition according to your search criteria
+          // For example, searching by name or other properties
+          return person.name.toLowerCase().includes(searchedValue);
+        });
+        setStaff(filteredStaff)
+      } catch (error) {
+        
+      }
+    }
     return (
         <div className="">
     <SideNavigation/>
@@ -147,10 +176,44 @@ import {
     </p>
   </div>
 </article>
+
+<article class="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+  <div>
+    <p class="text-sm text-gray-500">Profit</p>
+
+    <p class="text-2xl font-medium text-gray-900">$240.94</p>
+  </div>
+
+  <div class="mt-1 flex gap-1 text-red-600">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-4 w-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+      />
+    </svg>
+
+    <p class="flex gap-2 text-xs">
+      <span class="font-medium"> 67.81% </span>
+      <span class="text-gray-500"> Since last week </span>
+    </p>
+  </div>
+</article>
         </div></div>
 
           <Tabs defaultValue="Stockman" className="w-full ml-24 bt-20 bg-white rounded-lg">
   <TabsList className="rounded-full">
+  <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
+      <Input type="email" placeholder="Search" className="mr-2 rounded-full"  onChange={(e)=>searchStaff(e)}/>
+      {/* <Button type="submit" className='text-xs'>Search</Button> */}
+    </div>
   <TabsTrigger className="rounded-full" value="All">All</TabsTrigger>
     <TabsTrigger className="rounded-full" value="Stockman">Stockman</TabsTrigger>
     <TabsTrigger className="rounded-full" value="Cashier">Cashier</TabsTrigger>
@@ -158,7 +221,7 @@ import {
   </TabsList>
   <TabsContent value="All">
   <div className="w-full ml-2 mt-10 grid grid-cols-4 gap-2 m-2">
-  {staff.map((staff) => (
+  {staffList.map((staff) => (
   <div
  key={staff.id}
   >
