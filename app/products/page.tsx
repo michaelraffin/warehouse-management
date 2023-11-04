@@ -122,13 +122,15 @@ setProducts(list)
 
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">
+  <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
+      <Input type="email" placeholder="Search" className='rounded-full'/>
+      {/* <Button type="submit" className='text-xs'>Search</Button> */}
+    </div>
+
   <TabsTrigger className="rounded-full" value="AllProducts">All Products</TabsTrigger>
   <TabsTrigger  className="rounded-full" value="Active">Active</TabsTrigger>
     <TabsTrigger className="rounded-full" value="inActive">In-Active</TabsTrigger>
-    <div className="flex w-full max-w-sm items-center space-x-2 ml-2">
-      <Input type="email" placeholder="Search" />
-      {/* <Button type="submit" className='text-xs'>Search</Button> */}
-    </div>
+    
 
     {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
   </TabsList>

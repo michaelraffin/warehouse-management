@@ -17,7 +17,7 @@ export default function RequestContent(props) {
 
 const didTapped = (isCancel:boolean)=>{
   if (isCancel) {
-    props.void()
+    props.void(props.details)
   } else {
     // props.()
   }
@@ -26,7 +26,7 @@ const didTapped = (isCancel:boolean)=>{
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button >View Request</Button>
+        <Button disabled={props.disabled} >View Request</Button>
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>

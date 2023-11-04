@@ -91,7 +91,6 @@ import {
     const searchStaff = (e)=>{
       
       try {
-         
         let searchedValue  = e.target.value.toLowerCase()
         let personStaff = staff 
         const filteredStaff = staff.filter(person => {
@@ -205,7 +204,7 @@ import {
       <span class="text-gray-500"> Since last week </span>
     </p>
   </div>
-</article>
+</article>  
         </div></div>
 
           <Tabs defaultValue="Stockman" className="w-full ml-24 bt-20 bg-white rounded-lg">
