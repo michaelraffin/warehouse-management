@@ -11,17 +11,27 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
  
-export default function SheetDemo() {
+export default function RequestContent(props) {
+
+const didTapped = (isCancel:boolean)=>{
+  if (isCancel) {
+    props.void(props.details)
+  } else {
+    // props.()
+  }
+
+}
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button disabled={props.disabled} >View Request</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
+          <SheetTitle>{props.details.id}</SheetTitle>
+          <SheetDescription className="text-xs">
             Make changes to your profile here. Click save when you're done.
           </SheetDescription>
         </SheetHeader>
@@ -31,18 +41,33 @@ export default function SheetDemo() {
               Name
             </Label>
             <Input id="name" value="Pedro Duarte" className="col-span-3" />
+            
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Username
+              Remarks
             </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+       
+            <Textarea className="col-span-3" placeholder="Type your message here." />
           </div>
+
+
+
+
         </div>
+
+
+        
         <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+        <SheetClose asChild>
+        <Button onClick={()=>didTapped(true)} variant="destructive">Void</Button>
           </SheetClose>
+         
+          <SheetClose asChild>
+            <Button  onClick={()=>didTapped(false)} type="submit">Approve</Button>
+          </SheetClose>
+        
+
         </SheetFooter>
       </SheetContent>
     </Sheet>
