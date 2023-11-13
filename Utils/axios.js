@@ -1,9 +1,9 @@
 
 import Axios from 'axios'; 
-export const url =  "https://www.smestoreph.com"// "https://loogyapi.digital"  //  "http://192.168.1.148:9091" //   "http://139.162.5.101"      //"http://139.162.5.101"  "https://loogyapi.digital" // 
-export const urlFirebase =  "http://192.53.114.35:8080" // "https://www.smestoreph.com"  //
-export const urlSupBase = "https://www.smestoreph.com"  // "http://192.168.1.148:3001" // 
-export const mapBoxUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" 
+export const url = process.env.stagingEndpoint
+export const urlFirebase =  process.env.urlFirebase
+export const urlSupBase =  process.env.urlSupaBase
+export const mapBoxUrl = process.env.mapBoxEndpoint
  
 export const axiosV2Local = (token,id)=>  Axios.create({
     baseURL:'http://192.168.1.148:9091',
