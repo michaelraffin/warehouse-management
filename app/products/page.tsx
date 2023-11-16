@@ -1,5 +1,5 @@
 "use client" 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
     Table,
     TableBody,
@@ -26,6 +26,8 @@ import {
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
+
+  import {getSession} from '../../Utils/serviceLogin'
 
 
   const productsz = [
@@ -91,6 +93,13 @@ import {
     },
   ]
   export default function TableDemo() {
+
+
+    useEffect(() => {
+      getSession().then((data) =>{
+        console.log('data',data)
+      })
+  })
     const { toast } = useToast()
     const [products,setProducts] = useState(productsz)
     const didStatusUpdate =(e,id)=>{
@@ -103,6 +112,7 @@ import {
         }
         
       })
+
 
 setProducts(list)
     }

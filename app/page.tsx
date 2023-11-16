@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import Sheet from "@/app/local/sheet"
 import {signinAuth} from '../Utils/serviceLogin'
+import { Mail } from "lucide-react"
+
 export default function Home() {
 
   const  signinAccount =()=>{
@@ -49,10 +51,12 @@ export default function Home() {
           priority
         />
       </div>
-      <Button onClick={signinAccount}>
-              Signin
+      <Button className='bg-white text-black hover:border  hover:border-blue-500 hover:bg-gray-100'  onClick={signinAccount}>
+        <img src="https://static-00.iconduck.com/assets.00/google-icon-2048x2048-czn3g8x8.png" className="mr-2 h-4 w-4" />
+      {/* <Mail className="mr-2 h-4 w-4" />  */}
+      Sign in with Google
             </Button>
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+      {/* <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
           href="/dashboard"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
@@ -120,7 +124,7 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
-      </div>
+      </div> */}
     </main>
   )
 }
