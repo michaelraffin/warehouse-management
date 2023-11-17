@@ -28,10 +28,15 @@ export const getSession = async ()=>{
   }
   export const updatProfile = async(parameter)=>{
     const {data,error}  = await networkService(()=> {
+//         return supabase
+//   .from('profile')
+//   .select('*')
+
+  
         return supabase
         .from('profile')
         .update(parameter)
-        .eq('id', parameter.id)
+        .eq('id', "c56029c3-e884-4f76-8196-218526dbc322")
         .select()
     })
   }
