@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea"
 
  return (
     <Sheet>
-      <SheetTrigger className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300 h-9 m-2 rounded-md">
+      <SheetTrigger className="ml-20 mb-20 bg-black hover:bg-blue-300 h-9 m-2 rounded-md">
       {/* <Button className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300"> */}
         <span className="m-4 text-white">+ Add Product</span>
         {/* </Button> */}

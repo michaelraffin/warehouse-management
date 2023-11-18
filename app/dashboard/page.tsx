@@ -15,59 +15,27 @@ import {
   import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
   import {getSession,getProfile} from '../../Utils/serviceLogin'
   import {UserProfile} from '../../Utils/userProfile'
+  import {axiosV2Local,axiosV2} from '../../Utils/axios'
+  import { Progress } from "@/components/ui/progress"
   
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ]
   export default function TableDemo() {
-
+    let  [ products,setProducts] = useState([])
+    let  [ status,setStatus] = useState(true)
     let  [ userProfile,setUser] = useState(null)
     useEffect(() => {
       getProfile()
-
+      fetchProduct()
     },[])   
-    
+    const fetchProduct = async()=>{
+      try {
+        let data = { local_id: 'e', queryType: 'all', storeOwner: 'storeOwner', isAPI: true,referenceOrder:'e',number:20,showLimit:true,queryData:{status:'orderStatus',userReference: 'e'}};
+			 let productList =   await axiosV2('dsadsa').post('https://loogyapi.digital/store/LesseeProduct')
+       setProducts(productList.data.results)
+       setStatus(false)
+      } catch (error) {
+          console.log('error Product',error)
+      }
+    }
     const getProfile = async ()=>{
       try {
         let profile = await UserProfile()
@@ -226,11 +194,11 @@ import {
 {/* //TABLE */}
 
           <Tabs defaultValue="account" className="w-[90%] ml-24 bt-20 bg-white rounded-lg">
-  <TabsList className="rounded-full">
+  <TabsList className="rounded-full"   >
     <TabsTrigger className="rounded-full" value="account">Stocks</TabsTrigger>
     <TabsTrigger className="rounded-full" value="password">Restocks</TabsTrigger>
   </TabsList>
-  <TabsContent value="account">
+  <TabsContent value="account" className={` ${status ? 'opacity-20' : 'opacity-100'}   `}> 
       <Table className="">
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
@@ -242,11 +210,11 @@ import {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
+          {products.map((invoice) => (
+            <TableRow key={invoice._id}>
               <TableCell className="font-medium">{invoice.invoice}</TableCell>
               <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
+              <TableCell>{invoice.stocks}/90<Progress value={invoice.stocks} className="w-[60%]" /></TableCell>
               <TableCell className="text-right">{invoice.totalAmount}</TableCell>
             </TableRow>
           ))}

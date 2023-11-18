@@ -64,18 +64,16 @@ import { Progress } from "@/components/ui/progress"
       }
     }
     const didStatusUpdate =(e,id)=>{
+
       let list = products.map((item) =>{
-        if ( item.id == id){
+        if ( item._id == id){
           item.status = e
           return  item
         }else{
       return item
         }
-        
       })
-
-
-setProducts(list)
+      setProducts(list)
     }
     const displayAlert =()=>{
     toast({
@@ -111,20 +109,29 @@ setProducts(list)
         <div className="">
            
     <SideNavigation/>
+    <div className="ml-20 absolute top-2 right-2">
+    <img src={userProfile === null ? '' :userProfile.application_info.avatar_url}
+className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
+/>
+<h1>{userProfile != null ? userProfile.user_details.firstName: ''}</h1>
+<h1 className='text-xs text-gray-400'>{userProfile != null ? userProfile.application_info.email: ''}</h1>
 
+
+    </div>
+ 
     <HeaderPage title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
     <AddProduct didSubmit={(e)=>submitProduct()}/>
      
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
-      <Input type="email" placeholder="Search" className='rounded-full'/>
+      <Input type="email" placeholder="Search" className='rounded-full  text-xs'/>
       {/* <Button type="submit" className='text-xs'>Search</Button> */}
     </div>
 
-  <TabsTrigger className="rounded-full" value="AllProducts">All Products <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
-  <TabsTrigger  className="rounded-full" value="Active">Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status).length}</span></TabsTrigger>
-    <TabsTrigger className="rounded-full" value="inActive">In-Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status === false).length}</span></TabsTrigger>
+  <TabsTrigger className="rounded-full text-xs" value="AllProducts">All Products <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
+  <TabsTrigger  className="rounded-full  text-xs" value="Active">Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status).length}</span></TabsTrigger>
+    <TabsTrigger className="rounded-full  text-xs" value="inActive">In-Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status === false).length}</span></TabsTrigger>
     
 
     {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
@@ -132,7 +139,7 @@ setProducts(list)
   <TabsContent value="AllProducts" className={` ${status ? 'opacity-20' : 'opacity-100'}   `}>
 
   <Table className="">
-        <TableCaption>A list of request.</TableCaption>
+        <TableCaption>A list of All products.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Invoice</TableHead>
@@ -167,9 +174,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
               </TableCell>
               <TableCell className="text-right">
                 {/* {invoice.totalAmount} */}
-                <Switch  onCheckedChange={(e)=>didStatusUpdate(e,invoice.id)} checked={invoice.status} 
-                
-                />
+                <Switch  onCheckedChange={(e)=>didStatusUpdate(e,invoice._id)} checked={invoice.status} />
                   {/* <Popover>
     <PopoverTrigger>Open</PopoverTrigger>
     <PopoverContent>
@@ -186,7 +191,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
 
   <TabsContent value="Active" className={status ?  `opacity-20`: `opacity-100`}>
       <Table className="">
-        <TableCaption>A list of request.</TableCaption>
+        <TableCaption>A list of Active.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Invoice</TableHead>
@@ -207,7 +212,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
               <TableCell className="text-right">{invoice.totalAmount} <Badge className='bg-red-500 ml-2'>Out of stock</Badge>
               </TableCell>
               
-              <TableCell className="text-right"><Switch />
+              <TableCell className="text-right"><Switch  onCheckedChange={(e)=>didStatusUpdate(e,invoice._id)} checked={invoice.status} />
               </TableCell>
             </TableRow>
           ))}
@@ -215,7 +220,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
       </Table></TabsContent>
   <TabsContent value="inActive">
       <Table className="">
-        <TableCaption>A list of request.</TableCaption>
+        <TableCaption>A list of In Active.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Invoice</TableHead>
@@ -243,7 +248,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
   <TabsContent value="Stockman">Change your password here.</TabsContent>
   <TabsContent value="Cashier">Change your password here.</TabsContent>
 </Tabs>
-<div className="w-1/2 ml-20 mt-20">
+<div className="w-1/2 ml-20 mt-20 opacity-0">
 
 <div
     // on:click={()=>setProduct(order)} 

@@ -26,7 +26,7 @@ const didTapped = (isCancel:boolean)=>{
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button disabled={props.disabled} >View Request</Button>
+        <Button disabled={props.disabled} >View Details</Button>
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
