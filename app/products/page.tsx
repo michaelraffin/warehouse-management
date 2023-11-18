@@ -21,87 +21,48 @@ import {
   import { useToast } from "@/components/ui/use-toast" 
   import { Switch } from "@/components/ui/switch"
   import { Input } from "@/components/ui/input"
+  import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+ 
   import {
     Popover,
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
-
   import {getSession} from '../../Utils/serviceLogin'
-
-
-  const productsz = [
-    {
-      id: "INV001",
-      paymentStatus: "Approved",
-      stocks: 23,
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-      img:"https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
-      status:false
-    },
-    {
-      id: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-      stocks: 10,
-      img:"https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
-      status:false
-    },
-    {
-      id: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      stocks: 20,
-      paymentMethod: "Bank Transfer",
-      img:"https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
-      status:true
-    },
-    {
-      id: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      stocks: 23,
-      paymentMethod: "Credit Card",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh4Mxg9RBGi80Yt06UKs0vU_lSPh-ilp4KCA&usqp=CAU",
-      status:true
-    },
-    {
-      id: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",stocks: 23,
-      img:"https://www.spencers.in/media/catalog/product/1/1/1193105_1.jpg",
-      status:true
-    },
-    {
-      id: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",stocks: 23,
-      img:"https://www.cokesolutions.com/content/dam/cokesolutions/us/images/Products/Coca-Cola-glass.jpg",
-      status:false
-    },
-    {
-      id: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",stocks: 23,
-      img:"https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
-      status:false
-    },
-  ]
+  import {UserProfile} from '../../Utils/userProfile'
+  import {axiosV2Local,axiosV2} from '../../Utils/axios'
   export default function TableDemo() {
 
+    const { toast } = useToast()
+    const [products,setProducts] = useState([])
+    const [userProfile,setUser] = useState(null)
+    const [status,setStatus] = useState(true)
 
+    useEffect(() => {
+     
+      UserProfile().then(profile =>{
+        setUser(profile)
+      })
+
+  },[userProfile])
     useEffect(() => {
       getSession().then((data) =>{
         console.log('data',data)
       })
-  })
-    const { toast } = useToast()
-    const [products,setProducts] = useState(productsz)
+     
+      fetchProduct()
+  },[])
+    const fetchProduct = async()=>{
+      try {
+        let data = { local_id: 'e', queryType: 'all', storeOwner: 'storeOwner', isAPI: true,referenceOrder:'e',number:20,showLimit:true,queryData:{status:'orderStatus',userReference: 'e'}};
+			 let productList =   await axiosV2('dsadsa').post('https://loogyapi.digital/store/LesseeProduct')
+       setProducts(productList.data.results)
+       setStatus(false)
+      } catch (error) {
+          console.log('error Product',error)
+      }
+    }
     const didStatusUpdate =(e,id)=>{
       let list = products.map((item) =>{
         if ( item.id == id){
@@ -123,13 +84,37 @@ setProducts(list)
             })
       
     }
+    const submitProduct =()=>{
+        const asyncService = async ()=>{
+            try{
+              let payload = {
+                local_id: "INV007",
+                paymentStatus: "Unpaid",
+                totalAmount: "$300.00",
+                paymentMethod: "Credit Card",stocks: 23,
+                img:"https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+                status:false
+              }
+              let productList =   await axiosV2('dsadsa').post('http://192.168.1.148:9091/Loogy/add',{details:payload,className:'LesseeProduct'})
+              console.log('productList',productList)
+              return productList
+          } catch(error){
+
+          }
+        }
+        asyncService().then(item=>{
+          console.log(item)
+             fetchProduct()
+        })
+    }
     return (
         <div className="">
            
     <SideNavigation/>
-    <HeaderPage title={`Your Products ${20}`} subtitle=""/>
-    <AddProduct/>
 
+    <HeaderPage title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
+    <AddProduct didSubmit={(e)=>submitProduct()}/>
+     
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
@@ -137,21 +122,22 @@ setProducts(list)
       {/* <Button type="submit" className='text-xs'>Search</Button> */}
     </div>
 
-  <TabsTrigger className="rounded-full" value="AllProducts">All Products</TabsTrigger>
-  <TabsTrigger  className="rounded-full" value="Active">Active</TabsTrigger>
-    <TabsTrigger className="rounded-full" value="inActive">In-Active</TabsTrigger>
+  <TabsTrigger className="rounded-full" value="AllProducts">All Products <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
+  <TabsTrigger  className="rounded-full" value="Active">Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status).length}</span></TabsTrigger>
+    <TabsTrigger className="rounded-full" value="inActive">In-Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status === false).length}</span></TabsTrigger>
     
 
     {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
   </TabsList>
-  <TabsContent value="AllProducts">
+  <TabsContent value="AllProducts" className={` ${status ? 'opacity-20' : 'opacity-100'}   `}>
+
   <Table className="">
         <TableCaption>A list of request.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Invoice</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
+            <TableHead>Warehouse</TableHead>
             <TableHead className="text-right">Stocks</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -171,10 +157,13 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
 />
                 </TableCell>
               <TableCell>
-                
-                {invoice.paymentMethod}</TableCell>
+              <Progress value={invoice.stocks} className="w-[60%]" />
+            
+                {/* {invoice.paymentMethod} */}
+                </TableCell>
               <TableCell className="text-right text-md text-red-500 font-bold">
-                {invoice.stocks}
+                {invoice.stocks}/20
+                  <Badge className='bg-red-500 ml-4'>Out of stock</Badge>
               </TableCell>
               <TableCell className="text-right">
                 {/* {invoice.totalAmount} */}
@@ -195,14 +184,14 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
       </Table>
   </TabsContent>
 
-  <TabsContent value="Active">
+  <TabsContent value="Active" className={status ?  `opacity-20`: `opacity-100`}>
       <Table className="">
         <TableCaption>A list of request.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Invoice</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
+            <TableHead>Warehouse state</TableHead>
             <TableHead className="text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>
@@ -212,9 +201,10 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
               <TableCell className="font-medium"> <RequestSheet void={(details)=>displayAlert()} details ={invoice}/></TableCell>
               {/* {invoice.invoice}  */}
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}
+              <TableCell>
+              <Progress value={invoice.stocks} className="w-[60%]" />
               </TableCell>
-              <TableCell className="text-right">{invoice.totalAmount}
+              <TableCell className="text-right">{invoice.totalAmount} <Badge className='bg-red-500 ml-2'>Out of stock</Badge>
               </TableCell>
               
               <TableCell className="text-right"><Switch />
@@ -242,8 +232,8 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
               </TableCell>
               {/* {invoice.invoice}  */}
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">{invoice.totalAmount}
+              <TableCell><Progress value={invoice.stocks} className="w-[60%]" /></TableCell>
+              <TableCell className="text-right">{invoice.totalAmount}<Badge className='bg-red-500 ml-2'>Out of stock</Badge>
               </TableCell>
             </TableRow>
           ))}
@@ -286,3 +276,68 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
     )
   }
   
+
+
+
+  const productsz = [
+    {
+      local_id: "INV001",
+      paymentStatus: "Approved",
+      stocks: 23,
+      totalAmount: "$250.00",
+      paymentMethod: "Credit Card",
+      img:"https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
+      status:false
+    },
+    {
+      local_id: "INV002",
+      paymentStatus: "Pending",
+      totalAmount: "$150.00",
+      paymentMethod: "PayPal",
+      stocks: 10,
+      img:"https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
+      status:false
+    },
+    {
+      "local_id": "INV003",
+      "paymentStatus": "Unpaid",
+      "totalAmount": "$350.00",
+      "stocks": 20,
+      "paymentMethod": "Bank Transfer",
+      "img":"https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
+      "status":true
+    },
+    {
+      local_id: "INV004",
+      paymentStatus: "Paid",
+      totalAmount: "$450.00",
+      stocks: 23,
+      paymentMethod: "Credit Card",
+      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh4Mxg9RBGi80Yt06UKs0vU_lSPh-ilp4KCA&usqp=CAU",
+      status:true
+    },
+    {
+      local_id: "INV005",
+      paymentStatus: "Paid",
+      totalAmount: "$550.00",
+      paymentMethod: "PayPal",stocks: 23,
+      img:"https://www.spencers.in/media/catalog/product/1/1/1193105_1.jpg",
+      status:true
+    },
+    {
+      "local_id": "INV006",
+      "paymentStatus": "Pending",
+      ".": "$200.00",
+      "paymentMethod": "Bank Transfer",stocks: 23,
+      "img":"https://www.cokesolutions.com/content/dam/cokesolutions/us/images/Products/Coca-Cola-glass.jpg",
+      "status":false
+    },
+    {
+      local_id: "INV007",
+      paymentStatus: "Unpaid",
+      totalAmount: "$300.00",
+      paymentMethod: "Credit Card",stocks: 23,
+      img:"https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+      status:false
+    },
+  ]
