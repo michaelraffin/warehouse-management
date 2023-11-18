@@ -19,61 +19,30 @@ import {
   import { useToast } from "@/components/ui/use-toast" 
   import { Input } from "@/components/ui/input"
   import {axios} from "@/Utils/axios"
-
+  import {UserProfile} from '../../Utils/userProfile'
+  
   let tableWidth = "w-[70%]"
-  const invoices = [
-    {
-      id: "INV001",
-      paymentStatus: "Approved",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      id: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      id: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      id: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      id: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },{
-        id: "INV0071",
-        paymentStatus: "Denied",
-        totalAmount: "$300.00",
-        paymentMethod: "Credit Card",
-      },
-  ]
   export default function TableDemo() {
     const { toast } = useToast()
     const [request,setRequest] = useState(invoices)
     const [reRequest,setRefRequest] = useState(invoices)
+    const [userProfile,setUser] = useState(null)
+    UserProfile().then(profile =>{
+      setUser(profile)
+    })
+    useEffect (()=>{
+
+    fetchProduct().then((response)=>{
+      console.log(response)
+    })
+    UserProfile().then(profile =>{
+      setUser(profile)
+    })
+    console.log(UserProfile())
+    },[])
+
+
+  
 
     const didUpdate =(e,id)=>{
         try {
@@ -104,11 +73,6 @@ import {
       
     }
 
-    useEffect (()=>{
-         fetchProduct().then((response)=>{
-            console.log(response)
-         })
-    })
 
 async function fetchProduct() { 
     try {  
@@ -117,7 +81,7 @@ async function fetchProduct() {
       console.log(response.data)
        return  response
     }catch (error) { 
-        console.log('errorr',error)
+        console.log('errorr fetchProduct' ,error)
       }
   }
     const searchRequest = (e)=>{
@@ -137,7 +101,7 @@ async function fetchProduct() {
         <div className="">
     <SideNavigation/>
   
-    <HeaderPage title="Request" subtitle=""/>
+    <HeaderPage title={`Request! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
         {/* <div className="ml-20 mt-20">
             <h1 className="text-[24px] mb">Reports</h1>
             <p className="text-xs mb-20">Generate your report </p>
@@ -352,5 +316,55 @@ async function fetchProduct() {
 
       </div>
     )
+
   }
   
+  const invoices = [
+    {
+      id: "INV001",
+      paymentStatus: "Approved",
+      totalAmount: "$250.00",
+      paymentMethod: "Credit Card",
+    },
+    {
+      id: "INV002",
+      paymentStatus: "Pending",
+      totalAmount: "$150.00",
+      paymentMethod: "PayPal",
+    },
+    {
+      id: "INV003",
+      paymentStatus: "Unpaid",
+      totalAmount: "$350.00",
+      paymentMethod: "Bank Transfer",
+    },
+    {
+      id: "INV004",
+      paymentStatus: "Paid",
+      totalAmount: "$450.00",
+      paymentMethod: "Credit Card",
+    },
+    {
+      id: "INV005",
+      paymentStatus: "Paid",
+      totalAmount: "$550.00",
+      paymentMethod: "PayPal",
+    },
+    {
+      id: "INV006",
+      paymentStatus: "Pending",
+      totalAmount: "$200.00",
+      paymentMethod: "Bank Transfer",
+    },
+    {
+      id: "INV007",
+      paymentStatus: "Unpaid",
+      totalAmount: "$300.00",
+      paymentMethod: "Credit Card",
+    },{
+        id: "INV0071",
+        paymentStatus: "Denied",
+        totalAmount: "$300.00",
+        paymentMethod: "Credit Card",
+      },
+  ]

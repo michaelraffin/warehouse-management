@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Loader2 } from "lucide-react"
 import { useUrl } from 'nextjs-current-url';
 import { useRouter ,useSearchParams} from 'next/navigation'
-
+import {getSession,getProfile} from '../../Utils/serviceLogin'
 export default function Auth() {
     const { href: currentUrl, pathname } = useUrl() ?? {};
     const router = useRouter();
@@ -17,10 +17,38 @@ export default function Auth() {
         localStorage.setItem('access_token', `${access_token}`);
         localStorage.setItem('provider_token', `${provider_token}`);
         localStorage.setItem('refresh_token', `${refresh_token}`);
+        localStorage.setItem('uuid', `${refresh_token}`);
 
-        setTimeout(() => {
-            router.push('/onboard');
-          }, 3000);
+
+
+        getSession().then((e)=>{
+          console.log(e.data.user.id)
+          localStorage.setItem('uuid', `${e.data.user.id}`);
+                
+      getProfile().then((e) =>{
+        let user = e.data[0]
+        localStorage.setItem('user_profile', JSON.stringify(user));
+
+
+        if(user.user_details === null){
+  router.push('/onboard');
+        }else {
+  router.push('/dashboard');
+        }
+        console.log(e.data)
+      })
+      })
+      
+
+
+
+
+
+        //Redirect when Profile is empty
+        // setTimeout(() => {
+          
+        //     router.push('/redirect');
+        //   }, 3000);
      
     })
 

@@ -1,4 +1,5 @@
 "use client" 
+import React, { useEffect,useState } from 'react';
 import {
     Table,
     TableBody,
@@ -12,7 +13,9 @@ import {
   import SideNavigation from "@/app/SideNavigation"
   import HeaderPage from "@/app/LocalComponents/HeaderPage"
   import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
+  import {getSession,getProfile} from '../../Utils/serviceLogin'
+  import {UserProfile} from '../../Utils/userProfile'
+  
   const invoices = [
     {
       invoice: "INV001",
@@ -58,13 +61,26 @@ import {
     },
   ]
   export default function TableDemo() {
+
+    let  [ userProfile,setUser] = useState(null)
+    useEffect(() => {
+      getProfile()
+
+    },[])   
+    
+    const getProfile = async ()=>{
+      try {
+        let profile = await UserProfile()
+       return  setUser(profile)
+      } catch (error) {
+        //redirect profile
+      }
+    }   
     return (
         <div className="">
 
     <SideNavigation/>
-    <HeaderPage title="Overview" subtitle=""/>
-
-    
+    <HeaderPage title={`Good morning! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>    
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ml-20 ">
   <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
 {/* //LEFT */}

@@ -27,14 +27,15 @@ export default function Auth() {
     const [warehouse,setWarehouse] = useState(null)
     const [userTpe,setUserType] = useState(null)
     const [userProfile,setUserProfile] = useState(null)
-
+  const [userID, setUserID] = useState(null)
     useEffect(() => {
       
-getSession().then((e)=>{
-    console.log(e.data.user.user_metadata)
-    setFirstname(e.data.user.user_metadata.name)
-    setUserProfile(e.data.user.user_metadata)
-})
+    getSession().then((e)=>{ 
+      console.log(e)
+      setUserID(e.data.user.id)
+        setFirstname(e.data.user.user_metadata.name)
+        setUserProfile(e.data.user.user_metadata)
+    })
     
     }, [])
     
