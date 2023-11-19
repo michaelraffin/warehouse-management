@@ -109,18 +109,21 @@ import { Progress } from "@/components/ui/progress"
         <div className="">
            
     <SideNavigation/>
-    <div className="ml-20 absolute top-2 right-2">
+    <div className="ml-20 absolute top-2 right-2 flex flex-row hover:shadow-lg rounded-md">
+      <a href="" className="flex flex-row m-2 " >
     <img src={userProfile === null ? '' :userProfile.application_info.avatar_url}
 className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
 />
-<h1>{userProfile != null ? userProfile.user_details.firstName: ''}</h1>
+<div className="ml-2">
+<h1 className=' text-dark-900 font-bold'>{userProfile != null ? userProfile.user_details.firstName: ''}</h1>
 <h1 className='text-xs text-gray-400'>{userProfile != null ? userProfile.application_info.email: ''}</h1>
 
-
+</div>
+</a>
     </div>
  
-    <HeaderPage title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
-    <AddProduct didSubmit={(e)=>submitProduct()}/>
+    <HeaderPage title={`Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
+    {/* <AddProduct didSubmit={(e)=>submitProduct()}/> */}
      
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">

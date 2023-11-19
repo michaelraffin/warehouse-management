@@ -17,11 +17,12 @@ import {
   import {UserProfile} from '../../Utils/userProfile'
   import {axiosV2Local,axiosV2} from '../../Utils/axios'
   import { Progress } from "@/components/ui/progress"
-  
+  import {DonutChartUsageExample2} from '../dashboard/donut'
+  import {LineChart} from '../dashboard/LineChart'
   export default function TableDemo() {
     let  [ products,setProducts] = useState([])
     let  [ status,setStatus] = useState(true)
-    let  [ userProfile,setUser] = useState(null)
+    let  [ userProfile,setUser] = useState(null) 
     useEffect(() => {
       getProfile()
       fetchProduct()
@@ -43,15 +44,64 @@ import {
       } catch (error) {
         //redirect profile
       }
-    }   
+    }  
+    var data = {
+      datasets: [{
+          data: [10, 20, 30]
+      }],
+  
+      // These labels appear in the legend and in the tooltips when hovering different arcs
+      labels: [
+          'Red',
+          'Yellow',
+          'Blue'
+      ]
+  };
+    
+    const config = {
+      type: 'doughnut',
+      data: data,
+    };
+ 
     return (
         <div className="">
 
     <SideNavigation/>
     <HeaderPage title={`Good morning! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>    
+    <div className="ml-20 absolute top-2 right-2 flex flex-row hover:shadow-lg rounded-md">
+      <a href="" className="flex flex-row m-2 " >
+    <img src={userProfile === null ? '' :userProfile.application_info.avatar_url}
+className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
+/>
+<div className="ml-2">
+<h1 className=' text-dark-900 font-bold'>{userProfile != null ? userProfile.user_details.firstName: ''}</h1>
+<h1 className='text-xs text-gray-400'>{userProfile != null ? userProfile.application_info.email: ''}</h1>
+
+</div>
+</a>
+    </div>
+ 
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ml-20 ">
+      
   <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
+    {/* <DonutChartUsageExample2/> */}
+  
+    
 {/* //LEFT */}
+{/* <Chart
+type={ 'bar'}
+
+   
+          data= {[10, 20, 30]}
+   
+  
+      // These labels appear in the legend and in the tooltips when hovering different arcs
+      labels= {[
+        'Red',
+        'Yellow',
+        'Blue'
+    ]}
+/> */}
 <h1 className="text-black text-md font-bold ml-2">Top Sales</h1>
   <div className=" mb-20">
         <div className="w-full   grid grid-cols-3 gap-4 m-2">
