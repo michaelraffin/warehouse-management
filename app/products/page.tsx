@@ -22,8 +22,9 @@ import {
   import { Switch } from "@/components/ui/switch"
   import { Input } from "@/components/ui/input"
   import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
- 
+  import { Progress } from "@/components/ui/progress"
+  import { Card, CategoryBar, Legend, Metric, Text } from "@tremor/react";
+
   import {
     Popover,
     PopoverContent,
@@ -109,7 +110,7 @@ import { Progress } from "@/components/ui/progress"
         <div className="">
            
     <SideNavigation/>
-    <div className="ml-20 absolute top-2 right-2 flex flex-row hover:shadow-lg rounded-md">
+    <div className="ml-20 absolute top-16 right-2 flex flex-row hover:shadow-lg rounded-md">
       <a href="" className="flex flex-row m-2 " >
     <img src={userProfile === null ? '' :userProfile.application_info.avatar_url}
 className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
@@ -125,8 +126,56 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
     <HeaderPage title={`Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
     {/* <AddProduct didSubmit={(e)=>submitProduct()}/> */}
      
-<Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
-  <TabsList className="rounded-full mb-20">
+
+    <div className="flex ml-20 mb-20 gap-6">
+    <Card className="max-w-md  rounded-lg  ring-gray-200 hover:shadow-lg hover:ring-black">
+    <Text>Total Orders</Text>
+    <Metric>10,483</Metric>
+    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["emerald", "red"]} />
+    <Legend
+      className="mt-3"
+      categories={["Active users", "Inactive users"]}
+      colors={["emerald", "red"]}
+    />
+  </Card>
+  <Card className="max-w-md   rounded-lg  ring-gray-200 hover:shadow-lg hover:ring-black">
+    <Text>Total Users</Text>
+    <Metric>10,483</Metric>
+    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["emerald", "red"]} />
+    <Legend
+      className="mt-3"
+      categories={["Active users", "Inactive users"]}
+      colors={["emerald", "red"]}
+    />
+  </Card>
+  {/* <Card className="max-w-md   rounded-lg  ring-gray-200 hover:shadow-lg hover:ring-black">
+    <Text>Total Users</Text>
+    <Metric>10,483</Metric>
+    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["emerald", "red"]} />
+    <Legend
+      className="mt-3"
+      categories={["Active users", "Inactive users"]}
+      colors={["emerald", "red"]}
+    />
+  </Card> */}
+</div>
+
+
+    {/* <Card className="max-w-md  mx-auto rounded-lg mb-20 ring-gray-200 hover:shadow-lg hover:ring-black">
+    <Text>Total Users</Text>
+    <Metric>10,483</Metric>
+    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["emerald", "red"]} />
+    <Legend
+      className="mt-3"
+      categories={["Active users", "Inactive users"]}
+      colors={["emerald", "red"]}
+    />
+  </Card> */}
+
+
+  
+<Tabs defaultValue="AllProducts" className="w-[90] mx-auto ml-24 bt-60 bg-white rounded-lg ">
+  <TabsList className="rounded-full mb-20 mx-auto max-w-md ">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
       <Input type="email" placeholder="Search" className='rounded-full  text-xs'/>
       {/* <Button type="submit" className='text-xs'>Search</Button> */}
@@ -171,9 +220,9 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
             
                 {/* {invoice.paymentMethod} */}
                 </TableCell>
-              <TableCell className="text-right text-md text-red-500 font-bold">
+              <TableCell className={`text-right text-xs   ${invoice.stocks <= 60 ? 'text-red-500':'text-green-700'}`}>
                 {invoice.stocks}/20
-                  <Badge className='bg-red-500 ml-4'>Out of stock</Badge>
+                  <Badge className={`${invoice.stocks <= 60 ? 'bg-red-500':'bg-green-700'} ml-4  `}>Out of stock</Badge>
               </TableCell>
               <TableCell className="text-right">
                 {/* {invoice.totalAmount} */}
@@ -212,7 +261,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
               <TableCell>
               <Progress value={invoice.stocks} className="w-[60%]" />
               </TableCell>
-              <TableCell className="text-right">{invoice.totalAmount} <Badge className='bg-red-500 ml-2'>Out of stock</Badge>
+              <TableCell className="text-right"><span className='text-xs'>{invoice.totalAmount}</span> <Badge className='bg-red-500 ml-2'>Out of stock</Badge>
               </TableCell>
               
               <TableCell className="text-right"><Switch  onCheckedChange={(e)=>didStatusUpdate(e,invoice._id)} checked={invoice.status} />

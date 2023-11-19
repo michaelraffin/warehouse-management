@@ -68,7 +68,7 @@ import {
 
     <SideNavigation/>
     <HeaderPage title={`Good morning! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>    
-    <div className="ml-20 absolute top-2 right-2 flex flex-row hover:shadow-lg rounded-md">
+    <div className="ml-20 absolute top-16 right-2 flex flex-row hover:shadow-lg rounded-md">
       <a href="" className="flex flex-row m-2 " >
     <img src={userProfile === null ? '' :userProfile.application_info.avatar_url}
 className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
