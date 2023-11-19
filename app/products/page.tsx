@@ -128,20 +128,20 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
      
 
     <div className="flex ml-20 mb-20 gap-6">
-    <Card className="max-w-md  rounded-lg  ring-gray-200 hover:shadow-lg hover:ring-black">
+    <Card className="max-w-md  rounded-lg  ring-gray-200 hover:shadow-lg ">
     <Text>Total Orders</Text>
     <Metric>10,483</Metric>
-    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["emerald", "red"]} />
+    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["blue", "red"]} />
     <Legend
       className="mt-3"
       categories={["Active users", "Inactive users"]}
-      colors={["emerald", "red"]}
+      colors={["blue", "red"]}
     />
   </Card>
-  <Card className="max-w-md   rounded-lg  ring-gray-200 hover:shadow-lg hover:ring-black">
+  <Card className="max-w-md   rounded-lg  ring-gray-200 hover:shadow-lg ">
     <Text>Total Users</Text>
     <Metric>10,483</Metric>
-    <CategoryBar className="mt-4" values={[6724, 3621]} colors={["emerald", "red"]} />
+    <CategoryBar className="mt-4 " values={[6724, 3621]} colors={["emerald", "red"]} />
     <Legend
       className="mt-3"
       categories={["Active users", "Inactive users"]}
@@ -174,7 +174,7 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
 
 
   
-<Tabs defaultValue="AllProducts" className="w-[90] mx-auto ml-24 bt-60 bg-white rounded-lg ">
+<Tabs defaultValue="AllProducts" className="w-[80] mx-auto ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20 mx-auto max-w-md ">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
       <Input type="email" placeholder="Search" className='rounded-full  text-xs'/>
@@ -205,9 +205,9 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
           {products.map((invoice) => (
             <TableRow key={invoice.id}>
               <TableCell className="font-medium">
-                
+                <span className='text-xs'>{invoice.local_id}</span>
               {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
-            {invoice.id}
+            
               </TableCell>
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>
               <img src={invoice.img}
@@ -216,6 +216,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
 />
                 </TableCell>
               <TableCell>
+              <span className='text-xs'>{invoice.title}</span>
               <Progress value={invoice.stocks} className="w-[60%]" />
             
                 {/* {invoice.paymentMethod} */}
