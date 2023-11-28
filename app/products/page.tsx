@@ -139,8 +139,8 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
     />
   </Card>
   <Card className="max-w-md   rounded-lg  ring-gray-200 hover:shadow-lg ">
-    <Text>Total Users</Text>
-    <Metric>10,483</Metric>
+    <Text>Product Sales</Text>
+    <Metric>1,483</Metric>
     <CategoryBar className="mt-4 " values={[6724, 3621]} colors={["emerald", "red"]} />
     <Legend
       className="mt-3"
@@ -194,9 +194,9 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
         <TableCaption>A list of All products.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Warehouse</TableHead>
+            <TableHead className="w-[100px]">#ID</TableHead>
+            <TableHead>Item</TableHead>
+            <TableHead>Stats</TableHead>
             <TableHead className="text-right">Stocks</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -205,7 +205,7 @@ className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
           {products.map((invoice) => (
             <TableRow key={invoice.id}>
               <TableCell className="font-medium">
-                <span className='text-xs'>{invoice.local_id}</span>
+                <span className='text-xs'>{invoice._id.substr(-4)}</span>
               {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
             
               </TableCell>
@@ -247,9 +247,9 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
         <TableCaption>A list of Active.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Warehouse state</TableHead>
+            <TableHead className="w-[100px]">#ID</TableHead>
+            <TableHead>Item</TableHead>
+            <TableHead>Stats</TableHead>
             <TableHead className="text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>
@@ -276,7 +276,7 @@ className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
         <TableCaption>A list of In Active.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
+            <TableHead className="w-[100px]">#ID</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Method</TableHead>
             <TableHead className="text-right">Amount</TableHead>
