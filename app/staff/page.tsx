@@ -14,6 +14,7 @@ import {
   import moment from "moment"
   import HeaderPage from "@/app/LocalComponents/HeaderPage"
   import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+  import SignUpForm from "../components/signup"
   import { Input } from "@/components/ui/input"
   const staff = [
     { id:1,
@@ -85,6 +86,7 @@ import {
   ]
   export default function StaffComponent() {
     const [staffList,setStaff] = useState(staff)
+    const [showForm,setShowForm] = useState(false)
     const [refenceProducts,setReferenceProducts] = useState(staff)
 
 
@@ -207,6 +209,8 @@ import {
 </article>  
         </div></div>
 
+<span className="ml-20 mb-20" onClick={()=>setShowForm(!showForm)}>show form</span>
+{showForm ? <SignUpForm/>:null}
           <Tabs defaultValue="Stockman" className="w-full ml-24 bt-20 bg-white rounded-lg">
   <TabsList className="rounded-full">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
@@ -276,6 +280,7 @@ import {
  
   <TabsContent value="Cashier">Change your password here.</TabsContent>
 </Tabs> 
+
       </div>
     )
   }
