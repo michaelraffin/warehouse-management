@@ -40,7 +40,7 @@ import {
     const getProfile = async ()=>{
       try {
         let profile = await UserProfile()
-       return  setUser(profile)
+       return  setUser(JSON.parse(profile))
       } catch (error) {
         //redirect profile
       }
@@ -67,14 +67,14 @@ import {
         <div className="">
 
     <SideNavigation/>
-    <HeaderPage title={`Good morning! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>    
+    <HeaderPage title={`Good morning! 👋 ${userProfile != null ? userProfile.application_info.name: ''}`} subtitle=""/>    
     <div className="ml-20 absolute top-16 right-2 flex flex-row hover:shadow-lg rounded-md">
       <a href="" className="flex flex-row m-2 " >
     <img src={userProfile === null ? '' :userProfile.application_info.avatar_url}
 className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
 />
 <div className="ml-2">
-<h1 className=' text-dark-900 font-bold'>{userProfile != null ? userProfile.user_details.firstName: ''}</h1>
+<h1 className=' text-dark-900 font-bold'>{userProfile != null ? userProfile.application_info.name: ''}</h1>
 <h1 className='text-xs text-gray-400'>{userProfile != null ? userProfile.application_info.email: ''}</h1>
 
 </div>

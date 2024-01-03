@@ -1,5 +1,5 @@
 "use client" 
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import {
     Table,
     TableBody,
@@ -33,31 +33,37 @@ import {
   import {getSession} from '../../Utils/serviceLogin'
   import {UserProfile} from '../../Utils/userProfile'
   import {axiosV2Local,axiosV2} from '../../Utils/axios'
+  import {getUser} from '../../Utils/serviceLogin'
   export default function TableDemo() {
 
     const { toast } = useToast()
     const [products,setProducts] = useState([])
     const [userProfile,setUser] = useState(null)
     const [status,setStatus] = useState(true)
+  
 
     useEffect(() => {
-     
       UserProfile().then(profile =>{
-        setUser(profile)
+        let userProfileeee = JSON.parse(profile)
+        setUser(userProfileeee)
+      
       })
+        
+  },[]) 
 
-  },[userProfile])
     useEffect(() => {
       getSession().then((data) =>{
         console.log('data',data)
       })
      
       fetchProduct()
+      
   },[])
     const fetchProduct = async()=>{
       try {
         let data = { local_id: 'e', queryType: 'all', storeOwner: 'storeOwner', isAPI: true,referenceOrder:'e',number:20,showLimit:true,queryData:{status:'orderStatus',userReference: 'e'}};
-			 let productList =   await axiosV2('dsadsa').post('https://loogyapi.digital/store/LesseeProduct')
+			 let productList =   await axiosV2('tokens').post('/store/LesseeProduct')
+
        setProducts(productList.data.results)
        setStatus(false)
       } catch (error) {
@@ -106,6 +112,7 @@ import {
              fetchProduct()
         })
     }
+     
     return (
         <div className="">
            
@@ -116,14 +123,14 @@ import {
 className=' w-10 h-10  object-cover  hover:shadow-lg rounded-full '
 />
 <div className="ml-2">
-<h1 className=' text-dark-900 font-bold'>{userProfile != null ? userProfile.user_details.firstName: ''}</h1>
+<h1 className=' text-dark-900 font-bold'>{userProfile != null ? userProfile.application_info.full_name: ''}</h1>
 <h1 className='text-xs text-gray-400'>{userProfile != null ? userProfile.application_info.email: ''}</h1>
 
 </div>
 </a>
     </div>
  
-    <HeaderPage title={`Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
+    <HeaderPage title={`Products ! 👋 ${userProfile != null ? userProfile.application_info.full_name: ''}`} subtitle=""/>
     {/* <AddProduct didSubmit={(e)=>submitProduct()}/> */}
      
 

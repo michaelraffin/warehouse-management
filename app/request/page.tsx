@@ -97,11 +97,18 @@ async function fetchProduct() {
           
         }
       }
+      const displayHeaderName = ()=>{
+        try {
+            return <HeaderPage title={`Request! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
+        } catch (error) {
+          return null
+        }
+      }
     return (
         <div className="">
     <SideNavigation/>
-  
-    <HeaderPage title={`Request! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
+  {displayHeaderName()}
+    
         {/* <div className="ml-20 mt-20">
             <h1 className="text-[24px] mb">Reports</h1>
             <p className="text-xs mb-20">Generate your report </p>

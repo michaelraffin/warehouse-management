@@ -46,7 +46,14 @@ export const getSession = async ()=>{
 
 
 
-
+export const getUser =async()=>{
+  try {
+    const { data, error } = await supabase.auth.getSession()
+    return data
+  } catch (error) {
+    return null
+  }
+}
 
 export const signinAuth= async()=>{
    const {data,error}  = await networkService(()=> {

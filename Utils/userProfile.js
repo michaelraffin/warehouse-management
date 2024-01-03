@@ -1,6 +1,12 @@
 
 export const UserProfile = async(parameter)=>{
-    let user_profilez = localStorage.getItem('user_profile')
-    let convertProfile = JSON.parse(user_profilez)
-    return  convertProfile
+  try {
+    let user_profilez = await localStorage.getItem('user_profile')
+    console.log('user_profilez user_profilez',user_profilez)
+     
+    return  user_profilez
+  } catch (error) {
+    console.log('UserProfile error' , error)
+    return null
+  }
   }

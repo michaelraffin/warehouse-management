@@ -1,12 +1,12 @@
 
 import Axios from 'axios'; 
-export const url = process.env.stagingEndpoint
+export const url = "http:192.168.1.148:9091"//"https://lwarehouse-service-nodejs.onrender.com" // process.env.stagingEndpoint
 export const urlFirebase =  process.env.urlFirebase
-export const urlSupBase =  process.env.urlSupaBase
+export const urlSupBase =  "http:192.168.1.148:9091" //"https://lwarehouse-service-nodejs.onrender.com" //process.env.urlSupaBase
 export const mapBoxUrl = process.env.mapBoxEndpoint
  
 export const axiosV2Local = (token,id)=>  Axios.create({
-    baseURL:'http://192.168.1.148:9091',
+    baseURL:  "http:192.168.1.148:9091", //'https://lwarehouse-service-nodejs.onrender.com', //'http://192.168.1.148:9091',
     timeOut:3000,
     headers: {
         "Content-Type": "application/json",

@@ -19,7 +19,7 @@ export default function Auth() {
         localStorage.setItem('refresh_token', `${refresh_token}`);
         localStorage.setItem('uuid', `${refresh_token}`);
 
-
+      console.log('welcome to auth')
 
         getSession().then((e)=>{
           console.log(e.data.user.id)
