@@ -15,6 +15,7 @@ import {
   import moment from "moment"
   import HeaderPage from "@/app/LocalComponents/HeaderPage"
   import AddProduct from "@/app/LocalComponents/AddProductSheet"
+  import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet"
   import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
   import { Button } from "@/components/ui/button"
   import RequestSheet from "@/app/LocalComponents/RequestSheet"
@@ -56,7 +57,7 @@ import { Progress } from "@/components/ui/progress"
     const fetchProduct = async()=>{
       try {
         let data = { local_id: 'e', queryType: 'all', storeOwner: 'storeOwner', isAPI: true,referenceOrder:'e',number:20,showLimit:true,queryData:{status:'orderStatus',userReference: 'e'}};
-			 let productList =   await axiosV2('dsadsa').post('https://loogyapi.digital/store/LesseeProduct')
+			 let productList =   await axiosV2('dsadsa').post('https://lwarehouse-service-nodejs.onrender.com/store/LesseeProduct')
        setProducts(productList.data.results)
        setStatus(false)
       } catch (error) {
@@ -95,7 +96,7 @@ setProducts(list)
                 img:"https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
                 status:false
               }
-              let productList =   await axiosV2('dsadsa').post('http://192.168.1.148:9091/Loogy/add',{details:payload,className:'LesseeProduct'})
+              let productList =   await axiosV2('dsadsa').post('https://lwarehouse-service-nodejs.onrender.com/Loogy/add',{details:payload,className:'LesseeProduct'})
               console.log('productList',productList)
               return productList
           } catch(error){
@@ -113,12 +114,13 @@ setProducts(list)
     <SideNavigation/>
 
     <HeaderPage title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
-    <AddProduct didSubmit={(e)=>submitProduct()}/>
+    
      
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
       <Input type="email" placeholder="Search" className='rounded-full'/>
+      
       {/* <Button type="submit" className='text-xs'>Search</Button> */}
     </div>
 
@@ -129,6 +131,9 @@ setProducts(list)
 
     {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
   </TabsList>
+  <BottomDrawerSheet/>
+  <AddProduct
+  didSubmit={(e)=>submitProduct()}/>
   <TabsContent value="AllProducts" className={` ${status ? 'opacity-20' : 'opacity-100'}   `}>
 
   <Table className="">
