@@ -44,6 +44,7 @@ import { Progress } from "@/components/ui/progress"
     const [productTitle,setProducTitle] = useState(null)
     const [productQuantity,setProducQuantity] = useState(null)
     const [imageLink,setImageLink] = useState(null)
+    let parentClass = "LesseeVendor"
     useEffect(() => {
      
       UserProfile().then(profile =>{
@@ -55,13 +56,13 @@ import { Progress } from "@/components/ui/progress"
       getSession().then((data) =>{
         console.log('data',data)
       })
-     
-      fetchProduct()
+      
+      fetchStores()
   },[])
-    const fetchProduct = async()=>{
+    const fetchStores = async()=>{
       try {
         let data = { local_id: 'e', queryType: 'all', storeOwner: 'storeOwner', isAPI: true,referenceOrder:'e',number:20,showLimit:true,queryData:{status:'orderStatus',userReference: 'e'}};
-			 let productList =   await axiosV2('dsadsa').post('https://lwarehouse-service-nodejs.onrender.com/store/LesseeProduct')
+			 let productList =   await axiosV2('dsadsa').post(`https://lwarehouse-service-nodejs.onrender.com/store/${parentClass}`)
        setProducts(productList.data.results)
        setStatus(false)
       } catch (error) {
@@ -105,16 +106,13 @@ setProducts(list)
         const asyncService = async ()=>{
             try{
               let payload = {
-                productID: generateRandomString(),
-                local_id:productTitle,
-                paymentStatus: "Unpaid",
-                title:productTitle,
-                totalAmount: "$300.00",
+                vendorID: generateRandomString(),
+                vendorTitle:productTitle,
                 paymentMethod: "Credit Card",stocks: productQuantity,
                 img: imageLink,
                 status:false
               }
-              let productList =   await axiosV2('dsadsa').post('https://lwarehouse-service-nodejs.onrender.com/Loogy/add',{details:payload,className:'LesseeProduct'})
+              let productList =   await axiosV2('dsadsa').post('https://lwarehouse-service-nodejs.onrender.com/Loogy/add',{details:payload,className:parentClass})
               console.log('productList',productList)
               return productList
           } catch(error){
@@ -123,7 +121,7 @@ setProducts(list)
         }
         asyncService().then(item=>{
           console.log(item)
-             fetchProduct()
+             fetchStores()
         })
     }
     return (
@@ -131,7 +129,7 @@ setProducts(list)
            
     <SideNavigation/>
 
-    <HeaderPage title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
+    <HeaderPage title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
     
      
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
@@ -142,7 +140,7 @@ setProducts(list)
       {/* <Button type="submit" className='text-xs'>Search</Button> */}
     </div>
 
-  <TabsTrigger className="rounded-full" value="AllProducts">All Products <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
+  <TabsTrigger className="rounded-full" value="AllProducts">All Vendor <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
   <TabsTrigger  className="rounded-full" value="Active">Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status).length}</span></TabsTrigger>
     <TabsTrigger className="rounded-full" value="inActive">In-Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item =>item.status === false).length}</span></TabsTrigger>
     
@@ -151,7 +149,7 @@ setProducts(list)
   </TabsList>
   <BottomDrawerSheet/>
   <AddProduct
-  buttonTitle={"Add Product"}
+  buttonTitle={"Add Vendor"}
   upload_here ={UploadImageService}
   image_file={(e)=>setImageLink(e)}
   title={(e)=>setProducTitle(e)}
@@ -163,7 +161,7 @@ setProducts(list)
         <TableCaption>A list of request.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
+            <TableHead className="w-[100px]">StoreID</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Warehouse</TableHead>
             <TableHead className="text-right">Stocks</TableHead>
@@ -176,7 +174,7 @@ setProducts(list)
               <TableCell className="font-medium">
                 
               {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
-            {invoice.id}
+            {invoice.vendorID}
               </TableCell>
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>
               <img src={invoice.img}

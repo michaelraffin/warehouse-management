@@ -22,20 +22,36 @@ type ProductDetails = {
   exampleRequired: string
 }
 
-
  export default function Add(props){
+
+const submitItem=()=>{
+  props.didSubmit()
+  setLogo('')
+}
   // const {
   //   register,
   //   handleSubmit,
   //   watch,
   //   formState: { errors },
   // } = useForm<ProductDetails>()
+  const [isLoading,setStatus] = useState(false)
+  const [logo,setLogo] = useState('')
+  const didUpload=(e)=>{ 
+
+  setStatus(true)
+    props.upload_here(e.target.files[0],1).then(results=>{
+      console.log(results.data.storage.link)
+      setLogo(results.data.storage.link)
+      props.image_file(results.data.storage.link)
+      setStatus(false)
+    })
+  }
   
  return (
     <Sheet>
       <SheetTrigger className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300 h-9 m-2 rounded-md">
       {/* <Button className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300"> */}
-        <span className="m-4 text-white " >+ Add Product</span>
+        <span className="m-4 text-white " >+ {props.buttonTitle}</span>
         {/* </Button> */}
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px] lg:w-[400px]">
@@ -45,10 +61,19 @@ type ProductDetails = {
           <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/>
           <div className="grid w-full max-w-sm items-center gap-1.5">
      
-     
- <ComboboxDemo/>
-      <Label htmlFor="picture" className='mt-10'>Product Picture</Label>
-      <Input id="picture" type="file" />
+          {/* image_file */}
+
+
+
+
+ <ComboboxDemo />
+
+ <img src={logo}
+
+className=' w-20 h-20 object-cover mt-10 hover:shadow-lg rounded-lg '
+/>
+      <Label htmlFor="picture" className='mt-10'>{isLoading ? "Loading..." : "Product Picture"}</Label>
+      <Input contentEditable={!isLoading} id="picture" type="file"  onChange={(e)=>didUpload(e)} />
     </div>
 
     {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
@@ -76,7 +101,7 @@ type ProductDetails = {
             and remove your data from our servers.
           </SheetDescription>
         </SheetHeader>
-        <SheetTrigger className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-md"  onClick={()=>props.didSubmit()}
+        <SheetTrigger className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-md"  onClick={()=>submitItem()}
         
         >
         <div className="m-2 text-white">Submit</div>
