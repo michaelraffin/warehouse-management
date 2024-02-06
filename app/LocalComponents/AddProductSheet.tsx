@@ -26,7 +26,7 @@ type ProductDetails = {
 
 const submitItem=()=>{
   props.didSubmit()
-  setLogo('')
+  setLogo(null)
 }
   // const {
   //   register,
@@ -35,7 +35,7 @@ const submitItem=()=>{
   //   formState: { errors },
   // } = useForm<ProductDetails>()
   const [isLoading,setStatus] = useState(false)
-  const [logo,setLogo] = useState('')
+  const [logo,setLogo] = useState(null)
   const didUpload=(e)=>{ 
 
   setStatus(true)
@@ -45,6 +45,18 @@ const submitItem=()=>{
       props.image_file(results.data.storage.link)
       setStatus(false)
     })
+  }
+  const displayLogo = ()=>{
+    try {
+   
+      return <>{logo === null ? null :<div className='align-center items-center content-center justify-center flex'>
+       
+      <img src={logo}
+ className=' w-20 h-auto object-cover mt-10 hover:shadow-lg rounded-lg '
+ /></div> }  </>
+    } catch (error) {
+      return null
+    }
   }
   
  return (
@@ -67,11 +79,8 @@ const submitItem=()=>{
 
 
  <ComboboxDemo />
+ {displayLogo()}
 
- <img src={logo}
-
-className=' w-20 h-20 object-cover mt-10 hover:shadow-lg rounded-lg '
-/>
       <Label htmlFor="picture" className='mt-10'>{isLoading ? "Loading..." : "Product Picture"}</Label>
       <Input contentEditable={!isLoading} id="picture" type="file"  onChange={(e)=>didUpload(e)} />
     </div>
