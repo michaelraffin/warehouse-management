@@ -39,9 +39,9 @@ const submitItem=()=>{
   const didUpload=(e)=>{ 
 
   setStatus(true)
+  const imageUrl = URL.createObjectURL(e.target.files[0]);
+  setLogo(imageUrl)
     props.upload_here(e.target.files[0],1).then(results=>{
-      console.log(results.data.storage.link)
-      setLogo(results.data.storage.link)
       props.image_file(results.data.storage.link)
       setStatus(false)
     })
