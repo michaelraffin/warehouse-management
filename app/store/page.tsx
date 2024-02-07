@@ -23,10 +23,9 @@ import {
   import { Switch } from "@/components/ui/switch"
   import { Input } from "@/components/ui/input"
   import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
- import  {UploadImageService} from '../../Utils/image_uploader'
-
-
+  import { Progress } from "@/components/ui/progress"
+  import  {UploadImageService} from '../../Utils/image_uploader' 
+  import Map from '../LocalComponents/MapPickerV2' 
   import {
     Popover,
     PopoverContent,
@@ -43,7 +42,9 @@ import { Progress } from "@/components/ui/progress"
     const [status,setStatus] = useState(true)
     const [productTitle,setProducTitle] = useState(null)
     const [productQuantity,setProducQuantity] = useState(null)
+    const [storeCoordinates,setStoreCoordinates] = useState(null)
     const [imageLink,setImageLink] = useState(null)
+
     let parentClass = "LesseeVendor"
     useEffect(() => {
      
@@ -110,7 +111,8 @@ setProducts(list)
                 vendorTitle:productTitle,
                 paymentMethod: "Credit Card",stocks: productQuantity,
                 img: imageLink,
-                status:false
+                status:false,
+                coordinates:storeCoordinates
               }
               let productList =   await axiosV2('dsadsa').post('https://lwarehouse-service-nodejs.onrender.com/Loogy/add',{details:payload,className:parentClass})
               console.log('productList',productList)
@@ -128,10 +130,12 @@ setProducts(list)
         <div className="">
            
     <SideNavigation/>
-
     <HeaderPage title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
     
+<div className='w-1/2 ml-20 '>
+<Map coordinates={(e)=>setStoreCoordinates(e)}/>
      
+</div>
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">
   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
@@ -161,7 +165,7 @@ setProducts(list)
         <TableCaption>A list of request.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">StoreID</TableHead>
+            <TableHead className="w-[100px]">Name</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Warehouse</TableHead>
             <TableHead className="text-right">Stocks</TableHead>
@@ -172,9 +176,9 @@ setProducts(list)
           {products.map((invoice) => (
             <TableRow key={invoice.id}>
               <TableCell className="font-medium">
-                
+                <p className='text-xs'>{invoice.vendorTitle}</p>
               {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
-            {invoice.vendorID}
+            
               </TableCell>
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>
               <img src={invoice.img}
