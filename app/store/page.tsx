@@ -34,6 +34,10 @@ import {
   import {getSession} from '../../Utils/serviceLogin'
   import {UserProfile} from '../../Utils/userProfile'
   import {axiosV2Local,axiosV2} from '../../Utils/axios'
+  import Link from 'next/link'
+  import LocalChart from '../LocalComponents/Charts'
+  
+ 
   export default function TableDemo() {
 
     const { toast } = useToast()
@@ -133,8 +137,7 @@ setProducts(list)
     <HeaderPage title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName: ''}`} subtitle=""/>
     
 <div className='w-1/2 ml-20 '>
-<Map coordinates={(e)=>setStoreCoordinates(e)}/>
-     
+{/* <Map coordinates={(e)=>setStoreCoordinates(e)}/> */}
 </div>
 <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
   <TabsList className="rounded-full mb-20">
@@ -166,8 +169,8 @@ setProducts(list)
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Warehouse</TableHead>
+            <TableHead>Logo</TableHead>
+            <TableHead>View details</TableHead>
             <TableHead className="text-right">Stocks</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -178,20 +181,24 @@ setProducts(list)
               <TableCell className="font-medium">
                 <p className='text-xs'>{invoice.vendorTitle}</p>
               {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
-            
+              
               </TableCell>
               <TableCell className={`text-xs ${invoice.paymentStatus === "Approved" ? 'text-blue-600': 'text-red-500' }`}>
               <img src={invoice.img}
 
 className=' w-10 h-10 object-cover  hover:shadow-lg rounded-lg '
 />
+
                 </TableCell>
               <TableCell>
-              <Progress value={invoice.stocks} className="w-[60%]" />
-            
-                {/* {invoice.paymentMethod} */}
+              <a  href={`store/${invoice.vendorID}`} target="_blank" rel="noopener noreferrer">View store</a>
+               
                 </TableCell>
               <TableCell className="text-right text-md text-red-500 font-bold">
+              <div className='w-60 h-20'>
+                <LocalChart/>
+                </div>
+
                 {invoice.stocks}/20
                   <Badge className='bg-red-500 ml-4'>Out of stock</Badge>
               </TableCell>

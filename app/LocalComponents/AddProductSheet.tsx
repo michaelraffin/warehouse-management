@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet"
 import {ComboboxDemo} from '../LocalComponents/Sizes'
  
+import Map from '../LocalComponents/MapPickerV2' 
 // import {useForm} from 'react-hook-form'
 import { Textarea } from "@/components/ui/textarea"
 
@@ -76,6 +77,7 @@ const submitItem=()=>{
           {/* image_file */}
 
 
+          {/* <Map coordinates={(e)=>console.log(e)}/> */}
 
 
  <ComboboxDemo />
@@ -105,14 +107,13 @@ const submitItem=()=>{
     <input id="default-radio-2" type="radio" value="" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
      12oz
     </div> */}
+
           <SheetDescription className="text-xs">
             This action cannot be undone. This will permanently delete your account
             and remove your data from our servers.
           </SheetDescription>
         </SheetHeader>
-        <SheetTrigger className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-md"  onClick={()=>submitItem()}
-        
-        >
+        <SheetTrigger className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-md"  onClick={()=>submitItem()}   >
         <div className="m-2 text-white">Submit</div>
         </SheetTrigger>
       </SheetContent>

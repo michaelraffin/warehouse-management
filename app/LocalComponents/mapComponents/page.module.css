@@ -3,6 +3,13 @@
 	max-width: auto;
 	height: 100vh;
 }
+
+.vendorMainStyle {
+	max-width: '100%';
+	width: 45vh;
+	height: 20vh;
+	border-radius: 20vh;
+}
 .mapStyle {
 	width: 100%;
 	height: 100%;
