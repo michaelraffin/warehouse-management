@@ -147,7 +147,7 @@ export const generateMonth = (value) => {
       return "Fe";
 
     case 3:
-      return "Ma";
+      return "March";
 
     case 4:
       return "Ap";

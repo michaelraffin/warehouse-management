@@ -23,6 +23,7 @@ import {
   generateDay,
 } from "../../Utils/statistics";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
+import { Button } from "@/components/ui/button";
 const invoices = [
   {
     invoice: "INV001",
@@ -82,32 +83,38 @@ export default function TableDemo() {
       //     amount: item.grandTotal,
       //   };
       // });
-      const todaysListoftransaction = items[0].transactions.map((item) => {
-        return {
-          title: item.vendor.vendorTitle,
+      //
+      try {
+        const todaysListoftransaction = items[0].transactions.map(
+          (item: any) => {
+            return {
+              title: item.vendor.vendorTitle,
 
-          amount: Number(item.grandTotal),
-        };
-      });
-      setTodaysTransaction(todaysListoftransaction);
+              amount: Number(item.grandTotal),
+            };
+          },
+        );
+        setTodaysTransaction(todaysListoftransaction);
 
-      const dailySales = items.map((item) => {
-        return {
-          date: item._id,
-          amount: item.grandTotal,
-        };
-      });
+        const dailySales = items.map((item: any) => {
+          return {
+            date: item._id,
+            amount: item.grandTotal,
+          };
+        });
 
-      const sumWithInitial = dailySales.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.amount,
-        0,
-      );
+        const sumWithInitial = dailySales.reduce(
+          (accumulator: any, currentValue: any) =>
+            accumulator + currentValue.amount,
+          0,
+        );
 
-      setDailySales(sumWithInitial);
+        setDailySales(sumWithInitial);
+      } catch (error) {}
     });
     fetchWeeklySales().then((items) => {
       console.log("WEEKLY items", items);
-      const newObject = items.map((item) => {
+      const newObject = items.map((item: any) => {
         return {
           date: generateDay(item._id.month),
           amount: item.grandTotal,
@@ -117,7 +124,7 @@ export default function TableDemo() {
       setWeeklySales(newObject);
     });
     fetchTopSales().then((items) => {
-      const newObject = items.map((item) => {
+      const newObject = items.map((item: any) => {
         console.log(item._id);
 
         return {
@@ -311,11 +318,18 @@ export default function TableDemo() {
             </div>
           </div>
           <div className="mt-20 h-20 w-[100%]">
-            <p className="text-xs">Weekly Sales</p>
+            <div className="grid-cols10 mb-10 grid w-[350px]">
+              <a className="text-xs text-blue-800" href="reports/weekly">
+                View Weekly Sales
+              </a>
+              {/* <p className="text-xs">View Weekly Sales</p> */}
+              {/* <Button className="mb-10">View reports</Button> */}
+            </div>
             {weekySales === null ? (
               "..."
             ) : (
               <LocalChart
+                className="mt-20"
                 sourceAmount={"amount"}
                 bottomTitle="date"
                 xLabel={""}
@@ -323,8 +337,10 @@ export default function TableDemo() {
               />
             )}
           </div>
-          <div className="mt-20 h-20 w-[100%]">
-            <p className="text-xs">Monthly Sales</p>
+          <div className="mt-40 h-20 w-[100%]">
+            <a className="text-xs text-blue-800" href="reports/Monthly">
+              View Monthly Sales
+            </a>
             {
               annualSales === null ? (
                 "..."
@@ -381,7 +397,7 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice) => (
+              {invoices.map((invoice: any) => (
                 <TableRow key={invoice.invoice}>
                   <TableCell className="font-medium">
                     {invoice.invoice}

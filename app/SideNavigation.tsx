@@ -1,26 +1,27 @@
-import React from 'react';
+import React from "react";
 
 function SideNavigation() {
-
-  const sideNavigation =()=>{
-    
+  const sideNavigation = () => {
     try {
-        return (
-            <div><div className="flex h-screen w-16 flex-col justify-between border-e bg-white fixed left-0 top-0">
+      return (
+        <div>
+          <div className="fixed left-0 top-0 flex h-screen w-16 flex-col justify-between border-e bg-white">
             <div>
               <div className="inline-flex h-16 w-16 items-center justify-center">
                 <a
-                href="/dashboard"
-                className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-              >  <span
-              className="grid h-10 w-10 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600"
-            >  
-<img src="https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg"
-className=' w-6 h-6'
-/>
-            </span></a>
+                  href="/dashboard"
+                  className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                >
+                  {" "}
+                  <span className="grid h-10 w-10 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
+                    <img
+                      src="https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg"
+                      className=" h-6 w-6"
+                    />
+                  </span>
+                </a>
               </div>
-          
+
               <div className="border-t border-gray-100">
                 <div className="px-2">
                   <div className="py-4">
@@ -47,15 +48,13 @@ className=' w-6 h-6'
                           d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                       </svg>
-          
-                      <span
-                        className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                      >
+
+                      <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                         General
                       </span>
                     </a>
                   </div>
-          
+
                   <ul className="space-y-1 border-t border-gray-100 pt-4">
                     <li>
                       <a
@@ -76,15 +75,13 @@ className=' w-6 h-6'
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                           />
                         </svg>
-          
-                        <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
+
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Teams
                         </span>
                       </a>
                     </li>
-          
+
                     <li>
                       <a
                         href="/request"
@@ -104,18 +101,16 @@ className=' w-6 h-6'
                             d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
                           />
                         </svg>
-          
-                        <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
+
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Request
                         </span>
                       </a>
                     </li>
-          
+
                     <li>
                       <a
-                        href="/invoice"
+                        href="/dashboard"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <svg
@@ -132,15 +127,13 @@ className=' w-6 h-6'
                             d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                           />
                         </svg>
-          
-                        <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
+
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Invoices
                         </span>
                       </a>
                     </li>
-          
+
                     <li>
                       <a
                         href="/staff"
@@ -160,10 +153,8 @@ className=' w-6 h-6'
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-          
-                        <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
+
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Account
                         </span>
                       </a>
@@ -173,10 +164,7 @@ className=' w-6 h-6'
                         href="/orders"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
-                           <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
-                        
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Orders
                         </span>
                       </a>
@@ -186,26 +174,37 @@ className=' w-6 h-6'
                         href="/staff"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
-                      <img src="  https://static1.eyellowpages.ph/uploads/yp_business/photo/2066114/normal_paymongo-philippines-inc-1681184832.png"  className="w-6 h-8"/>
-                            <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
+                        <img
+                          src="  https://static1.eyellowpages.ph/uploads/yp_business/photo/2066114/normal_paymongo-philippines-inc-1681184832.png"
+                          className="h-8 w-6"
+                        />
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Staff
                         </span>
                       </a>
                     </li>
-                  
+
                     <li>
                       <a
                         href="/products"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
-
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-bag-plus" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/> <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/> </svg>
-                        <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          className="bi bi-bag-plus"
+                          viewBox="0 0 16 16"
                         >
-                        
+                          {" "}
+                          <path
+                            fill-rule="evenodd"
+                            d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"
+                          />{" "}
+                          <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" />{" "}
+                        </svg>
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Products
                         </span>
                       </a>
@@ -215,15 +214,11 @@ className=' w-6 h-6'
                         href="/store"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
-                        <img 
-                        className='w-6 h6'
-                        src="https://localflowershop.sgp1.digitaloceanspaces.com/product/1707533414886-store.png" >
-
-                        </img>
-                         <span
-                          className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                        >
-                        
+                        <img
+                          className="h6 w-6"
+                          src="https://localflowershop.sgp1.digitaloceanspaces.com/product/1707533414886-store.png"
+                        ></img>
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Vendor
                         </span>
                       </a>
@@ -232,7 +227,7 @@ className=' w-6 h-6'
                 </div>
               </div>
             </div>
-          
+
             <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2">
               <form action="/logout">
                 <button
@@ -253,22 +248,19 @@ className=' w-6 h-6'
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                     />
                   </svg>
-          
-                  <span
-                    className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-                  >
+
+                  <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                     Logout
                   </span>
                 </button>
               </form>
             </div>
-          </div></div>
-        )
-    } catch (error) {
-        
-    }
-  }
-    return  sideNavigation()
+          </div>
+        </div>
+      );
+    } catch (error) {}
+  };
+  return sideNavigation();
 }
 
 export default SideNavigation;
