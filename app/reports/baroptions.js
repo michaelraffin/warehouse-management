@@ -1,5 +1,5 @@
 export default {
-  title: "Vertical stacked bar (time series)",
+  title: "Weekly Report with Time series",
   axes: {
     left: {
       mapsTo: "value",

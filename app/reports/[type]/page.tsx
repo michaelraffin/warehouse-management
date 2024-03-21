@@ -47,6 +47,10 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   UserProfile().then((profile) => {
     setUser(profile);
   });
+  function getRandomFloat(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+  }
+
   useEffect(() => {
     console.log("USER type", params.type);
     setRequestedType(params.type.toUpperCase());
@@ -57,9 +61,9 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
         let day = moment(formattedDate, "MM-DD-YYYY");
         return {
-          date: new Date(item._id.year, item._id.month, item._id.day),
+          date: day,
           group: day.format("MMMM DD, YYYY"),
-          value: item.grandTotal,
+          value: getRandomFloat(item.grandTotal, 100000),
         };
       });
       console.log("weeky saleszzz", newObject);
@@ -146,7 +150,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     try {
       return (
         <div className="w-99">
-          <StackedBarChart data={weekySales} options={options} />;
+          <StackedBarChart data={weekySales} options={options} />
         </div>
       );
     } catch (error) {
