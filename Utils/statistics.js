@@ -13,7 +13,6 @@ export const fetchTopSales = async () => {
       ],
     };
     let productList = await axios.post("/reports/LesseeTransaction", data);
-    console.log("productList", productList);
     return productList.data.results;
   } catch (error) {
     console.log("error Product", error);

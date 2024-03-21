@@ -28,9 +28,10 @@ import { Input } from "@/components/ui/input";
 import { axios } from "@/Utils/axios";
 import { UserProfile } from "../../../Utils/userProfile";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
-import { StackedBarChart } from "@carbon/charts-react";
+import { StackedBarChart, LineChart } from "@carbon/charts-react";
 import "@carbon/charts-react/styles.css";
-import options from "../baroptions";
+import barOptions from "../baroptions";
+import lineOptions from "../lineOptions";
 import { PieChart } from "@carbon/charts-react";
 let tableWidth = "w-[70%]";
 export default function TableDemo({ params }: { params: { type: string } }) {
@@ -54,6 +55,21 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   useEffect(() => {
     console.log("USER type", params.type);
     setRequestedType(params.type.toUpperCase());
+    fetchTopSales().then((items) => {
+      const newObject = items.map((item: any) => {
+        let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
+        let day = moment(formattedDate, "MM-DD-YYYY");
+        return {
+          key: day.format("MMMM DD, YYYY"),
+          group: day.format("MMMM DD, YYYY"),
+          value: getRandomFloat(item.grandTotal, 100000),
+        };
+      });
+
+      setAnnualsales(newObject);
+      console.log("Fetch Whole year", newObject);
+    });
+
     fetchWeeklySales().then((items) => {
       console.log("WEEKLY items", items);
       const newObject = items.map((item: any) => {
@@ -150,10 +166,13 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     try {
       return (
         <div className="w-99">
-          <StackedBarChart data={weekySales} options={options} />
+          <StackedBarChart data={weekySales} options={barOptions} />
+          <div className="mt-40" />
+          <LineChart data={annualSales} options={lineOptions}></LineChart>
         </div>
       );
     } catch (error) {
+      console.log("renderBarChart error", error);
       return null;
     }
   };
