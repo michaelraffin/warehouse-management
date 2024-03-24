@@ -1,5 +1,8 @@
 export default {
-  title: "Weekly Report with Time series",
+  title: "Weekly Sales Report ",
+  data: {
+    loading: true,
+  },
   axes: {
     left: {
       mapsTo: "value",
@@ -45,4 +48,5 @@ export default {
     },
   },
   height: "400px",
+  width: "1200px",
 };

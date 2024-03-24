@@ -8,7 +8,7 @@ export const fetchTopSales = async () => {
   try {
     let data = {
       query: [
-        { $and: [{ year: currentYear }, { month: { $gte: 1, $lte: 4 } }] }, //Set From and to Dynamic
+        { $and: [{ year: currentYear }, { month: { $gte: 1, $lte: 12 } }] }, //Set From and to Dynamic
         { $and: [{ year: currentYear }, { month: { $gte: 3, $lte: 12 } }] },
       ],
     };

@@ -41,8 +41,10 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   const [userProfile, setUser] = useState(null);
   const [requestedType, setRequestedType] = useState(null);
   const [dailySales, setDailySales] = useState(0);
-  const [annualSales, setAnnualsales] = useState(null);
-  const [weekySales, setWeeklySales] = useState(null);
+  const [annualSales, setAnnualsales] = useState([]);
+  const [weekySales, setWeeklySales] = useState([]);
+  const [stackedBarOptions, setBarOptions] = useState(barOptions);
+  const [lineBarOptions, setLineOptions] = useState(lineOptions);
   const [todaysTransaction, setTodaysTransaction] = useState(null);
 
   UserProfile().then((profile) => {
@@ -51,9 +53,31 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   function getRandomFloat(min: number, max: number): number {
     return Math.random() * (max - min) + min;
   }
+  const updateBarOptions = (newValue: any) => {
+    setBarOptions((prevOptions) => ({
+      ...prevOptions,
+      data: {
+        ...prevOptions.data,
+        ...newValue,
+      },
+    }));
+  };
+  const updateLineOptions = (newValue: any) => {
+    setLineOptions((prevOptions) => ({
+      ...prevOptions,
+      data: {
+        ...prevOptions.data,
+        ...newValue,
+      },
+    }));
+  };
 
+  useEffect(() => {}, [stackedBarOptions]);
   useEffect(() => {
+    console.log("am irender?");
     console.log("USER type", params.type);
+    barOptions.title = `${params.type.toUpperCase()} Sales Report`;
+    // lineOptions.title = `${params.type.toUpperCase()} Sales Report`;
     setRequestedType(params.type.toUpperCase());
     fetchTopSales().then((items) => {
       const newObject = items.map((item: any) => {
@@ -61,12 +85,25 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         let day = moment(formattedDate, "MM-DD-YYYY");
         return {
           key: day.format("MMMM DD, YYYY"),
-          group: day.format("MMMM DD, YYYY"),
-          value: getRandomFloat(item.grandTotal, 100000),
+          group: day.format("MMMM, YYYY"),
+          value: getRandomFloat(100000, item.grandTotal),
         };
       });
 
       setAnnualsales(newObject);
+
+      updateBarOptions({ loading: false });
+      let lineRefrence = stackedBarOptions;
+      lineRefrence.data.loading = false;
+      lineRefrence.title = "Weekly August 87";
+      setLineOptions((prevOptions) => ({
+        ...prevOptions,
+        title: `Weekly report ${moment(new Date()).format("MMM-DD-YYYY").toString()}`,
+        data: {
+          ...prevOptions.data,
+          ...{ loading: false },
+        },
+      }));
       console.log("Fetch Whole year", newObject);
     });
 
@@ -165,10 +202,10 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   const renderBarChart = () => {
     try {
       return (
-        <div className="w-99">
-          <StackedBarChart data={weekySales} options={barOptions} />
+        <div className="w-full">
+          <StackedBarChart data={weekySales} options={stackedBarOptions} />
           <div className="mt-40" />
-          <LineChart data={annualSales} options={lineOptions}></LineChart>
+          <LineChart data={annualSales} options={lineBarOptions}></LineChart>
         </div>
       );
     } catch (error) {
@@ -199,7 +236,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
             <p className="text-xs mb-20">Generate your report </p>
 
         </div> */}
-      <div className="mb-20 w-full">
+      {/* <div className="mb-20 w-full">
         <div className="w-1/full  m-2 ml-24 grid grid-cols-3 gap-4">
           <article className="rounded-lg border border-gray-300 bg-black p-6 hover:shadow-lg">
             <div>
@@ -261,7 +298,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
             </div>
           </article>
         </div>
-      </div>
+      </div> */}
       <div className="mb-20 ml-20 h-full w-[100%]">
         <LocalChart
           sourceAmount={"amount"}
@@ -269,12 +306,12 @@ export default function TableDemo({ params }: { params: { type: string } }) {
           bottomTitle="title"
           data={todaysTransaction}
         />
-        {weekySales === null ? (
+        {/* {weekySales === null ? (
           "Loading..."
-        ) : (
-          <>
-            {renderBarChart()}
-            {/* <PieChart
+        ) : ( */}
+        <>
+          {renderBarChart()}
+          {/* <PieChart
               data={weekySales}
               options={{
                 title: `${requestedType} Stats`,
@@ -282,14 +319,14 @@ export default function TableDemo({ params }: { params: { type: string } }) {
                 height: "200px",
               }}
             ></PieChart> */}
-          </>
-        )}
+        </>
+        {/* )} */}
       </div>
-      <Tabs
+      {/* <Tabs
         defaultValue="All"
         className="bt-20 ml-24 w-[70] rounded-lg bg-white"
-      >
-        <TabsList className="rounded-full">
+      > */}
+      {/* <TabsList className="rounded-full">
           <div className="mr-2 flex w-full max-w-sm items-center space-x-2">
             <Input
               type="email"
@@ -333,7 +370,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
                       details={invoice}
                     />
                   </TableCell>
-                  {/* {invoice.invoice}  */}
+
                   <TableCell
                     className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                   >
@@ -373,7 +410,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
                         details={invoice}
                       />
                     </TableCell>
-                    {/* {invoice.invoice}  */}
+
                     <TableCell
                       className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
@@ -411,7 +448,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
                         details={invoice}
                       />
                     </TableCell>
-                    {/* {invoice.invoice}  */}
+
                     <TableCell
                       className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
@@ -450,7 +487,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
                         details={invoice}
                       />
                     </TableCell>
-                    {/* {invoice.invoice}  */}
+
                     <TableCell
                       className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
@@ -467,8 +504,8 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         </TabsContent>
 
         <TabsContent value="Stockman">Change your password here.</TabsContent>
-        <TabsContent value="Cashier">Change your password here.</TabsContent>
-      </Tabs>
+        <TabsContent value="Cashier">Change your password here.</TabsContent> */}
+      {/* </Tabs> */}
       {/* <div className="w-1/2 ml-20 mt-20">
 
 <div
