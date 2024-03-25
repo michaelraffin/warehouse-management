@@ -1,5 +1,6 @@
 import Axios from "axios";
 export const url = `https://laiwarehouse.onrender.com`; ////process.env.stagingEndpoint
+// "http://192.168.1.148:9091"; //
 export const urlFirebase = process.env.urlFirebase;
 export const urlSupBase = process.env.urlSupaBase;
 export const mapBoxUrl = process.env.mapBoxEndpoint;

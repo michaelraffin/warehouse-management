@@ -28,7 +28,11 @@ import { Input } from "@/components/ui/input";
 import { axios } from "@/Utils/axios";
 import { UserProfile } from "../../../Utils/userProfile";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
-import { StackedBarChart, LineChart } from "@carbon/charts-react";
+import {
+  StackedBarChart,
+  LineChart,
+  SimpleBarChart,
+} from "@carbon/charts-react";
 import "@carbon/charts-react/styles.css";
 import barOptions from "../baroptions";
 import lineOptions from "../lineOptions";
@@ -40,7 +44,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   const [reRequest, setRefRequest] = useState(invoices);
   const [userProfile, setUser] = useState(null);
   const [requestedType, setRequestedType] = useState(null);
-  const [dailySales, setDailySales] = useState(0);
+  const [dailySales, setDailySales] = useState([]);
   const [annualSales, setAnnualsales] = useState([]);
   const [weekySales, setWeeklySales] = useState([]);
   const [stackedBarOptions, setBarOptions] = useState(barOptions);
@@ -79,6 +83,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     barOptions.title = `${params.type.toUpperCase()} Sales Report`;
     // lineOptions.title = `${params.type.toUpperCase()} Sales Report`;
     setRequestedType(params.type.toUpperCase());
+
     fetchTopSales().then((items) => {
       const newObject = items.map((item: any) => {
         let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
@@ -108,7 +113,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     });
 
     fetchWeeklySales().then((items) => {
-      console.log("WEEKLY items", items);
+      console.log("WEEKLY items fetchWeeklySales", items);
       const newObject = items.map((item: any) => {
         console.log(item._id);
         let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
@@ -137,19 +142,15 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         setTodaysTransaction(todaysListoftransaction);
 
         const dailySales = items.map((item: any) => {
+          let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
+          let day = moment(formattedDate, "MM-DD-YYYY");
           return {
-            date: item._id,
-            amount: item.grandTotal,
+            group: day.format("MMMM DD, YYYY"),
+            value: Number(item.grandTotal),
           };
         });
-
-        const sumWithInitial = dailySales.reduce(
-          (accumulator: any, currentValue: any) =>
-            accumulator + currentValue.amount,
-          0,
-        );
-
-        setDailySales(sumWithInitial);
+        console.log("dailySales", dailySales);
+        setDailySales(dailySales);
       } catch (error) {}
     });
 
@@ -206,6 +207,24 @@ export default function TableDemo({ params }: { params: { type: string } }) {
           <StackedBarChart data={weekySales} options={stackedBarOptions} />
           <div className="mt-40" />
           <LineChart data={annualSales} options={lineBarOptions}></LineChart>
+          <div className="mt-40" />
+          <SimpleBarChart
+            data={dailySales}
+            options={{
+              title: `Daily sales report ${moment(new Date()).format("MMM DD, YYYY").toString()}`,
+              axes: {
+                left: {
+                  mapsTo: "value",
+                },
+                bottom: {
+                  mapsTo: "group",
+                  scaleType: "labels",
+                },
+              },
+              height: "400px",
+              width: "1200px",
+            }}
+          ></SimpleBarChart>
         </div>
       );
     } catch (error) {

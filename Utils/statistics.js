@@ -1,10 +1,10 @@
 import { axios } from "../Utils/axios";
-
+import moment from "moment";
 let currentDate = new Date();
 let currentDay = currentDate.getDay();
 let currentMonth = currentDate.getMonth() + 1;
 let currentYear = currentDate.getFullYear();
-export const fetchTopSales = async () => {
+export const fetchTopSales = async (payload) => {
   try {
     let data = {
       query: [
@@ -12,7 +12,14 @@ export const fetchTopSales = async () => {
         { $and: [{ year: currentYear }, { month: { $gte: 3, $lte: 12 } }] },
       ],
     };
-    let productList = await axios.post("/reports/LesseeTransaction", data);
+    if (payload === undefined) {
+      payload = data;
+    }
+
+    let productList = await axios.post(
+      "/reports/LesseeTransaction/Annualy",
+      payload,
+    );
     return productList.data.results;
   } catch (error) {
     console.log("error Product", error);
@@ -20,20 +27,34 @@ export const fetchTopSales = async () => {
 };
 export const fetchWeeklySales = async () => {
   try {
+    const currentDate = moment(new Date());
+    const sevenDaysBefore = currentDate.subtract(7, "days");
+    const formattedDate = sevenDaysBefore.format("DD");
     let data = {
+      type: "weekly",
       query: [
-        { year: currentYear },
-        { month: { $gte: currentMonth, $lte: currentMonth } },
-        { day: { $gte: 1, $lte: 7 } },
+        { year: 2012 },
+        { month: 3 }, //make this dynamic
+        // { $gte: 3, $lte: 3 }
+        {
+          day: {
+            $gte: parseInt(formattedDate),
+            $lte: parseInt(moment(new Date()).format("DD")),
+          },
+        },
+        // { day: { $gte: formattedDate, $lte: moment(new Date()).format("DD") } },
         // { $and: [{ year: currentYear }, { month: { $gte: 1, $lte: 4 } }] }, //Set From and to Dynamic
         // { $and: [{ year: currentYear }, { month: { $gte: 3, $lte: 12 } }] },
       ],
     };
-    let productList = await axios.post("/reports/LesseeTransaction", data);
-    console.log("productList", productList);
+    let productList = await axios.post(
+      "/reports/LesseeTransaction/Weekly",
+      data,
+    );
+    console.log("fetchWeeklySales -->", productList.data.results);
     return productList.data.results;
   } catch (error) {
-    console.log("error Product", error);
+    console.log("error Product fetchWeeklySales", error);
   }
 };
 
@@ -42,6 +63,9 @@ export const fetchDailySales = async () => {
     console.log("currentMonth", currentMonth);
     console.log("currentDay", currentDay);
     console.log("currentYear", currentYear);
+    const currentDate = moment(new Date());
+    const sevenDaysBefore = currentDate.subtract(7, "days");
+    const formattedDate = sevenDaysBefore.format("DD");
     let data = {
       query: [
         {
@@ -49,8 +73,8 @@ export const fetchDailySales = async () => {
             {
               $and: [
                 { year: currentYear },
-                { month: { $gte: currentMonth, $lte: currentMonth } },
-                { day: 28 },
+                { month: 3 }, //make this dynamic
+                { day: parseInt(formattedDate) },
               ],
             },
             // { year: currentYear },
@@ -60,7 +84,10 @@ export const fetchDailySales = async () => {
         },
       ],
     };
-    let productList = await axios.post("/reports/LesseeTransaction", data);
+    let productList = await axios.post(
+      "/reports/LesseeTransaction/Daily",
+      data,
+    );
     // console.log("daily raw sales", productList.data.results);
     // const dailySales = productList.data.results.map((item) => {
     //   return {
