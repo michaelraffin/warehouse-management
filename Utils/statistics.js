@@ -33,18 +33,23 @@ export const fetchWeeklySales = async () => {
     let data = {
       type: "weekly",
       query: [
-        { year: 2012 },
-        { month: 3 }, //make this dynamic
-        // { $gte: 3, $lte: 3 }
         {
-          day: {
-            $gte: parseInt(formattedDate),
-            $lte: parseInt(moment(new Date()).format("DD")),
-          },
+          $and: [
+            { year: 2024 },
+            { month: 3 }, //make this dynamic
+            {
+              day: {
+                // $gte: 18,
+                // $lte: 19,
+                $gte: parseInt(formattedDate),
+                $lte: parseInt(moment(new Date()).format("DD")),
+              },
+            },
+            // { day: { $gte: formattedDate, $lte: moment(new Date()).format("DD") } },
+            // { $and: [{ year: currentYear }, { month: { $gte: 1, $lte: 4 } }] }, //Set From and to Dynamic
+            // { $and: [{ year: currentYear }, { month: { $gte: 3, $lte: 12 } }] },
+          ],
         },
-        // { day: { $gte: formattedDate, $lte: moment(new Date()).format("DD") } },
-        // { $and: [{ year: currentYear }, { month: { $gte: 1, $lte: 4 } }] }, //Set From and to Dynamic
-        // { $and: [{ year: currentYear }, { month: { $gte: 3, $lte: 12 } }] },
       ],
     };
     let productList = await axios.post(
@@ -64,7 +69,7 @@ export const fetchDailySales = async () => {
     console.log("currentDay", currentDay);
     console.log("currentYear", currentYear);
     const currentDate = moment(new Date());
-    const sevenDaysBefore = currentDate.subtract(7, "days");
+    const sevenDaysBefore = currentDate;
     const formattedDate = sevenDaysBefore.format("DD");
     let data = {
       query: [

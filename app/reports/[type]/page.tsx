@@ -84,6 +84,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     // lineOptions.title = `${params.type.toUpperCase()} Sales Report`;
     setRequestedType(params.type.toUpperCase());
 
+    //Annual
     fetchTopSales().then((items) => {
       const newObject = items.map((item: any) => {
         let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
@@ -121,10 +122,14 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         return {
           date: day,
           group: day.format("MMMM DD, YYYY"),
-          value: getRandomFloat(item.grandTotal, 100000),
+          value: getRandomFloat(
+            item.grandTotal === undefined ? 200 : item.grandTotal,
+            100000,
+          ),
         };
       });
       console.log("weeky saleszzz", newObject);
+      updateBarOptions({ loading: false });
       setWeeklySales(newObject);
     });
     fetchDailySales().then((items) => {
@@ -204,9 +209,9 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     try {
       return (
         <div className="w-full">
-          <StackedBarChart data={weekySales} options={stackedBarOptions} />
-          <div className="mt-40" />
           <LineChart data={annualSales} options={lineBarOptions}></LineChart>
+          <div className="mt-40" />
+          <StackedBarChart data={weekySales} options={stackedBarOptions} />
           <div className="mt-40" />
           <SimpleBarChart
             data={dailySales}
