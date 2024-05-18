@@ -59,12 +59,29 @@ export default function TableDemo() {
   };
   const displayAlert = (item) => {
     console.log(item);
+
     // didUpdate("Denied", item.id);
-    //     fetchProduct().then((response)=>{
-    toast({
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
+    const updateService = async () => {
+      let payload = item;
+      payload.status = "Approved";
+      payload.officeStatus = {
+        status: "Approve",
+        dateLog: new Date(),
+      };
+      let productList = await axios.post(
+        "/updateItem/LesseeFullfilment",
+        payload,
+      );
+      return productList;
+    };
+    updateService().then((item) => {
+      alert("loading");
     });
+
+    // toast({
+    //   title: "Scheduled: Catch up",
+    //   description: "Friday, February 10, 2023 at 5:57 PM",
+    // });
     //      })
   };
 
@@ -244,6 +261,7 @@ export default function TableDemo() {
                     <RequestSheet
                       // disabled={`${invoice.status === "Approved" ? true : false}`}
                       void={(details) => displayAlert(details)}
+                      update={(details) => displayAlert(details)}
                       details={invoice}
                     />
                   </TableCell>

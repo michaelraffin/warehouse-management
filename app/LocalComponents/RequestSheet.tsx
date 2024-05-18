@@ -24,8 +24,9 @@ export default function RequestContent(props) {
   });
   const didTapped = (isCancel: boolean) => {
     if (isCancel) {
-      props.void(props.details);
+      props.void(content);
     } else {
+      props.update(content);
     }
   };
   const renderItems = () => {
@@ -48,6 +49,23 @@ export default function RequestContent(props) {
         </div>
       );
     }
+  };
+  const footerContent = () => {
+    if (content != null && content.status != "Approved")
+      return (
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button onClick={() => didTapped(true)} variant="destructive">
+              Void
+            </Button>
+          </SheetClose>
+          <SheetClose asChild>
+            <Button onClick={() => didTapped(false)} type="submit">
+              Approve
+            </Button>
+          </SheetClose>
+        </SheetFooter>
+      );
   };
   return (
     <Sheet>
@@ -109,19 +127,7 @@ export default function RequestContent(props) {
             />
           </div>
         </div>
-
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button onClick={() => didTapped(true)} variant="destructive">
-              Void
-            </Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button onClick={() => didTapped(false)} type="submit">
-              Approve
-            </Button>
-          </SheetClose>
-        </SheetFooter>
+        {footerContent()}
       </SheetContent>
     </Sheet>
   );
