@@ -80,7 +80,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   useEffect(() => {
     console.log("am irender?");
     console.log("USER type", params.type);
-    barOptions.title = `${params.type.toUpperCase()} Sales Report`;
+    barOptions.title = `Weekly  Sales Report`;
     // lineOptions.title = `${params.type.toUpperCase()} Sales Report`;
     setRequestedType(params.type.toUpperCase());
 
@@ -104,7 +104,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
       lineRefrence.title = "Weekly August 87";
       setLineOptions((prevOptions) => ({
         ...prevOptions,
-        title: `Weekly report ${moment(new Date()).format("MMM-DD-YYYY").toString()}`,
+        title: `Annual report ${moment(new Date()).format("MMM-DD-YYYY").toString()}`,
         data: {
           ...prevOptions.data,
           ...{ loading: false },

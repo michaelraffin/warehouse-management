@@ -114,29 +114,32 @@ export default function TableDemo() {
     });
     fetchWeeklySales().then((items) => {
       console.log("WEEKLY items", items);
-      const newObject = items.map((item: any) => {
-        return {
-          date: generateDay(item._id.month),
-          amount: item.grandTotal,
-        };
-      });
+      try {
+        const newObject = items.map((item: any) => {
+          return {
+            date: generateDay(item._id.month),
+            amount: item.grandTotal,
+          };
+        });
 
-      setWeeklySales(newObject);
+        setWeeklySales(newObject);
+      } catch {}
     });
     fetchTopSales().then((items) => {
-      const newObject = items.map((item: any) => {
-        console.log(item._id);
-
-        return {
-          date: generateMonth(item._id.month),
-          amount: item.grandTotal,
-        };
-      });
-      // let months = newObject.map((item) => {
-      //   return generateMonth(item.date.month);
-      // });
-      setAnnualsales(newObject);
-      console.log("newObject fetchTopSales", newObject);
+      try {
+        const newObject = items.map((item: any) => {
+          console.log(item._id);
+          return {
+            date: generateMonth(item._id.month),
+            amount: item.grandTotal,
+          };
+        });
+        // let months = newObject.map((item) => {
+        //   return generateMonth(item.date.month);
+        // });
+        setAnnualsales(newObject);
+        console.log("newObject fetchTopSales", newObject);
+      } catch (error) {}
     });
   }, []);
 
@@ -319,8 +322,8 @@ export default function TableDemo() {
           </div>
           <div className="mt-20 h-20 w-[100%]">
             <div className="grid-cols10 mb-10 grid w-[350px]">
-              <a className="text-xs text-blue-800" href="reports/weekly">
-                View Weekly Sales
+              <a className="text-xs text-blue-800" href="reports/products">
+                View Products Reports
               </a>
               {/* <p className="text-xs">View Weekly Sales</p> */}
               {/* <Button className="mb-10">View reports</Button> */}
