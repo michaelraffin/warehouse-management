@@ -30,24 +30,28 @@ export default function RequestContent(props) {
     }
   };
   const renderItems = () => {
-    let list = [];
-    if (content != null) {
-      content.products.map((item) => {
-        list.push(
-          <div className="grid grid-cols-2 mt-2">
-            <Checkbox id="terms" checked={true} color="red" />
-            {item.title}
-          </div>,
-        );
-      });
-      return (
-        <div>
-          <p className="font-bold mb-4">Sold Product</p>
-          <div className="w-full">
-            <span className="text-xs mt-4">{list}</span>
+    try {
+      let list = [];
+      if (content != null) {
+        content.products.map((item) => {
+          list.push(
+            <div className="grid grid-cols-2 mt-2">
+              <Checkbox id="terms" checked={true} color="red" />
+              {item.title}
+            </div>,
+          );
+        });
+        return (
+          <div>
+            <p className="font-bold mb-4">Sold Product</p>
+            <div className="w-full">
+              <span className="text-xs mt-4">{list}</span>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
+    } catch (error) {
+      return null;
     }
   };
   const footerContent = () => {

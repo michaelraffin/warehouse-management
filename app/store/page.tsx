@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
-import { axiosV2Local, url } from "../../Utils/axios";
+import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
 import Link from "next/link";
 import LocalChart from "../LocalComponents/Charts";
 
@@ -53,6 +53,7 @@ export default function TableDemo() {
       setUser(profile);
     });
   }, [userProfile]);
+
   useEffect(() => {
     getSession().then((data) => {
       console.log("data", data);
@@ -60,6 +61,27 @@ export default function TableDemo() {
 
     fetchStores();
   }, []);
+
+  const fetchVendors = async () => {
+    try {
+      let data = {
+        local_id: "e",
+        queryType: "all",
+        storeOwner: "storeOwner",
+        isAPI: true,
+        referenceOrder: "e",
+        number: 20,
+        showLimit: true,
+        queryData: { status: "orderStatus", userReference: "e" },
+      };
+      let productList = await axiosV2("dsadsa").post(
+        `${url}/store/LesseeVendor`,
+      );
+      // setVendors(productList.data.results);
+    } catch (error) {
+      console.log("error Product", error);
+    }
+  };
   const fetchStores = async () => {
     try {
       let data = {
@@ -144,7 +166,6 @@ export default function TableDemo() {
         title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
         subtitle=""
       />
-
       <div className="w-1/2 ml-20 ">
         {/* <Map coordinates={(e)=>setStoreCoordinates(e)}/> */}
       </div>
@@ -346,11 +367,9 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      <div className="w-1/2 ml-20 mt-20">
-        <div
-        // on:click={()=>setProduct(order)}
-        >
-          {/* <Badge variant="outline " className="bg-[#6ab04c] mb-2 text-xs">{convertToPesos(order.totalPrice * 0.05)}</Badge> */}
+      // on:click={() => setProduct(order)}
+      {/* <div className="w-1/2 ml-20 mt-20">
+        <div>
           <div className="max-w-sm group static rounded overflow-hidden hover:border-black hover:border-l-4  hover:shadow-lg bg-white transition duration-100 ease-in-out  {order.receiptImageLink === undefined ? 'border-red-500 border ' : ''} ">
             <div className="px-6 py-4">
               <div className="font-bold  mb-2">
@@ -383,7 +402,7 @@ export default function TableDemo() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

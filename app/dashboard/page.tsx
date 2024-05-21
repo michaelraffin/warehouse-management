@@ -262,10 +262,16 @@ export default function TableDemo() {
               </article>
             </div>
           </div>
-          <div className="mb-20 h-48 w-[100%]">
+          <div className="mb-20 h-69 w-[100%]">
+            {/* h-48 */}
             <p className="text-xs">Todays Sales</p>
             {todaysTransaction === null ? (
-              "..."
+              <img
+                src={
+                  "https://cdn.dribbble.com/userupload/11708150/file/original-825be68b3517931ad747e0180a4116d3.png?resize=1504x1128"
+                }
+                className=" h-full w-full  object-cover  "
+              />
             ) : (
               <LocalChart
                 sourceAmount={"amount"}
