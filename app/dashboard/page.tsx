@@ -24,6 +24,8 @@ import {
 } from "../../Utils/statistics";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
 import { Button } from "@/components/ui/button";
+import { axios, url, axiosV2 } from "@/Utils/axios";
+
 const invoices = [
   {
     invoice: "INV001",
@@ -70,6 +72,7 @@ const invoices = [
 ];
 export default function TableDemo() {
   let [userProfile, setUser] = useState(null);
+  const [myVendors, setVendors] = useState([]);
   const [dailySales, setDailySales] = useState(0);
   const [annualSales, setAnnualsales] = useState(null);
   const [weekySales, setWeeklySales] = useState(null);
@@ -151,7 +154,29 @@ export default function TableDemo() {
       //redirect profile
     }
   };
-
+  useEffect(() => {
+    fetchVendors();
+  }, []);
+  const fetchVendors = async () => {
+    try {
+      let data = {
+        local_id: "e",
+        queryType: "all",
+        storeOwner: "storeOwner",
+        isAPI: true,
+        referenceOrder: "e",
+        number: 20,
+        showLimit: true,
+        queryData: { status: "orderStatus", userReference: "e" },
+      };
+      let productList = await axiosV2("dsadsa").post(
+        `${url}/store/LesseeVendor`,
+      );
+      setVendors(productList.data.results);
+    } catch (error) {
+      console.log("error Product", error);
+    }
+  };
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -378,14 +403,14 @@ export default function TableDemo() {
 
       <Tabs
         defaultValue="account"
-        className="bt-20 ml-24 w-[90%] rounded-lg bg-white"
+        className="bt-20 mt-40 ml-24 w-[90%] rounded-lg bg-white"
       >
         <TabsList className="rounded-full">
           <TabsTrigger className="rounded-full" value="account">
-            Stocks
+            Table
           </TabsTrigger>
           <TabsTrigger className="rounded-full" value="password">
-            Restocks
+            Chart
           </TabsTrigger>
         </TabsList>
         <TabsContent value="account">
@@ -394,28 +419,46 @@ export default function TableDemo() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice: any) => (
-                <TableRow key={invoice.invoice}>
+              {myVendors.map((vendors: any) => (
+                <TableRow key={vendors._id}>
                   <TableCell className="font-medium">
-                    {invoice.invoice}
+                    {vendors.vendorTitle}
                   </TableCell>
-                  <TableCell>{invoice.paymentStatus}</TableCell>
-                  <TableCell>{invoice.paymentMethod}</TableCell>
+                  <TableCell>
+                    <img
+                      src={vendors.img}
+                      className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {vendors.transactionLogs.length} transaction
+                  </TableCell>
                   <TableCell className="text-right">
-                    {invoice.totalAmount}
+                    {numberFormat(vendors.totalSpent)}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
+        <TabsContent value="password">
+          {weekySales === null ? (
+            "..."
+          ) : (
+            <LocalChart
+              sourceAmount={"amount"}
+              xLabel={"title"}
+              bottomTitle="title"
+              data={weekySales}
+            />
+          )}
+        </TabsContent>
       </Tabs>
     </div>
   );

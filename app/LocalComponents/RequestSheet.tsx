@@ -51,7 +51,7 @@ export default function RequestContent(props) {
     }
   };
   const footerContent = () => {
-    if (content != null && content.status != "Approved")
+    if (content != null && content.status != "Approved") {
       return (
         <SheetFooter>
           <SheetClose asChild>
@@ -66,6 +66,21 @@ export default function RequestContent(props) {
           </SheetClose>
         </SheetFooter>
       );
+    } else if (content != null && content.status == "Approved") {
+      return (
+        <SheetFooter>
+          <div className="w-full justify-center flex">
+            <Button
+              variant={"secondary"}
+              onClick={() => didTapped(false)}
+              type="submit"
+            >
+              Load was Approved
+            </Button>
+          </div>
+        </SheetFooter>
+      );
+    }
   };
   return (
     <Sheet>
@@ -122,6 +137,9 @@ export default function RequestContent(props) {
             </div> */}
             <div className="mt-2  ">{renderItems()}</div>
             <Textarea
+              disabled={
+                content != null && content.status != "Approved" ? false : true
+              }
               className="col-span-3"
               placeholder="Type your message here."
             />
