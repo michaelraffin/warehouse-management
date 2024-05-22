@@ -166,9 +166,7 @@ export default function TableDemo() {
         title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
         subtitle=""
       />
-      <div className="w-1/2 ml-20 ">
-        {/* <Map coordinates={(e)=>setStoreCoordinates(e)}/> */}
-      </div>
+      {/* <Map initialLocation={{ lat: 124.238151, lng: 8.226861 }} /> */}
       <Tabs
         defaultValue="AllProducts"
         className="w-[90] ml-24 bt-60 bg-white rounded-lg "
@@ -403,6 +401,9 @@ export default function TableDemo() {
           </div>
         </div>
       </div> */}
+      <div className=" ml-20 " mainStyle={"w-1/2  h-full "}>
+        <Map coordinates={(e) => setStoreCoordinates(e)} />
+      </div>
     </div>
   );
 }

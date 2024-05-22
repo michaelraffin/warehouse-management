@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
+import MapV2 from "@/app/LocalComponents/MapV2";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSession, getProfile } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
@@ -262,8 +263,9 @@ export default function TableDemo() {
               </article>
             </div>
           </div>
-          <div className="mb-20 h-69 w-[100%]">
+          <div className="mb-20 h-full w-[100%]">
             {/* h-48 */}
+
             <p className="text-xs">Todays Sales</p>
             {todaysTransaction === null ? (
               <img
@@ -466,6 +468,7 @@ export default function TableDemo() {
           )}
         </TabsContent>
       </Tabs>
+      <div>{/* <MapV2 /> */}</div>
     </div>
   );
 }

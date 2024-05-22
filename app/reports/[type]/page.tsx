@@ -28,6 +28,17 @@ import { Input } from "@/components/ui/input";
 import { axios } from "@/Utils/axios";
 import { UserProfile } from "../../../Utils/userProfile";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
+import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
 import {
   StackedBarChart,
   LineChart,
@@ -255,6 +266,29 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         title={`${requestedType} Report👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
         subtitle=""
       />
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbEllipsis />
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/dashboard">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Reports</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       {/* <div className="ml-20 mt-20">
             <h1 className="text-[24px] mb">Reports</h1>
             <p className="text-xs mb-20">Generate your report </p>
