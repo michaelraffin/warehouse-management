@@ -90,8 +90,51 @@ export default function VendorDetails({
     lng: 123.841,
     lat: 8.1822,
   });
-  // const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400},{name: 'Page b', uv: 700, pv: 2900, amt: 3100}];
 
+  const invoices = [
+    {
+      invoice: "INV001",
+      paymentStatus: "Paid",
+      totalAmount: "250.00",
+      paymentMethod: "Credit Card",
+    },
+    {
+      invoice: "INV002",
+      paymentStatus: "Pending",
+      totalAmount: "150.00",
+      paymentMethod: "PayPal",
+    },
+    {
+      invoice: "INV003",
+      paymentStatus: "Unpaid",
+      totalAmount: "350.00",
+      paymentMethod: "Bank Transfer",
+    },
+    {
+      invoice: "INV004",
+      paymentStatus: "Paid",
+      totalAmount: "450.00",
+      paymentMethod: "Credit Card",
+    },
+    {
+      invoice: "INV005",
+      paymentStatus: "Paid",
+      totalAmount: "550.00",
+      paymentMethod: "PayPal",
+    },
+    {
+      invoice: "INV006",
+      paymentStatus: "Pending",
+      totalAmount: "200.00",
+      paymentMethod: "Bank Transfer",
+    },
+    {
+      invoice: "INV007",
+      paymentStatus: "Unpaid",
+      totalAmount: "300.00",
+      paymentMethod: "Credit Card",
+    },
+  ];
   const data = [
     {
       name: "Page A",
@@ -182,11 +225,16 @@ export default function VendorDetails({
     );
     console.log(vendorsList.data.results);
     let coordinates = vendorsList.data.results[0];
-    // console.log("coordinates.coordinates", coordinates.coordinates);
+    console.log("coordinates.coordinates coordinates", coordinates.coordinates);
     setInitialLocation(
       coordinates.coordinates != undefined
         ? coordinates.coordinates
         : { lng: 123.841, lat: 8.1822 },
+    );
+    setLocation(
+      coordinates.coordinates != undefined
+        ? [coordinates.coordinates]
+        : [{ lng: 123.841, lat: 8.1822 }],
     );
     // if (vendorsList.data.results && vendorDetails.coordinates != null) {
     setVendorDetails(vendorsList.data.results[0]);
@@ -288,11 +336,139 @@ export default function VendorDetails({
 
   const renderLineChart = () => {
     return (
-      <div className="h-20 w-[80%]">
+      <div className="h-60 w-[90%] mb-20">
+        <p className="text-xs font-bold">Sales of the month</p>
         <LocalChart />
-        <p className="text-xs">Sales of the month</p>
       </div>
     );
+  };
+  const numberFormat = (value: number) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "PHP",
+    }).format(value);
+
+  const renderTableComponent = () => {
+    try {
+      return (
+        <>
+          <p className="font-bold text-xs">
+            {vendorDetails.vendorTitle} Transactions
+          </p>
+
+          <Table className="w-full" title="">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {invoices.map((vendors: any) => (
+                <TableRow key={vendors.invoice}>
+                  <TableCell className="font-medium">
+                    {vendors.invoice}
+                  </TableCell>
+                  <TableCell>
+                    {/* <img
+                    src={vendors.img}
+                    className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
+                  /> */}
+                    {vendors.invoice}
+                  </TableCell>
+                  <TableCell>{vendors.invoice} transaction</TableCell>
+                  <TableCell className="text-right">
+                    {/* {numberFormat(Number(vendors.totalAmount))} */}
+                    {vendors.invoice}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </>
+      );
+    } catch (error) {
+      return <div className="w-2 h-2 bg-red-200" />;
+    }
+  };
+  const displayMerchantMap = () => {
+    try {
+      return (
+        <Map
+          mapboxAccessToken={mapboxToken}
+          mapStyle="mapbox://styles/mapbox/light-v11"
+          style={LocalClass.mapStyle}
+          // latitude={initialLocation.lat}
+          // longitude={initialLocation.lng}
+          initialViewState={
+            vendorDetails.coordinates === undefined
+              ? { longitude: 123.841, latitude: 8.1822 }
+              : {
+                  latitude: vendorDetails.lat,
+                  longitude: vendorDetails.lng,
+                  zoom: 4,
+                }
+          }
+          // zoom={4}
+          // maxZoom={120}
+          // minZoom={3}
+          onClick={(e) => addItem(e.lngLat)}
+        >
+          <GeolocateControl position="top-left" />
+          <NavigationControl position="top-left" />
+          {location.map((airport, index) => {
+            return (
+              <Marker
+                key={index}
+                longitude={airport.lng}
+                latitude={airport.lat}
+              />
+            );
+          })}
+          {selectedMarker ? (
+            <Popup
+              offset={25}
+              latitude={selectedMarker.airport.lat}
+              longitude={selectedMarker.airport.lon}
+              onClose={() => {
+                setSelectedMarker(null);
+              }}
+              closeButton={false}
+            >
+              <h3 className={classes.popupTitle}>
+                {selectedMarker.airport.name}
+              </h3>
+              <div className={classes.popupInfo}>
+                <label className={classes.popupLabel}>Code: </label>
+                <span>{selectedMarker.airport.code}</span>
+                <br />
+                <label className={classes.popupLabel}>Country: </label>
+                <span>{selectedMarker.airport.country}</span>
+                <br />
+                <label className={classes.popupLabel}>Website: </label>
+                <Link
+                  href={
+                    selectedMarker.airport.url === ""
+                      ? "#"
+                      : selectedMarker.airport.url
+                  }
+                  target={selectedMarker.airport.url === "" ? null : "_blank"}
+                  className={classes.popupWebUrl}
+                >
+                  {selectedMarker.airport.url === ""
+                    ? "Nil"
+                    : selectedMarker.airport.url}
+                </Link>
+              </div>
+            </Popup>
+          ) : null}
+        </Map>
+      );
+    } catch (error) {
+      return <div className="h-2 w-2 bg-red-500">TESt</div>;
+    }
   };
   return (
     <div className="">
@@ -371,6 +547,7 @@ export default function VendorDetails({
           </div>
 
           {renderLineChart()}
+          {renderTableComponent()}
         </div>
 
         <div className="h-auto rounded-lg ">
@@ -379,13 +556,13 @@ export default function VendorDetails({
             <div className="px-6 py-4">
               <div className="font-bold  mb-2">
                 <div className="flex grid-flow-col-2 justify-between place-items-center  mb-2">
-                  {vendorDetails != null ? vendorDetails.vendorTitle : ""}
-
-                  <p className="text-xs font-light">{""}</p>
+                  <p className="text-xs font-light">
+                    {vendorDetails != null ? vendorDetails.vendorTitle : ""}
+                  </p>
                 </div>
                 <div>
+                  <span className="text-gray-600"></span>{" "}
                   <p className="text-xs ">
-                    <span className="text-gray-600"></span>{" "}
                     {false === undefined ? "no name" : null}
                   </p>
                 </div>
@@ -413,76 +590,11 @@ export default function VendorDetails({
           {/* <p>{vendorDetails.coordinates === undefined ? 'none'  :vendorDetails.coordinates.lat}</p> */}
           <div className="mt-10 ">
             <main className={LocalClass.vendorMainStyle}>
-              {vendorDetails.coordinates === undefined ? null : null}
-              <Map
-                mapboxAccessToken={mapboxToken}
-                mapStyle="mapbox://styles/mapbox/light-v11"
-                style={LocalClass.mapStyle}
-                initialViewState={
-                  vendorDetails.coordinates === undefined
-                    ? null
-                    : {
-                        latitude: initialLocation.lat,
-                        longitude: initialLocation.lng,
-                        zoom: 12,
-                      }
-                }
-                // maxZoom={120}
-                // minZoom={3}
-                onClick={(e) => addItem(e.lngLat)}
-              >
-                <GeolocateControl position="top-left" />
-                <NavigationControl position="top-left" />
-                {location.map((airport, index) => {
-                  return (
-                    <Marker
-                      key={index}
-                      longitude={airport.lng}
-                      latitude={airport.lat}
-                    />
-                  );
-                })}
-                {selectedMarker ? (
-                  <Popup
-                    offset={25}
-                    latitude={selectedMarker.airport.lat}
-                    longitude={selectedMarker.airport.lon}
-                    onClose={() => {
-                      setSelectedMarker(null);
-                    }}
-                    closeButton={false}
-                  >
-                    <h3 className={classes.popupTitle}>
-                      {selectedMarker.airport.name}
-                    </h3>
-                    <div className={classes.popupInfo}>
-                      <label className={classes.popupLabel}>Code: </label>
-                      <span>{selectedMarker.airport.code}</span>
-                      <br />
-                      <label className={classes.popupLabel}>Country: </label>
-                      <span>{selectedMarker.airport.country}</span>
-                      <br />
-                      <label className={classes.popupLabel}>Website: </label>
-                      <Link
-                        href={
-                          selectedMarker.airport.url === ""
-                            ? "#"
-                            : selectedMarker.airport.url
-                        }
-                        target={
-                          selectedMarker.airport.url === "" ? null : "_blank"
-                        }
-                        className={classes.popupWebUrl}
-                      >
-                        {selectedMarker.airport.url === ""
-                          ? "Nil"
-                          : selectedMarker.airport.url}
-                      </Link>
-                    </div>
-                  </Popup>
-                ) : null}
-              </Map>
+              {vendorDetails.coordinates === undefined
+                ? null
+                : displayMerchantMap()}
             </main>
+            {displayMerchantMap()}
 
             {/* {vendorDetails.coordinates === undefined ? null :   <Map
             initialLocation={vendorDetails.coordinates}
@@ -500,7 +612,7 @@ export default function VendorDetails({
               onClick={() => updateSettings()}
             >
               <div className="m-2 text-gray-900 ">
-                {status ? "Updating..." : "Set location"}
+                {status ? "Updating..." : "Set vendor location"}
               </div>
             </Button>
           </div>

@@ -401,9 +401,9 @@ export default function TableDemo() {
           </div>
         </div>
       </div> */}
-      <div className=" ml-20 " mainStyle={"w-1/2  h-full "}>
+      {/* <div className=" ml-20 " mainStyle={"w-1/2  h-full "}>
         <Map coordinates={(e) => setStoreCoordinates(e)} />
-      </div>
+      </div> */}
     </div>
   );
 }
