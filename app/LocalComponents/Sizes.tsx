@@ -18,11 +18,11 @@ import {
 
 const frameworks = [
     {
-      value: "0.33 L",
+      value: "Regular can - 0.33 liters",
       label: "Regular can - 0.33 liters",
     },
     {
-      value: "0.5 L",
+      value: "Bottle - 0.5 liters",
       label: "Bottle - 0.5 liters",
     },
     {

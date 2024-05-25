@@ -14,6 +14,7 @@ import {
   } from "@/components/ui/drawer"
   
 
+  import Map from '../LocalComponents/MapPickerV2' 
 function BottomDrawerSheet(props) {
     return (
         <div>
@@ -24,6 +25,8 @@ function BottomDrawerSheet(props) {
       <DrawerTitle>Are you absolutely sure?</DrawerTitle>
       <DrawerDescription>This action cannot be undone.</DrawerDescription>
       <div className='w-1/2'>
+
+<Map coordinates={(e)=>console.log(e)}/>
       <input onChange={(e)=>props.title(e.nativeEvent.target.value)} placeholder="Give your title" className="h-10 p-2 border border-gray-400 rounded-md"/>
           <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/>
           <Button className='w-20'>Submit</Button>

@@ -9,6 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  fetchDailySales,
+  fetchTopSales,
+  fetchWeeklySales,
+  generateMonth,
+  generateDay,
+} from "../../../Utils/statistics";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import moment from "moment";
@@ -18,28 +25,154 @@ import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
-import { axios, url, axiosV2 } from "@/Utils/axios";
-import { UserProfile } from "../../Utils/userProfile";
-import { Badge } from "@/components/ui/badge";
-import { BeakerIcon } from "@heroicons/react/24/solid";
+import { axios } from "@/Utils/axios";
+import { UserProfile } from "../../../Utils/userProfile";
+import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
+import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+import {
+  StackedBarChart,
+  LineChart,
+  SimpleBarChart,
+} from "@carbon/charts-react";
+import "@carbon/charts-react/styles.css";
+import barOptions from "../baroptions";
+import lineOptions from "../lineOptions";
+import { PieChart } from "@carbon/charts-react";
 let tableWidth = "w-[70%]";
-export default function TableDemo() {
+export default function TableDemo({ params }: { params: { type: string } }) {
   const { toast } = useToast();
   const [request, setRequest] = useState(invoices);
   const [reRequest, setRefRequest] = useState(invoices);
   const [userProfile, setUser] = useState(null);
-  const [requestItems, setRequestOrder] = useState([]);
+  const [requestedType, setRequestedType] = useState(null);
+  const [dailySales, setDailySales] = useState([]);
+  const [annualSales, setAnnualsales] = useState([]);
+  const [weekySales, setWeeklySales] = useState([]);
+  const [stackedBarOptions, setBarOptions] = useState(barOptions);
+  const [lineBarOptions, setLineOptions] = useState(lineOptions);
+  const [todaysTransaction, setTodaysTransaction] = useState(null);
+
   UserProfile().then((profile) => {
     setUser(profile);
   });
+  function getRandomFloat(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+  }
+  const updateBarOptions = (newValue: any) => {
+    setBarOptions((prevOptions) => ({
+      ...prevOptions,
+      data: {
+        ...prevOptions.data,
+        ...newValue,
+      },
+    }));
+  };
+  const updateLineOptions = (newValue: any) => {
+    setLineOptions((prevOptions) => ({
+      ...prevOptions,
+      data: {
+        ...prevOptions.data,
+        ...newValue,
+      },
+    }));
+  };
+
+  useEffect(() => {}, [stackedBarOptions]);
   useEffect(() => {
-    fetchProduct().then((response) => {
-      setRequestOrder(response.data.results);
+    console.log("am irender?");
+    console.log("USER type", params.type);
+    barOptions.title = `Weekly  Sales Report`;
+    // lineOptions.title = `${params.type.toUpperCase()} Sales Report`;
+    setRequestedType(params.type.toUpperCase());
+
+    //Annual
+    fetchTopSales().then((items) => {
+      const newObject = items.map((item: any) => {
+        let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
+        let day = moment(formattedDate, "MM-DD-YYYY");
+        return {
+          key: day.format("MMMM DD, YYYY"),
+          group: day.format("MMMM, YYYY"),
+          value: getRandomFloat(100000, item.grandTotal),
+        };
+      });
+
+      setAnnualsales(newObject);
+
+      updateBarOptions({ loading: false });
+      let lineRefrence = stackedBarOptions;
+      lineRefrence.data.loading = false;
+      lineRefrence.title = "Weekly August 87";
+      setLineOptions((prevOptions) => ({
+        ...prevOptions,
+        title: `Annual report ${moment(new Date()).format("MMM-DD-YYYY").toString()}`,
+        data: {
+          ...prevOptions.data,
+          ...{ loading: false },
+        },
+      }));
+      console.log("Fetch Whole year", newObject);
     });
+
+    fetchWeeklySales().then((items) => {
+      console.log("WEEKLY items fetchWeeklySales", items);
+      const newObject = items.map((item: any) => {
+        console.log(item._id);
+        let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
+        let day = moment(formattedDate, "MM-DD-YYYY");
+        return {
+          date: day,
+          group: day.format("MMMM DD, YYYY"),
+          value: getRandomFloat(
+            item.grandTotal === undefined ? 200 : item.grandTotal,
+            100000,
+          ),
+        };
+      });
+      console.log("weeky saleszzz", newObject);
+      updateBarOptions({ loading: false });
+      setWeeklySales(newObject);
+    });
+    fetchDailySales().then((items) => {
+      try {
+        const todaysListoftransaction = items[0].transactions.map(
+          (item: any) => {
+            return {
+              title: item.vendor.vendorTitle,
+
+              amount: Number(item.grandTotal),
+            };
+          },
+        );
+        console.log("setTodaysTransaction");
+        setTodaysTransaction(todaysListoftransaction);
+
+        const dailySales = items.map((item: any) => {
+          let formattedDate = `${item._id.month}-${item._id.day}-${item._id.year})}`;
+          let day = moment(formattedDate, "MM-DD-YYYY");
+          return {
+            group: day.format("MMMM DD, YYYY"),
+            value: Number(item.grandTotal),
+          };
+        });
+        console.log("dailySales", dailySales);
+        setDailySales(dailySales);
+      } catch (error) {}
+    });
+
     UserProfile().then((profile) => {
       setUser(profile);
     });
-    console.log(UserProfile());
   }, []);
 
   const didUpdate = (e, id) => {
@@ -59,75 +192,62 @@ export default function TableDemo() {
   };
   const displayAlert = (item) => {
     console.log(item);
-
-    // didUpdate("Denied", item.id);
-    const updateService = async () => {
-      let payload = item;
-      payload.status = "Approved";
-      payload.officeStatus = {
-        status: "Approve",
-        dateLog: new Date(),
-      };
-      let productList = await axios.post(
-        "/updateItem/LesseeFullfilment",
-        payload,
-      );
-      return productList;
-    };
-    updateService().then((item) => {
-      alert("loading");
-    });
-
-    // toast({
-    //   title: "Scheduled: Catch up",
-    //   description: "Friday, February 10, 2023 at 5:57 PM",
-    // });
+    didUpdate("Denied", item.id);
+    //     fetchProduct().then((response)=>{
+    //         toast({
+    //             title: "Scheduled: Catch up",
+    //             description: "Friday, February 10, 2023 at 5:57 PM",
+    //           })
     //      })
   };
 
-  const fetchTransaction = () => {
-    const asyncService = async () => {
-      try {
-        let payload = {
-          // vendorID: generateRandomString(),
-          // vendorTitle: productTitle,
-          // paymentMethod: "Credit Card",
-          // stocks: productQuantity,
-          // img: imageLink,
-          // status: false,
-          // coordinates: storeCoordinates,
-        };
-        let productList = await axiosV2("dsadsa").post(
-          `${url}/Loogy/LesseeFullfilment`,
-          {
-            details: payload,
-            className: "parentClass",
-          },
-        );
-        console.log("productList", productList);
-        return productList;
-      } catch (error) {}
-    };
-    asyncService().then((item) => {
-      console.log(item);
-      asyncService();
-    });
-  };
   async function fetchProduct() {
     try {
       const data = {
-        // id: "65435a78da64626d59397ff4",
-        // queryType: "all",
-        // lesseOwner: "653ce1caa775d7aeaa34cf0b",
-        isAPI: true,
+        id: "65435a78da64626d59397ff4",
+        queryType: "filter",
+        lesseOwner: "653ce1caa775d7aeaa34cf0b",
+        isAPI: false,
       };
-      const response = await axios.post("/store/LesseeFullfilment", data);
+      const response = await axios.post("/productV2/warehouseRequest", data);
       console.log(response.data);
       return response;
     } catch (error) {
       console.log("errorr fetchProduct", error);
     }
   }
+  const renderBarChart = () => {
+    try {
+      return (
+        <div className="w-full">
+          <LineChart data={annualSales} options={lineBarOptions}></LineChart>
+          <div className="mt-40" />
+          <StackedBarChart data={weekySales} options={stackedBarOptions} />
+          <div className="mt-40" />
+          <SimpleBarChart
+            data={dailySales}
+            options={{
+              title: `Daily sales report ${moment(new Date()).format("MMM DD, YYYY").toString()}`,
+              axes: {
+                left: {
+                  mapsTo: "value",
+                },
+                bottom: {
+                  mapsTo: "group",
+                  scaleType: "labels",
+                },
+              },
+              height: "400px",
+              width: "1200px",
+            }}
+          ></SimpleBarChart>
+        </div>
+      );
+    } catch (error) {
+      console.log("renderBarChart error", error);
+      return null;
+    }
+  };
   const searchRequest = (e) => {
     try {
       let searchedValue = e.target.value.toLowerCase();
@@ -143,16 +263,39 @@ export default function TableDemo() {
       <SideNavigation />
 
       <HeaderPage
-        title={`Request! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`${requestedType} Report👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
         subtitle=""
       />
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbEllipsis />
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/dashboard">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Reports</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       {/* <div className="ml-20 mt-20">
             <h1 className="text-[24px] mb">Reports</h1>
             <p className="text-xs mb-20">Generate your report </p>
 
         </div> */}
-      <div className="w-full mb-20">
-        <div className="w-1/full  ml-24 grid grid-cols-3 gap-4 m-2">
+      {/* <div className="mb-20 w-full">
+        <div className="w-1/full  m-2 ml-24 grid grid-cols-3 gap-4">
           <article className="rounded-lg border border-gray-300 bg-black p-6 hover:shadow-lg">
             <div>
               <p className="text-sm text-white">Profit</p>
@@ -183,7 +326,6 @@ export default function TableDemo() {
               </p>
             </div>
           </article>
-
           <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
             <div>
               <p className="text-sm text-gray-500">Profit</p>
@@ -214,14 +356,36 @@ export default function TableDemo() {
             </div>
           </article>
         </div>
+      </div> */}
+      <div className="mb-20 ml-20 h-full w-[100%]">
+        <LocalChart
+          sourceAmount={"amount"}
+          xLabel={"title"}
+          bottomTitle="title"
+          data={todaysTransaction}
+        />
+        {/* {weekySales === null ? (
+          "Loading..."
+        ) : ( */}
+        <>
+          {renderBarChart()}
+          {/* <PieChart
+              data={weekySales}
+              options={{
+                title: `${requestedType} Stats`,
+                resizable: true,
+                height: "200px",
+              }}
+            ></PieChart> */}
+        </>
+        {/* )} */}
       </div>
-
-      <Tabs
+      {/* <Tabs
         defaultValue="All"
-        className="w-[70] ml-24 bt-20 bg-white rounded-lg"
-      >
-        <TabsList className="rounded-full">
-          <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
+        className="bt-20 ml-24 w-[70] rounded-lg bg-white"
+      > */}
+      {/* <TabsList className="rounded-full">
+          <div className="mr-2 flex w-full max-w-sm items-center space-x-2">
             <Input
               type="email"
               placeholder="Search"
@@ -254,43 +418,25 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems.map((invoice) => (
-                <TableRow key={invoice._id}>
+              {request.map((invoice) => (
+                <TableRow key={invoice.id}>
                   <TableCell className="font-medium">
                     {" "}
                     <RequestSheet
-                      // disabled={`${invoice.status === "Approved" ? true : false}`}
+                      disabled={`${invoice.paymentStatus === "Approved" ? true : false}`}
                       void={(details) => displayAlert(details)}
-                      update={(details) => displayAlert(details)}
                       details={invoice}
                     />
                   </TableCell>
-                  {/* {invoice.invoice}  */}
+
                   <TableCell
-                    className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                    className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                   >
-                    {invoice.status}
+                    {invoice.paymentStatus}
                   </TableCell>
-                  <TableCell>{invoice.status}</TableCell>
-                  <TableCell className="text-center">
-                    <Button variant="secondary">
-                      {" "}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
-                        />
-                      </svg>
-                      <p className="text-xs ml-4">View Attached photo</p>
-                    </Button>
+                  <TableCell>{invoice.paymentMethod}</TableCell>
+                  <TableCell className="text-right">
+                    {invoice.totalAmount}
                   </TableCell>
                 </TableRow>
               ))}
@@ -310,8 +456,8 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems
-                .filter((item) => item.status === "Approved")
+              {request
+                .filter((item) => item.paymentStatus === "Approved")
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
@@ -322,11 +468,11 @@ export default function TableDemo() {
                         details={invoice}
                       />
                     </TableCell>
-                    {/* {invoice.invoice}  */}
+
                     <TableCell
-                      className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
-                      {invoice.status}
+                      {invoice.paymentStatus}
                     </TableCell>
                     <TableCell>{invoice.paymentMethod}</TableCell>
                     <TableCell className="text-right">
@@ -343,59 +489,32 @@ export default function TableDemo() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Details</TableHead>
-                <TableHead>Agent</TableHead>
-                <TableHead className="text-right">Status</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems
-                .filter((item) => item.status === "Pending")
+              {request
+                .filter((item) => item.paymentStatus === "Pending")
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">Status</TableCell>
-
-                    <TableCell
-                      className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                    >
-                      <textarea
-                        className="p-2 text-black bg-gray-100 rounded-lg ml-4"
-                        placeholder="Remarks"
-                        value="Remarks: Order missing"
+                    <TableCell className="font-medium">
+                      {" "}
+                      <RequestSheet
+                        void={(details) => displayAlert(details)}
+                        details={invoice}
                       />
                     </TableCell>
-                    <TableCell className="text-xs">
-                      <div className="text-md font-bold uppercase grid grid-cols-2 ">
-                        <p> {invoice.stockman} </p>
-                        <div className="grid grid-cols-2 gap-2">
-                          <p className="grid ">
-                            {" "}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
-                              />
-                            </svg>{" "}
-                            {invoice.date_created}
-                          </p>
-                        </div>
-                        <p>dsads {invoice.assigned_to.fullName}</p>
-                      </div>
-                      {/* <Badge variant={"secondary"} className="mt-2">
-                        {invoice.assigned_to.fullName}
-                      </Badge> */}
+
+                    <TableCell
+                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                    >
+                      {invoice.paymentStatus}
                     </TableCell>
+                    <TableCell>{invoice.paymentMethod}</TableCell>
                     <TableCell className="text-right">
-                      {/* {invoice.totalAmount} */}
-                      {invoice.status}
+                      {invoice.totalAmount}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -415,7 +534,7 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems
+              {request
                 .filter((item) => item.paymentStatus === "Denied")
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
@@ -426,13 +545,13 @@ export default function TableDemo() {
                         details={invoice}
                       />
                     </TableCell>
-                    {invoice.status}
+
                     <TableCell
-                      className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
-                      {invoice.status}
+                      {invoice.paymentStatus}
                     </TableCell>
-                    <TableCell>{invoice.assigned_to.fullName}</TableCell>
+                    <TableCell>{invoice.paymentMethod}</TableCell>
                     <TableCell className="text-right">
                       {invoice.totalAmount}
                     </TableCell>
@@ -443,8 +562,8 @@ export default function TableDemo() {
         </TabsContent>
 
         <TabsContent value="Stockman">Change your password here.</TabsContent>
-        <TabsContent value="Cashier">Change your password here.</TabsContent>
-      </Tabs>
+        <TabsContent value="Cashier">Change your password here.</TabsContent> */}
+      {/* </Tabs> */}
       {/* <div className="w-1/2 ml-20 mt-20">
 
 <div
