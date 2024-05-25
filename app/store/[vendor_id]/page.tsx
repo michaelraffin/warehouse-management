@@ -74,6 +74,8 @@ export default function VendorDetails({
   const [productQuantity, setProducQuantity] = useState(null);
   const [storeCoordinates, setStoreCoordinates] = useState(null);
   const [imageLink, setImageLink] = useState(null);
+  const [transactions, setVendorTransaction] = useState([]);
+
   const [vendorDetails, setVendorDetails] = useState({
     vendorID: "",
     img: "",
@@ -236,7 +238,7 @@ export default function VendorDetails({
         ? [coordinates.coordinates]
         : [{ lng: 123.841, lat: 8.1822 }],
     );
-    // if (vendorsList.data.results && vendorDetails.coordinates != null) {
+    // if (coordinates.coordinates != null) {
     setVendorDetails(vendorsList.data.results[0]);
     setStatus(false);
     // }
@@ -247,7 +249,31 @@ export default function VendorDetails({
     });
 
     fetchStores();
+    fetchStoreTransaction();
   }, []);
+  const fetchStoreTransaction = () => {
+    const service = async () => {
+      try {
+        let data = {
+          local_id: "e",
+          queryType: "all",
+          storeOwner: "storeOwner",
+          isAPI: true,
+          referenceOrder: "e",
+          number: 20,
+          showLimit: true,
+          queryData: { status: "orderStatus", userReference: "e" },
+        };
+        let response = await axiosV2("dsadsa").post(
+          `${url}/store/${"LesseeTransaction"}`,
+        );
+        setVendorTransaction(response.data.results);
+      } catch (error) {}
+    };
+    service().then((items) => {
+      console.log("itemsss-.<", items);
+    });
+  };
   const fetchStores = async () => {
     try {
       let data = {
@@ -359,29 +385,40 @@ export default function VendorDetails({
           <Table className="w-full" title="">
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead></TableHead>
-                <TableHead></TableHead>
+                <TableHead className="">#id</TableHead>
+                <TableHead className="">Date Transacted</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Items</TableHead>
+                <TableHead>MOP</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((vendors: any) => (
-                <TableRow key={vendors.invoice}>
+              {transactions.map((vendors: any) => (
+                <TableRow key={vendors._id}>
                   <TableCell className="font-medium">
-                    {vendors.invoice}
+                    {vendors._id.substr(-5)}
                   </TableCell>
+                  <TableCell className="font-medium">
+                    <p className="text-xs text-gray-500">Date Created:</p>
+                    <p className="text-md font-bold text-[#0652DD]">
+                      {vendors.date_created}
+                    </p>
+                  </TableCell>
+                  <TableCell>{vendors.transactionState}</TableCell>
                   <TableCell>
-                    {/* <img
-                    src={vendors.img}
-                    className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
-                  /> */}
-                    {vendors.invoice}
+                    {/* <Badge> */}
+                    <Button variant={"link"} className="text-xs">
+                      {vendors.transaction.cart.length} Orders
+                    </Button>
+                    {/* </Badge> */}
                   </TableCell>
-                  <TableCell>{vendors.invoice} transaction</TableCell>
+
+                  <TableCell className="uppercase">
+                    {vendors.payment_method.type}
+                  </TableCell>
                   <TableCell className="text-right">
-                    {/* {numberFormat(Number(vendors.totalAmount))} */}
-                    {vendors.invoice}
+                    {numberFormat(Number(vendors.grandTotal))}
                   </TableCell>
                 </TableRow>
               ))}
@@ -399,7 +436,7 @@ export default function VendorDetails({
         <Map
           mapboxAccessToken={mapboxToken}
           mapStyle="mapbox://styles/mapbox/light-v11"
-          style={LocalClass.mapStyle}
+          // style={LocalClass.mapStyle}
           // latitude={initialLocation.lat}
           // longitude={initialLocation.lng}
           initialViewState={
@@ -467,17 +504,20 @@ export default function VendorDetails({
         </Map>
       );
     } catch (error) {
+      console.log("error in rendering map", error);
       return <div className="h-2 w-2 bg-red-500">TESt</div>;
     }
   };
   return (
     <div className="">
+      <Head>
+        <title>My page title</title>
+      </Head>
       <SideNavigation />
       <HeaderPage
         title={`${vendorDetails != null ? vendorDetails.vendorTitle : ""} !  ${userProfile != null ? "" : ""}`}
         subtitle=""
       />
-
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mr-10 ml-20">
         <div className="h-32 rounded-lg  lg:col-span-2">
           {/* RIGHT */}
@@ -590,11 +630,12 @@ export default function VendorDetails({
           {/* <p>{vendorDetails.coordinates === undefined ? 'none'  :vendorDetails.coordinates.lat}</p> */}
           <div className="mt-10 ">
             <main className={LocalClass.vendorMainStyle}>
+              {console.log(vendorDetails.coordinates)}
               {vendorDetails.coordinates === undefined
                 ? null
                 : displayMerchantMap()}
             </main>
-            {displayMerchantMap()}
+            {/* {displayMerchantMap()} */}
 
             {/* {vendorDetails.coordinates === undefined ? null :   <Map
             initialLocation={vendorDetails.coordinates}
@@ -618,7 +659,6 @@ export default function VendorDetails({
           </div>
         </div>
       </div>
-
       <div className="w-1/2 ml-20 mt-20">
         <div
         // on:click={()=>setProduct(order)}
