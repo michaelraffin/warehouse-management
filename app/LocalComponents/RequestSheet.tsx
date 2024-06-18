@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function RequestContent(props) {
   const [content, setContent] = useState(null);
   useEffect(() => {
-    console.log("props", props.details);
+    // console.log("props", props.details);
     if (props.details != undefined) {
       setContent(props.details);
     }
@@ -89,7 +89,10 @@ export default function RequestContent(props) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button disabled={props.disabled}>View Request</Button>
+        <Button disabled={props.disabled}>
+          {console.log(props.titleButton)}
+          {props.titleButton === undefined ? props.titleButton : "View Request"}
+        </Button>
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>

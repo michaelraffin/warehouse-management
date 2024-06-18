@@ -5,7 +5,7 @@ function SideNavigation() {
     try {
       return (
         <div>
-          <div className="fixed left-0 top-0 flex h-screen w-16 flex-col justify-between border-e bg-white">
+          <div className="fixed z-40 left-0 top-0 flex h-screen w-16 flex-col justify-between border-e bg-white">
             <div>
               <div className="inline-flex h-16 w-16 items-center justify-center">
                 <a
@@ -220,6 +220,17 @@ function SideNavigation() {
                         ></img>
                         <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Vendor
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/transactions"
+                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700 "
+                      >
+                        <img className="h6 w-6" src={"/orders.png"}></img>
+                        <span className="absolute z-10 start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
+                          Transactions
                         </span>
                       </a>
                     </li>
