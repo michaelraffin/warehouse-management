@@ -26,58 +26,18 @@ import {
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
 import { Button } from "@/components/ui/button";
 import { axios, url, axiosV2 } from "@/Utils/axios";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
 export default function TableDemo() {
   let [userProfile, setUser] = useState(null);
   const [myVendors, setVendors] = useState([]);
   const [dailySales, setDailySales] = useState(0);
   const [annualSales, setAnnualsales] = useState(null);
   const [weekySales, setWeeklySales] = useState(null);
+  const [isVendorsReady, setVendorsReady] = useState(false);
   const [todaysTransaction, setTodaysTransaction] = useState(null);
+  const [topTransaction, setTopTransactions] = useState([]);
   useEffect(() => {
     getProfile();
     fetchDailySales().then((items) => {
@@ -157,6 +117,9 @@ export default function TableDemo() {
   };
   useEffect(() => {
     fetchVendors();
+    fetchTopTransaction(10);
+    // setTopTransactions(items);
+    // console.log("setTopTransactions ", items);
   }, []);
   const fetchVendors = async () => {
     try {
@@ -170,14 +133,37 @@ export default function TableDemo() {
         showLimit: true,
         queryData: { status: "orderStatus", userReference: "e" },
       };
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/store/LesseeVendor`,
-      );
-      setVendors(productList.data.results);
+      let productList = await axiosV2("").post(`${url}/store/LesseeVendor`);
+      setVendors(productList.data.results.slice(0, 10));
+      setVendorsReady(true);
     } catch (error) {
       console.log("error Product", error);
     }
   };
+
+  const fetchTopTransaction = async (number: number) => {
+    try {
+      let data = {
+        local_id: "e",
+        queryType: "all",
+        storeOwner: "storeOwner",
+        isAPI: true,
+        referenceOrder: "e",
+        number: number,
+        showLimit: true,
+        queryData: { status: "orderStatus", userReference: "e" },
+      };
+      let productList = await axiosV2("").post(
+        `${url}/store/LesseeTransaction`,
+      );
+      setTopTransactions(productList.data.results);
+    } catch (error) {
+      console.log("error Product", error);
+    }
+  };
+  function InlineWrapperWithMargin({ children }) {
+    return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
+  }
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -408,10 +394,10 @@ export default function TableDemo() {
       </div>
 
       {/* //TABLE */}
-
+      <div className="mt-40 ml-24 text-lg font-bold">Your Transactions</div>
       <Tabs
         defaultValue="account"
-        className="bt-20 mt-40 ml-24 w-[90%] rounded-lg bg-white"
+        className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"
       >
         <TabsList className="rounded-full">
           <TabsTrigger className="rounded-full" value="account">
@@ -422,38 +408,135 @@ export default function TableDemo() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          <Table className="">
-            <TableCaption>A list of your recent invoices.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead></TableHead>
-                <TableHead></TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {myVendors.map((vendors: any) => (
-                <TableRow key={vendors._id}>
-                  <TableCell className="font-medium">
-                    {vendors.vendorTitle}
-                  </TableCell>
-                  <TableCell>
-                    <img
-                      src={vendors.img}
-                      className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {vendors.transactionLogs.length} transaction
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {numberFormat(vendors.totalSpent)}
-                  </TableCell>
+          {!isVendorsReady ? (
+            <Skeleton
+              count={5}
+              wrapper={InlineWrapperWithMargin}
+              inline
+              width={90}
+            />
+          ) : (
+            <Table className="">
+              <TableCaption>A list of recent transaction.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Vendor</TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>Payment Type</TableHead>
+                  <TableHead>Cart</TableHead>
+                  <TableHead className="text-right">Grand Total</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {topTransaction.map((vendors: any) => (
+                  <TableRow key={vendors._id}>
+                    <TableCell className="font-medium">
+                      {vendors.transactionID}
+                    </TableCell>
+                    <TableCell>
+                      <img
+                        src={vendors.vendor.img}
+                        className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
+                      />
+                    </TableCell>{" "}
+                    <TableCell className="font-medium">
+                      {vendors.payment_method.type.toUpperCase()}
+                    </TableCell>
+                    <TableCell>
+                      {vendors.transaction.cart.length} Orders
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {numberFormat(vendors.grandTotal)}
+
+                      {/* arrow-right.png */}
+                    </TableCell>
+                    <TableCell className="">
+                      <a href={`/transactions/${vendors.transactionID} `}>
+                        <img className=" w-2" src={"/arrow-right.png"} />
+                      </a>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </TabsContent>
+        <TabsContent value="password">
+          {weekySales === null ? (
+            "..."
+          ) : (
+            <LocalChart
+              sourceAmount={"amount"}
+              xLabel={"title"}
+              bottomTitle="title"
+              data={weekySales}
+            />
+          )}
+        </TabsContent>
+      </Tabs>
+      <div>{/* <MapV2 /> */}</div>
+      <div className="mt-40 ml-24 text-lg font-bold">Your Vendors</div>
+      <Tabs
+        defaultValue="account"
+        className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"
+      >
+        <TabsList className="rounded-full">
+          <TabsTrigger className="rounded-full" value="account">
+            Table
+          </TabsTrigger>
+          <TabsTrigger className="rounded-full" value="password">
+            Chart
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">
+          {!isVendorsReady ? (
+            <Skeleton
+              count={5}
+              wrapper={InlineWrapperWithMargin}
+              inline
+              width={90}
+            />
+          ) : (
+            <Table className="">
+              <TableCaption>Your top vendors.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Vendor</TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>Cart</TableHead>
+                  <TableHead className="text-right">Grand Total</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {myVendors.map((vendors: any) => (
+                  <TableRow key={vendors._id}>
+                    <TableCell className="font-medium">
+                      {vendors.vendorTitle}
+                    </TableCell>
+                    <TableCell>
+                      <img
+                        src={vendors.img}
+                        className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {vendors.transactionLogs.length} transaction
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {numberFormat(vendors.totalSpent)}
+                    </TableCell>
+                    <TableCell className="">
+                      <a href="">
+                        <img className=" w-2" src={"/arrow-right.png"} />
+                      </a>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </TabsContent>
         <TabsContent value="password">
           {weekySales === null ? (
