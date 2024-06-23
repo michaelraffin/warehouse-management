@@ -34,10 +34,10 @@ export default function TableDemo() {
     setUser(profile);
   });
   useEffect(() => {
-    // fetchTransactionHistory().then((response) => {
-    //   setRequestOrder(response.data.results);
-    // });
-    setRequestOrder(TransactionHistory.results.slice(0, 20));
+    fetchTransactionHistory().then((response) => {
+      setRequestOrder(response.data.results);
+    });
+    // setRequestOrder(TransactionHistory.results.slice(0, 20));
     UserProfile().then((profile) => {
       setUser(profile);
     });

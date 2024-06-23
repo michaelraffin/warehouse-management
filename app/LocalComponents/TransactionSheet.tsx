@@ -100,6 +100,19 @@ export default function TransactionSheet(props) {
       );
     }
   };
+
+  const renderFiles = () => {
+    let content: [any] = [];
+    props.details.attachedFile.map((item) => {
+      content.push(
+        <img
+          src={item}
+          className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
+        />,
+      );
+    });
+    return content;
+  };
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -141,7 +154,10 @@ export default function TransactionSheet(props) {
             placeholder="Type your message here."
           />
         </div>
-
+        <div className="text-gray-400 text-sm ">
+          Attached files
+          <div className="flex mb-20 mt-10">{renderFiles()}</div>
+        </div>
         {footerContent()}
       </SheetContent>
     </Sheet>

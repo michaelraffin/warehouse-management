@@ -73,6 +73,40 @@ export default function TableDemo() {
     });
     console.log(UserProfile());
   }, []);
+  const approveService = async () => {
+    let state = "Approved_by_Office";
+    if (transactionDetails.status === "Approve") {
+      return false;
+    }
+    try {
+      let data: any = transactionDetails;
+      data.status = state;
+      data.agent.transactionState = state;
+      let payloads = [
+        {
+          type: "Approved-HOO",
+          date: new Date(),
+          formattedDate: moment(Date()).format("YYYY-MM-DD").toString(),
+        },
+      ];
+      if (data.logs === undefined) {
+        data.logs = payloads;
+      } else {
+        data.logs.push(payloads);
+      }
+
+      let agentResponse = await axios.post(
+        "/updateItem/LesseeTransaction",
+        data,
+      );
+      return agentResponse.data.results;
+      alert("Done");
+    } catch (error) {
+      alert("error");
+      return;
+      console.log("error Product", error);
+    }
+  };
   const fetchTransaction = (id: string) => {
     const asyncService = async () => {
       try {
@@ -208,11 +242,22 @@ export default function TableDemo() {
       case "pending":
         return "text-gray-300";
 
-      case "approved_stockman":
+      case "approved_stockman".toLowerCase():
+        return "text-blue-500";
+      case "APPROVED_BY_OFFICE".toLowerCase():
         return "text-blue-500";
     }
   };
-
+  const getProgressValue = (value: string) => {
+    switch (value.toLowerCase()) {
+      case "pending":
+        return 20;
+      case "approved_stockman".toLowerCase():
+        return 40;
+      case "APPROVED_BY_OFFICE".toLowerCase():
+        return 60;
+    }
+  };
   const renderFiles = () => {
     let content: [any] = [];
     transactionDetails.attachedFile.map((item) => {
@@ -228,13 +273,9 @@ export default function TableDemo() {
   const displayOrderProgress = (type: string) => {
     return (
       <div className="lg:w-[500px] w-1/2  absolute right-2 top-72    mr-20 mb-20 hover:shadow-lg rounded-full">
-        <Progress value={35} className="h-2  w-full " />
+        <Progress value={getProgressValue(type)} className="h-2  w-full " />
         <div className="grid grid-cols-4">
-          <p
-            className={["text-xs", getProgressColor("approved_stockman")].join(
-              " ",
-            )}
-          >
+          <p className={["text-xs", getProgressColor(type)].join(" ")}>
             Order Created
           </p>
           <p className="text-xs text-blue-500"> Payment Accepted</p>
@@ -245,8 +286,7 @@ export default function TableDemo() {
             </p>
           </div>
 
-          <p className={["text-xs", getProgressColor(type)].join(" ")}>
-            {" "}
+          <p className={["text-xs", getProgressColor("x")].join(" ")}>
             Approved Heads
           </p>
         </div>
@@ -450,7 +490,12 @@ export default function TableDemo() {
       )}
 
       <div className="ml-20 mb-20   col-auto">
-        <Button className="rounded-full bg-blue-800 mb-4">Approve</Button>
+        <Button
+          onClick={() => approveService()}
+          className="rounded-full bg-blue-800 mb-4"
+        >
+          Approve This Transaction
+        </Button>
         <br />
         <CardDescription color="text-xs ">
           Approve this transaction according to your requirements
