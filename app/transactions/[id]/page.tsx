@@ -23,6 +23,7 @@ import { axios, url, axiosV2 } from "@/Utils/axios";
 import { UserProfile } from "../../../Utils/userProfile";
 import { Badge } from "@/components/ui/badge";
 import { BeakerIcon } from "@heroicons/react/24/solid";
+import { Progress } from "@/components/ui/progress";
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import TransactionHistory from "@/dummy/transaction_history.json";
 import transaction_dummy from "@/dummy/dummy.json";
+import { Loader2 } from "lucide-react";
 let tableWidth = "w-[70%]";
 export default function TableDemo() {
   const { toast } = useToast();
@@ -201,6 +203,56 @@ export default function TableDemo() {
       return null;
     }
   };
+  const getProgressColor = (value: string) => {
+    switch (value.toLowerCase()) {
+      case "pending":
+        return "text-gray-300";
+
+      case "approved_stockman":
+        return "text-blue-500";
+    }
+  };
+
+  const renderFiles = () => {
+    let content: [any] = [];
+    transactionDetails.attachedFile.map((item) => {
+      content.push(
+        <img
+          src={item}
+          className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
+        />,
+      );
+    });
+    return content;
+  };
+  const displayOrderProgress = (type: string) => {
+    return (
+      <div className="lg:w-[500px] w-1/2  absolute right-2 top-72    mr-20 mb-20 hover:shadow-lg rounded-full">
+        <Progress value={35} className="h-2  w-full " />
+        <div className="grid grid-cols-4">
+          <p
+            className={["text-xs", getProgressColor("approved_stockman")].join(
+              " ",
+            )}
+          >
+            Order Created
+          </p>
+          <p className="text-xs text-blue-500"> Payment Accepted</p>
+          <div className="">
+            {/* <Loader2 className=" h-4 w-4 animate-ping" /> */}
+            <p className={["text-xs", getProgressColor(type)].join(" ")}>
+              Approved Agent
+            </p>
+          </div>
+
+          <p className={["text-xs", getProgressColor(type)].join(" ")}>
+            {" "}
+            Approved Heads
+          </p>
+        </div>
+      </div>
+    );
+  };
   const CartItem = ({ item }) => {
     return (
       <div className="flex items-center p-4 border border-gray-200 rounded-lg mb-4 hover:shadow-sm">
@@ -219,10 +271,10 @@ export default function TableDemo() {
             <span className="flex items-center text-base text-gray-600">
               {item.color}
 
-              <span
+              {/* <span
                 className="w-4 h-4 rounded-full ml-2 border border-gray-300"
                 style={{ backgroundColor: item.colorCode }}
-              ></span>
+              ></span> */}
             </span>
           </div>
         </div>
@@ -256,6 +308,7 @@ export default function TableDemo() {
         title={`Transaction Details! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
         subtitle=""
       />
+
       <div className="ml-20 mr-20 mt-20 mb-20 ">
         <div className="grid grid-cols-2 ">
           <p className="text-xs"> Transaction Details </p>
@@ -273,6 +326,7 @@ export default function TableDemo() {
           <div className="mb-10">
             <span className="text-md font-bold ">Cart Details</span>
           </div>
+
           {transactionDetails == null ? (
             <Skeleton
               count={5}
@@ -317,11 +371,9 @@ export default function TableDemo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p>Card Content</p>
+              {/* <p className="font-bold">Order Progress</p> */}
             </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
+            <CardFooter></CardFooter>
           </Card>
           <Card className="hover:shadow-lg -w-20 mt-10">
             <CardHeader>
@@ -357,12 +409,52 @@ export default function TableDemo() {
             </CardContent>
             <CardFooter>
               <div className="grid grid-rows-2">
-                <p>Store Contact</p>
+                <span>Store Contact</span>
                 <Button className="rounded-full">093636739900</Button>
               </div>
             </CardFooter>
           </Card>
+
+          <Card className="hover:shadow-lg -w-20 mt-10">
+            <CardHeader>
+              <CardTitle className="text-md">Attached files</CardTitle>
+              <CardDescription className="text-xs">
+                Attached by Agents
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {transactionDetails == null ? (
+                <Skeleton
+                  count={5}
+                  wrapper={InlineWrapperWithMargin}
+                  inline
+                  width={90}
+                />
+              ) : (
+                <div className="flex">{renderFiles()}</div>
+              )}
+            </CardContent>
+          </Card>
         </div>
+      </div>
+
+      {transactionDetails == null ? (
+        <Skeleton
+          count={5}
+          wrapper={InlineWrapperWithMargin}
+          inline
+          width={90}
+        />
+      ) : (
+        displayOrderProgress(transactionDetails.agent.transactionState)
+      )}
+
+      <div className="ml-20 mb-20   col-auto">
+        <Button className="rounded-full bg-blue-800 mb-4">Approve</Button>
+        <br />
+        <CardDescription color="text-xs ">
+          Approve this transaction according to your requirements
+        </CardDescription>
       </div>
     </div>
   );
