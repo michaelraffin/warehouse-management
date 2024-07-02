@@ -102,16 +102,20 @@ export default function TransactionSheet(props) {
   };
 
   const renderFiles = () => {
-    let content: [any] = [];
-    props.details.attachedFile.map((item) => {
-      content.push(
-        <img
-          src={item}
-          className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
-        />,
-      );
-    });
-    return content;
+    try {
+      let content: [any] = [];
+      props.details.attachedFile.map((item) => {
+        content.push(
+          <img
+            src={item}
+            className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
+          />,
+        );
+      });
+      return content;
+    } catch (error) {
+      return null;
+    }
   };
   return (
     <Sheet>

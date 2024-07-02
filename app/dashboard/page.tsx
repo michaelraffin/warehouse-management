@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
@@ -453,7 +454,12 @@ export default function TableDemo() {
                     </TableCell>
                     <TableCell className="">
                       <a href={`/transactions/${vendors.transactionID} `}>
-                        <img className=" w-2" src={"/arrow-right.png"} />
+                        <Image
+                          className=" w-2"
+                          width={2}
+                          height={2}
+                          src="/arrow-right.png"
+                        />
                       </a>
                     </TableCell>
                   </TableRow>
@@ -529,7 +535,12 @@ export default function TableDemo() {
                     </TableCell>
                     <TableCell className="">
                       <a href="">
-                        <img className=" w-2" src={"/arrow-right.png"} />
+                        <Image
+                          className=" w-2"
+                          width={2}
+                          height={2}
+                          src="/arrow-right.png"
+                        />
                       </a>
                     </TableCell>
                   </TableRow>

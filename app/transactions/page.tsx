@@ -140,7 +140,20 @@ export default function TableDemo() {
       setRequest(filteredStaff);
     } catch (error) {}
   };
-
+  const getVendorTitle = (data) => {
+    try {
+      return data.vendor.vendorTitle;
+    } catch (error) {
+      return null;
+    }
+  };
+  const getVendorImage = (data) => {
+    try {
+      return data.vendor.img;
+    } catch (error) {
+      return null;
+    }
+  };
   const getPaymentType = (data) => {
     try {
       return data.payment_method.type;
@@ -274,7 +287,6 @@ export default function TableDemo() {
                   {/* //ALLL */}
                   {console.log("Transaction history", invoice)}
                   <TableCell className="font-medium">
-                    {" "}
                     <RequestSheet
                       void={(details) => displayAlert(details)}
                       update={(details) => displayAlert(details)}
@@ -288,11 +300,11 @@ export default function TableDemo() {
                   >
                     <p>Pending</p>
                   </TableCell>
-                  <TableCell>{invoice.payment_method.type}</TableCell>
+                  <TableCell>{getPaymentType(invoice)}</TableCell>
                   <TableCell className="text-center">
-                    <p className="text-xs">{invoice.vendor.vendorTitle}</p>
+                    <p className="text-xs">{getVendorTitle(invoice)}</p>
                     <img
-                      src={invoice.vendor.img}
+                      src={getVendorImage(invoice)}
                       className="mr-2 h-10 w-10 rounded-full hover:shadow-lg"
                     />
                     {/* <Button variant="secondary">
