@@ -293,16 +293,23 @@ export default function TableDemo() {
   const renderLogs = () => {
     let content: [any] = [];
     transactionDetails.logs.map((item) => {
+      console.log("logs", item);
       content.push(
-        <div className="">
-          <div className=" grid grid-cols-2 w-[200px] ">
-            <div className="text-xs"> {item.type}</div>
-            <div className=" grid grid-cols-2  w-full text-xs">
-              <Image className="w-2" width={2} height={2} src="/clock.png" />
+        <TableRow>
+          <TableCell className="font-medium w-[80px] ">{item.type}</TableCell>
+          <TableCell className="text-right">
+            <div className=" ">
+              {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
               {moment(item.date).format("YYYY-MM-DD").toString()}
             </div>
-          </div>
-        </div>,
+          </TableCell>
+          <TableCell>
+            <div className=" ">
+              {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
+              {moment(item.date).format("hh:mm a").toString()}
+            </div>
+          </TableCell>
+        </TableRow>,
       );
     });
     return content;
@@ -555,7 +562,7 @@ export default function TableDemo() {
                 List of activity
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className=" p-2">
               {transactionDetails == null ? (
                 <Skeleton
                   count={5}
@@ -564,9 +571,32 @@ export default function TableDemo() {
                   width={90}
                 />
               ) : (
-                <div className="">{renderLogs()}</div>
+                <div className="">
+                  <Table className="text-xs">
+                    <TableCaption>A list of recent transaction.</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[100px] ">Type</TableHead>
+                        <TableHead className="text-right">Date</TableHead>
+                        <TableHead>Time</TableHead>
+                        {/* <TableHead className="text-right">Amount</TableHead> */}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>{renderLogs()}</TableBody>
+                  </Table>
+                </div>
               )}
             </CardContent>
+            {/* {transactionDetails == null ? (
+              <Skeleton
+                count={5}
+                wrapper={InlineWrapperWithMargin}
+                inline
+                width={90}
+              />
+            ) : (
+              <div className="">{renderLogs()}</div>
+            )} */}
           </Card>
         </div>
       </div>
