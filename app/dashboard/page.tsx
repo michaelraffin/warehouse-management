@@ -437,15 +437,22 @@ export default function TableDemo() {
                     </TableCell>
                     <TableCell>
                       <img
-                        src={vendors.vendor.img}
+                        src={
+                          vendors.vendor != undefined ? vendors.vendor.img : ""
+                        }
                         className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
                       />
                     </TableCell>{" "}
                     <TableCell className="font-medium">
-                      {vendors.payment_method.type.toUpperCase()}
+                      {vendors.payment_method != undefined
+                        ? vendors.payment_method.type.toUpperCase()
+                        : ""}
                     </TableCell>
                     <TableCell>
-                      {vendors.transaction.cart.length} Orders
+                      {vendors.transaction != undefined
+                        ? vendors.transaction.cart.length
+                        : 0}{" "}
+                      Orders
                     </TableCell>
                     <TableCell className="text-right">
                       {numberFormat(vendors.grandTotal)}

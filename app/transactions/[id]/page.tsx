@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/TransactionSheet";
 import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { axios, url, axiosV2 } from "@/Utils/axios";
 import { UserProfile } from "../../../Utils/userProfile";
@@ -36,11 +37,13 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import TransactionHistory from "@/dummy/transaction_history.json";
 import transaction_dummy from "@/dummy/dummy.json";
+import TimeLine from "@/app/LocalComponents/ProgressBar";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 let tableWidth = "w-[70%]";
 export default function TableDemo() {
-  const { toast } = useToast();
   const [request, setRequest] = useState(invoices);
+  const [status, setStatus] = useState(false);
   const [reRequest, setRefRequest] = useState(invoices);
   const [userProfile, setUser] = useState(null);
   const [requestItems, setRequestOrder] = useState([]);
@@ -63,6 +66,7 @@ export default function TableDemo() {
     setTransactionID(id);
     fetchTransaction(id);
   }, []);
+  useEffect(() => {}, [transactionDetails]);
   useEffect(() => {
     // fetchTransactionHistory().then((response) => {
     //   setRequestOrder(response.data.results);
@@ -73,6 +77,20 @@ export default function TableDemo() {
     });
     console.log(UserProfile());
   }, []);
+  const didApprove = async () => {
+    setStatus(true);
+    toast.promise(approveService(), {
+      loading: "Loading...",
+      success: (data) => {
+        setStatus(false);
+        setTransactionDetails(data);
+        console.log("data updated response", data);
+        return `${transactionID} has been updated`;
+        // ${data.name}
+      },
+      error: "Error",
+    });
+  };
   const approveService = async () => {
     let state = "Approved_by_Office";
     if (transactionDetails.status === "Approve") {
@@ -84,7 +102,7 @@ export default function TableDemo() {
       data.agent.transactionState = state;
       let payloads = [
         {
-          type: "Approved-HOO",
+          type: "Approved-HOO", // Approved by HOO (Head of Office)
           date: new Date(),
           formattedDate: moment(Date()).format("YYYY-MM-DD").toString(),
         },
@@ -99,10 +117,9 @@ export default function TableDemo() {
         "/updateItem/LesseeTransaction",
         data,
       );
+
       return agentResponse.data.results;
-      alert("Done");
     } catch (error) {
-      alert("error");
       return;
       console.log("error Product", error);
     }
@@ -165,8 +182,11 @@ export default function TableDemo() {
       );
       return productList;
     };
+    toast.loading("Loading...");
+
     updateService().then((item) => {
-      alert("loading");
+      toast.dismiss();
+      toast.success("Sonner toast has been added");
     });
 
     // toast({
@@ -270,6 +290,23 @@ export default function TableDemo() {
     });
     return content;
   };
+  const renderLogs = () => {
+    let content: [any] = [];
+    transactionDetails.logs.map((item) => {
+      content.push(
+        <div className="">
+          <div className=" grid grid-cols-2 w-[200px] ">
+            <div className="text-xs"> {item.type}</div>
+            <div className=" grid grid-cols-2  w-full text-xs">
+              <Image className="w-2" width={2} height={2} src="/clock.png" />
+              {moment(item.date).format("YYYY-MM-DD").toString()}
+            </div>
+          </div>
+        </div>,
+      );
+    });
+    return content;
+  };
   const displayOrderProgress = (type: string) => {
     return (
       <div className="lg:w-[500px] w-1/2  absolute right-2 top-72    mr-20 mb-20 hover:shadow-lg rounded-full">
@@ -330,6 +367,37 @@ export default function TableDemo() {
   function InlineWrapperWithMargin({ children }) {
     return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
   }
+  const renderButton = () => {
+    try {
+      return (
+        <div className="ml-20 mb-20   col-auto">
+          <Button
+            disabled={status}
+            onClick={() => didApprove()}
+            className={
+              transactionDetails.status.toLowerCase() ===
+              "Approved_by_Office".toLowerCase()
+                ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                : "rounded-full bg-blue-800 mb-4 text-xs"
+            }
+          >
+            {transactionDetails.status.toLowerCase() ===
+            "Approved_by_Office".toLowerCase()
+              ? "Already approved"
+              : status
+                ? "Updating..."
+                : "  Approve This Transaction"}
+          </Button>
+          <br />
+          <CardDescription color="text-xs ">
+            Approve this transaction according to your requirements
+          </CardDescription>
+        </div>
+      );
+    } catch (error) {
+      null;
+    }
+  };
   const renderCart = () => {
     var content: [any] = [];
     transactionDetails.transaction.cart.map((item) => {
@@ -349,17 +417,19 @@ export default function TableDemo() {
         subtitle=""
       />
 
+      <TimeLine />
       <div className="ml-20 mr-20 mt-20 mb-20 ">
         <div className="grid grid-cols-2 ">
           <p className="text-xs"> Transaction Details </p>
-          <div>
-            <Badge variant="destructive">Un Paid</Badge>
-          </div>
+          <div>{/* <Badge variant="destructive">Un Paid</Badge> */}</div>
           <h1 className="text-[24px] mb font-bold">
             {" "}
             Transaction ID [{transactionID}]
           </h1>
         </div>
+        <Badge variant="destructive" className="bg-red-600 text-xs">
+          Unpaid
+        </Badge>
       </div>
       <div className="grid grid-rows-2 grid-flow-col gap-2 ml-20 mr-10">
         <div className="   col-span-2 ">
@@ -378,7 +448,7 @@ export default function TableDemo() {
             renderCart()
           )}
         </div>
-        <div className=" w-full  row-span-2 ">
+        <div className=" w-full  row-span-2  ">
           <Card className="hover:shadow-lg -w-20">
             <CardHeader>
               <CardTitle className="text-md">Agent Details</CardTitle>
@@ -392,7 +462,9 @@ export default function TableDemo() {
                   />
                 ) : null}
 
-                <div>Raffin Agent</div>
+                <div className="text-sm text-black flex-1 whitespace-pre-wrap p-4 font-medium">
+                  Raffin Agent
+                </div>
                 <div>
                   {transactionDetails == null ? (
                     <Skeleton
@@ -450,7 +522,7 @@ export default function TableDemo() {
             <CardFooter>
               <div className="grid grid-rows-2">
                 <span>Store Contact</span>
-                <Button className="rounded-full">093636739900</Button>
+                <Button className="rounded-full text-xs">093636739900</Button>
               </div>
             </CardFooter>
           </Card>
@@ -475,32 +547,42 @@ export default function TableDemo() {
               )}
             </CardContent>
           </Card>
+
+          <Card className="hover:shadow-lg -w-20 mt-10 ">
+            <CardHeader>
+              <CardTitle className="text-md">History Logs</CardTitle>
+              <CardDescription className="text-xs">
+                List of activity
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {transactionDetails == null ? (
+                <Skeleton
+                  count={5}
+                  wrapper={InlineWrapperWithMargin}
+                  inline
+                  width={90}
+                />
+              ) : (
+                <div className="">{renderLogs()}</div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
+      {
+        transactionDetails == null ? (
+          <Skeleton
+            count={5}
+            wrapper={InlineWrapperWithMargin}
+            inline
+            width={90}
+          />
+        ) : null
+        // displayOrderProgress(transactionDetails.agent.transactionState)
+      }
 
-      {transactionDetails == null ? (
-        <Skeleton
-          count={5}
-          wrapper={InlineWrapperWithMargin}
-          inline
-          width={90}
-        />
-      ) : (
-        displayOrderProgress(transactionDetails.agent.transactionState)
-      )}
-
-      <div className="ml-20 mb-20   col-auto">
-        <Button
-          onClick={() => approveService()}
-          className="rounded-full bg-blue-800 mb-4"
-        >
-          Approve This Transaction
-        </Button>
-        <br />
-        <CardDescription color="text-xs ">
-          Approve this transaction according to your requirements
-        </CardDescription>
-      </div>
+      {renderButton()}
     </div>
   );
 }

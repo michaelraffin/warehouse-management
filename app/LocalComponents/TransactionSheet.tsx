@@ -21,7 +21,7 @@ export default function TransactionSheet(props) {
     if (props.details != undefined) {
       setContent(props.details);
     }
-  });
+  }, []);
   const didTapped = (isCancel: boolean) => {
     if (isCancel) {
       props.void(content);
@@ -120,7 +120,7 @@ export default function TransactionSheet(props) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button disabled={props.disabled}>
+        <Button className="text-xs" disabled={props.disabled}>
           {console.log(props.titleButton)}
           {props.titleButton === undefined ? props.titleButton : "View Request"}
         </Button>

@@ -23,9 +23,9 @@ import { UserProfile } from "../../Utils/userProfile";
 import { Badge } from "@/components/ui/badge";
 import { BeakerIcon } from "@heroicons/react/24/solid";
 import TransactionHistory from "@/dummy/transaction_history.json";
+import { toast } from "sonner";
 let tableWidth = "w-[70%]";
 export default function TableDemo() {
-  const { toast } = useToast();
   const [request, setRequest] = useState(invoices);
   const [reRequest, setRefRequest] = useState(invoices);
   const [userProfile, setUser] = useState(null);
@@ -36,6 +36,7 @@ export default function TableDemo() {
   useEffect(() => {
     fetchTransactionHistory().then((response) => {
       setRequestOrder(response.data.results);
+      toast.success("Event has been created.");
     });
     // setRequestOrder(TransactionHistory.results.slice(0, 20));
     UserProfile().then((profile) => {
@@ -165,6 +166,10 @@ export default function TableDemo() {
     style: "currency",
     currency: "PHP",
   });
+
+  const renderList = React.useMemo(() => {
+    return;
+  }, []);
   return (
     <div className="">
       <SideNavigation />
