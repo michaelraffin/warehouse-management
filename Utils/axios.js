@@ -1,5 +1,5 @@
 import Axios from "axios";
-export const url = "https://looky-search-api.onrender.com"; //"http://localhost:9091"; // `https://looky-search-api.onrender.com`; // `https://laiwarehouse.onrender.com`; ////process.env.stagingEndpoint
+export const url = "https://loogyapi.digital"; //"http://localhost:9091"; // `https://looky-search-api.onrender.com`; // `https://laiwarehouse.onrender.com`; ////process.env.stagingEndpoint
 // "http://192.168.1.148:9091"; //
 export const urlFirebase = process.env.urlFirebase;
 export const urlSupBase = process.env.urlSupaBase;

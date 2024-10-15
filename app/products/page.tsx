@@ -34,6 +34,19 @@ import {
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
 import { axiosV2Local, axiosV2, url } from "../../Utils/axios";
+
+interface UpdateStatus {
+  id?: String;
+  status?: any;
+}
+interface PaymentStatus {
+  id?: String;
+  status?: any;
+  paymentStatus?: string;
+  img: String;
+  stocks: Any;
+}
+
 export default function TableDemo() {
   const { toast } = useToast();
   const [products, setProducts] = useState([]);
@@ -75,8 +88,8 @@ export default function TableDemo() {
       console.log("error Product", error);
     }
   };
-  const didStatusUpdate = (e, id) => {
-    let list = products.map((item) => {
+  const didStatusUpdate = (e: any, id: any) => {
+    let list: any = products.map((item: UpdateStatus) => {
       if (item.id == id) {
         item.status = e;
         return item;
@@ -149,7 +162,7 @@ export default function TableDemo() {
       <SideNavigation />
 
       <HeaderPage
-        title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`Your Products ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
 
@@ -173,13 +186,16 @@ export default function TableDemo() {
           <TabsTrigger className="rounded-full" value="Active">
             Active{" "}
             <span className="ml-2 font-bold text-red-500">
-              {products.filter((item) => item.status).length}
+              {products.filter((item: UpdateStatus) => item.status).length}
             </span>
           </TabsTrigger>
           <TabsTrigger className="rounded-full" value="inActive">
             In-Active{" "}
             <span className="ml-2 font-bold text-red-500">
-              {products.filter((item) => item.status === false).length}
+              {
+                products.filter((item: UpdateStatus) => item.status === false)
+                  .length
+              }
             </span>
           </TabsTrigger>
 
@@ -189,10 +205,10 @@ export default function TableDemo() {
         <AddProduct
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
-          image_file={(e) => setImageLink(e)}
-          title={(e) => setProducTitle(e)}
-          quantity={(e) => setProducQuantity(e)}
-          didSubmit={(e) => submitProduct()}
+          image_file={(e: any) => setImageLink(e)}
+          title={(e: any) => setProducTitle(e)}
+          quantity={(e: any) => setProducQuantity(e)}
+          didSubmit={(e: any) => submitProduct()}
         />
         <TabsContent
           value="AllProducts"
@@ -210,8 +226,8 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((invoice) => (
-                <TableRow key={invoice.id}>
+              {products.map((invoice: PaymentStatus) => (
+                <TableRow key={invoice?.id ?? ""}>
                   <TableCell className="font-medium">
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}

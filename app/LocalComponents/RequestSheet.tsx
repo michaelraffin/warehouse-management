@@ -14,26 +14,80 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-export default function RequestContent(props) {
-  const [content, setContent] = useState(null);
+interface MainContent {
+  status?: String;
+  products?: [any];
+}
+export default function RequestContent(props: any) {
+  const [content, setContent] = useState<MainContent | null>(null);
+
+  const [remarksz, setRemarksV2] = useState("");
+  const [remarks, setRemarks] = useState([
+    {
+      message: "",
+      id: "",
+      remarksBy: null,
+      date: {
+        status: "Approved",
+        dateLog: new Date(),
+      },
+    },
+  ]);
   useEffect(() => {
     // console.log("props", props.details);
     if (props.details != undefined) {
-      setContent(props.details);
+      let details = props.details;
+      if (props.details.remarks === undefined) {
+        details.remarks = [];
+      }
+      details.updateType = "";
+      setContent(details);
     }
   });
+  useEffect(() => {
+    console.log("content-->XXXX", content);
+  }, [content]);
+  const didTypeRemarks = (event: any) => {
+    const { value } = event.target; // Get the input value
+    setRemarksV2(value);
+  };
+  const didDenied = () => {
+    addNewRemark("Denied");
+
+    console.log("AXIOS->", content);
+    props.denied(content);
+  };
   const didTapped = (isCancel: boolean) => {
     if (isCancel) {
+      content.updateType = "Canceled";
       props.void(content);
     } else {
+      content.updateType = "Approved";
+      addNewRemark("Approved");
       props.update(content);
     }
   };
+
+  const addNewRemark = (type: String) => {
+    const newRemark = {
+      message: remarksz,
+      type: type,
+      officeid: "Office_Admin",
+      date: String(Date.now()),
+    };
+    let reference = content;
+    reference.remarks.push(newRemark);
+    setContent((prevContent) => ({
+      ...prevContent,
+      remarks: [...(prevContent.remarks || []), newRemark],
+      updateType: type,
+    }));
+  };
   const renderItems = () => {
     try {
-      let list = [];
+      let list: any = [];
       if (content != null) {
-        content.products.map((item) => {
+        content?.products?.map((item: any) => {
           list.push(
             <div className="grid grid-cols-2 mt-2">
               <Checkbox id="terms" checked={true} color="red" />
@@ -45,7 +99,7 @@ export default function RequestContent(props) {
           <div>
             <p className="font-bold mb-4">Sold Product</p>
             <div className="w-full">
-              <span className="text-xs mt-4">{list}</span>
+              <span className="text-xs mt-4">{list ?? ""}</span>
             </div>
           </div>
         );
@@ -61,6 +115,11 @@ export default function RequestContent(props) {
           <SheetClose asChild>
             <Button onClick={() => didTapped(true)} variant="destructive">
               Void
+            </Button>
+          </SheetClose>
+          <SheetClose asChild>
+            <Button onClick={() => didDenied()} variant="ghost">
+              Denied
             </Button>
           </SheetClose>
           <SheetClose asChild>
@@ -86,17 +145,52 @@ export default function RequestContent(props) {
       );
     }
   };
+
+  const finalRemarks = (e: any) => {
+    try {
+      if (content != null) {
+        if (content.status === "Approved") {
+          return (
+            <div
+              role="alert"
+              className="rounded border-s-4 border-gray-500 bg-gray-50 p-4"
+            >
+              <div className="flex items-center gap-2 text-gray-800">
+                <strong className="block font-medium">Office of Admin:</strong>
+              </div>
+
+              <p className="mt-2 text-xs text-gray-700">
+                {displayRemarks(content)}
+              </p>
+            </div>
+          );
+        }
+      }
+    } catch (error) {
+      return nill;
+    }
+  };
+  const displayRemarks = (e: any) => {
+    try {
+      return content.remarks.length > 0
+        ? content.remarks[0].message
+        : "Remarks: Order missing";
+    } catch (error) {
+      return "";
+    }
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button disabled={props.disabled}>
-          {console.log(props.titleButton)}
-          {props.titleButton === undefined ? props.titleButton : "View Request"}
+        <Button variant="outline" disabled={props.disabled}>
+          {props.titleButton != undefined ? props.titleButton : "View Request"}
         </Button>
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
-          <SheetTitle>{props.details.id}</SheetTitle>
+          <SheetTitle>Transaction ID: {props.details.transactionID}</SheetTitle>
+          {console.log(props.details)}
           <SheetDescription className="text-xs">
             Make changes to your profile here. Click save when you're done.
           </SheetDescription>
@@ -144,12 +238,20 @@ export default function RequestContent(props) {
             </div> */}
             <div className="mt-2  ">{renderItems()}</div>
             <Textarea
+              className={
+                content != null
+                  ? content.status === "Approved"
+                    ? "hidden col-span-3"
+                    : `block col-span-3`
+                  : ""
+              }
               disabled={
                 content != null && content.status != "Approved" ? false : true
               }
-              className="col-span-3"
-              placeholder="Type your message here."
+              onChange={didTypeRemarks}
+              placeholder={displayRemarks(content)}
             />
+            {finalRemarks()}
           </div>
         </div>
         {footerContent()}

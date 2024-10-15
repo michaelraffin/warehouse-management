@@ -365,8 +365,9 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      // on:click={() => setProduct(order)}
+
       {/* <div className="w-1/2 ml-20 mt-20">
+        // on:click={() => setProduct(order)}
         <div>
           <div className="max-w-sm group static rounded overflow-hidden hover:border-black hover:border-l-4  hover:shadow-lg bg-white transition duration-100 ease-in-out  {order.receiptImageLink === undefined ? 'border-red-500 border ' : ''} ">
             <div className="px-6 py-4">

@@ -19,7 +19,22 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { LineChart, Line } from "recharts";
-function index({ data, id, sourceAmount, bottomTitle }) {
+
+interface LocalChartProps {
+  id: string;
+  sourceAmount: string;
+  xLabel: string;
+  bottomTitle: string;
+  data: Array<{ x: number | string; y: number }>; // Define the data type structure
+}
+
+function index({
+  data,
+  id,
+  sourceAmount,
+  bottomTitle,
+  xLabel,
+}: LocalChartProps) {
   return (
     <>
       <ResponsiveContainer width="80%" height="100%">

@@ -44,6 +44,7 @@ export default function UserCart() {
               }}
             ></div>
             <Image
+              alt="credit-card"
               width={30}
               height={30}
               className="bg-white rounded-full hover:shadow-lg "
@@ -53,6 +54,7 @@ export default function UserCart() {
           </div>
           <div style={{ position: "absolute", top: 30, left: 250 }}>
             <Image
+              alt="credit-card"
               width={30}
               height={30}
               className="bg-white rounded-full  hover:shadow-lg"
@@ -64,11 +66,12 @@ export default function UserCart() {
             style={{
               position: "absolute",
               top: 30,
-              right: 0,
+
               right: -40,
             }}
           >
             <Image
+              alt="credit-card"
               width={30}
               height={30}
               className="bg-white rounded-full  hover:shadow-lg"

@@ -34,7 +34,10 @@ export default function TableDemo() {
   });
   useEffect(() => {
     fetchProduct().then((response) => {
-      setRequestOrder(response.data.results);
+      console.log("response response", response);
+      if (response != null) {
+        setRequestOrder(response.data.results);
+      }
     });
     UserProfile().then((profile) => {
       setUser(profile);
@@ -57,26 +60,27 @@ export default function TableDemo() {
       alert("Oppss");
     }
   };
-  const displayAlert = (item) => {
-    console.log(item);
 
+  const displayAlert = (item) => {
+    delete item.updateType;
+    console.log("displayAlert", item);
     // didUpdate("Denied", item.id);
-    const updateService = async () => {
-      let payload = item;
-      payload.status = "Approved";
-      payload.officeStatus = {
-        status: "Approve",
-        dateLog: new Date(),
-      };
-      let productList = await axios.post(
-        "/updateItem/LesseeFullfilment",
-        payload,
-      );
-      return productList;
-    };
-    updateService().then((item) => {
-      alert("loading");
-    });
+    // const updateService = async () => {
+    //   let payload = item;
+    //   payload.status = "Approved";
+    //   payload.officeStatus = {
+    //     status: "Approved",
+    //     dateLog: new Date(),
+    //   };
+    //   let productList = await axios.post(
+    //     "/updateItem/LesseeFullfilment",
+    //     payload,
+    //   );
+    //   return productList;
+    // };
+    // updateService().then((item) => {
+    //   alert("loading");
+    // });
 
     // toast({
     //   title: "Scheduled: Catch up",
@@ -122,12 +126,13 @@ export default function TableDemo() {
         isAPI: true,
       };
       const response = await axios.post("/store/LesseeFullfilment", data);
-      console.log(response.data);
       return response;
     } catch (error) {
       console.log("errorr fetchProduct", error);
+      return null;
     }
   }
+  const displayRemarks = (e: any) => {};
   const searchRequest = (e) => {
     try {
       let searchedValue = e.target.value.toLowerCase();
@@ -248,50 +253,63 @@ export default function TableDemo() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>Details</TableHead>
+                <TableHead>Agent</TableHead>
+                <TableHead className="text-right">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems.map((invoice) => (
-                <TableRow key={invoice._id}>
+              {requestItems.reverse().map((invoice) => (
+                <TableRow key={invoice.id}>
                   <TableCell className="font-medium">
-                    {" "}
                     <RequestSheet
-                      // disabled={`${invoice.status === "Approved" ? true : false}`}
+                      titleButton={`View ${invoice.transactionID}`}
+                      disabled={false}
                       void={(details) => displayAlert(details)}
                       update={(details) => displayAlert(details)}
                       details={invoice}
                     />
                   </TableCell>
-                  {/* {invoice.invoice}  */}
+
                   <TableCell
                     className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
                   >
-                    {invoice.status}
+                    <textarea
+                      className="p-2 text-black bg-gray-100 rounded-lg ml-4"
+                      placeholder="Remarks"
+                      value="Remarks: Order missing"
+                    />
                   </TableCell>
-                  <TableCell>{invoice.status}</TableCell>
-                  <TableCell className="text-center">
-                    <Button variant="secondary">
-                      {" "}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"
-                        />
-                      </svg>
-                      <p className="text-xs ml-4">View Attached photo</p>
-                    </Button>
+                  <TableCell className="text-xs">
+                    <div className="text-md font-bold uppercase grid grid-cols-2 ">
+                      <p> {invoice.stockman} </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <p className="grid ">
+                          {" "}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-4 h-4"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                            />
+                          </svg>{" "}
+                          {invoice.date_created}
+                        </p>
+                      </div>
+                      <p>{invoice.assigned_to.fullName}</p>
+                    </div>
+                    {/* <Badge variant={"secondary"} className="mt-2">
+                    {invoice.assigned_to.fullName}
+                  </Badge> */}
                   </TableCell>
+                  <TableCell className="text-right">{invoice.status}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -304,45 +322,6 @@ export default function TableDemo() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {requestItems
-                .filter((item) => item.status === "Approved")
-                .map((invoice) => (
-                  <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">
-                      {" "}
-                      <RequestSheet
-                        disabled={true}
-                        void={(details) => displayAlert(details)}
-                        details={invoice}
-                      />
-                    </TableCell>
-                    {/* {invoice.invoice}  */}
-                    <TableCell
-                      className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                    >
-                      {invoice.status}
-                    </TableCell>
-                    <TableCell>{invoice.paymentMethod}</TableCell>
-                    <TableCell className="text-right">
-                      {invoice.totalAmount}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TabsContent>
-        <TabsContent value="Pending">
-          <Table className={`${tableWidth}`}>
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
                 <TableHead>Details</TableHead>
                 <TableHead>Agent</TableHead>
                 <TableHead className="text-right">Status</TableHead>
@@ -350,10 +329,22 @@ export default function TableDemo() {
             </TableHeader>
             <TableBody>
               {requestItems
-                .filter((item) => item.status === "Pending")
+                .filter(
+                  (item) =>
+                    item.status === "Approved" || item.status === undefined,
+                )
+                .reverse()
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">Status</TableCell>
+                    <TableCell className="font-medium">
+                      <RequestSheet
+                        titleButton={`View ${invoice.transactionID}`}
+                        disabled={false}
+                        void={(details) => displayAlert(details)}
+                        update={(details) => displayAlert(details)}
+                        details={invoice}
+                      />
+                    </TableCell>
 
                     <TableCell
                       className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
@@ -387,14 +378,90 @@ export default function TableDemo() {
                             {invoice.date_created}
                           </p>
                         </div>
-                        <p>dsads {invoice.assigned_to.fullName}</p>
+                        <p>{invoice.assigned_to.fullName}</p>
+                      </div>
+                      {/* <Badge variant={"secondary"} className="mt-2">
+                      {invoice.assigned_to.fullName}
+                    </Badge> */}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {invoice.status}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TabsContent>
+        <TabsContent value="Pending">
+          <Table className={`${tableWidth}`}>
+            <TableCaption>A list of request.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead>Details</TableHead>
+                <TableHead>Agent</TableHead>
+                <TableHead className="text-right">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {requestItems
+                .filter(
+                  (item) =>
+                    item.status === "Pending" || item.status === undefined,
+                )
+                .map((invoice) => (
+                  <TableRow key={invoice.id}>
+                    <TableCell className="font-medium">
+                      <RequestSheet
+                        titleButton={`View ${invoice.transactionID}`}
+                        disabled={false}
+                        void={(details) => displayAlert(details)}
+                        update={(details) => displayAlert(details)}
+                        denied={(details) => displayAlert(details)}
+                        details={invoice}
+                      />
+                    </TableCell>
+
+                    <TableCell
+                      className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                    >
+                      <textarea
+                        className="p-2 text-black bg-gray-100 rounded-lg ml-4"
+                        placeholder="Remarks"
+                        value="Remarks: Order missing"
+                      />
+                    </TableCell>
+                    <TableCell className="text-xs">
+                      <div className="text-md font-bold uppercase grid grid-cols-2 ">
+                        <p> {invoice.stockman} </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <p className="grid ">
+                            {" "}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                              />
+                            </svg>{" "}
+                            {invoice.date_created}
+                          </p>
+                        </div>
+                        <p>{invoice.assigned_to.fullName}</p>
                       </div>
                       {/* <Badge variant={"secondary"} className="mt-2">
                         {invoice.assigned_to.fullName}
                       </Badge> */}
                     </TableCell>
                     <TableCell className="text-right">
-                      {/* {invoice.totalAmount} */}
+                      PENDING
                       {invoice.status}
                     </TableCell>
                   </TableRow>

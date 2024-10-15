@@ -14,8 +14,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-export default function TransactionSheet(props) {
-  const [content, setContent] = useState(null);
+
+interface MainContent {
+  status?: String;
+  products?: [any];
+}
+export default function TransactionSheet(props: any) {
+  const [content, setContent] = useState<MainContent | null>(null);
   useEffect(() => {
     // console.log("props", props.details);
     if (props.details != undefined) {
@@ -31,9 +36,9 @@ export default function TransactionSheet(props) {
   };
   const renderItems = () => {
     try {
-      let list = [];
+      let list: any = [];
       if (content != null) {
-        content.products.map((item) => {
+        content.products?.map((item) => {
           list.push(
             <div className="grid grid-cols-2 mt-2">
               <Checkbox id="terms" checked={true} color="red" />
@@ -55,7 +60,7 @@ export default function TransactionSheet(props) {
     }
   };
   const subDetails = () => {
-    let details = [];
+    let details: any = [];
     let list = [
       "Transaction #",
       "Status",
@@ -101,11 +106,11 @@ export default function TransactionSheet(props) {
     }
   };
 
-  const renderFiles = () => {
+  const renderFiles: any = () => {
     try {
-      let content: [any] = [];
-      props.details.attachedFile.map((item) => {
-        content.push(
+      let contentItem: [any?] = [null];
+      props.details.attachedFile.map((item: any) => {
+        contentItem.push(
           <img
             src={item}
             className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"

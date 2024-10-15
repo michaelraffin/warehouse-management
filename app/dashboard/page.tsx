@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { ReactNode } from "react";
 import {
   Table,
   TableBody,
@@ -29,9 +30,15 @@ import { Button } from "@/components/ui/button";
 import { axios, url, axiosV2 } from "@/Utils/axios";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+interface UserProfile {
+  user_details: {
+    firstName: string;
+    // add other properties here
+  };
+}
 
 export default function TableDemo() {
-  let [userProfile, setUser] = useState(null);
+  let [userProfile, setUser] = useState<UserProfile | null>(null);
   const [myVendors, setVendors] = useState([]);
   const [dailySales, setDailySales] = useState(0);
   const [annualSales, setAnnualsales] = useState(null);
@@ -162,8 +169,16 @@ export default function TableDemo() {
       console.log("error Product", error);
     }
   };
-  function InlineWrapperWithMargin({ children }) {
-    return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
+  // function InlineWrapperWithMargin({
+  //   children,
+  // }: {
+  //   children: React.ReactNode;
+  // }) {
+  //   return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
+  // }
+
+  function InlineWrapperWithMargin({ children }: { children?: ReactNode }) {
+    return <div style={{ marginRight: "0.5rem" }}>{children}</div>;
   }
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("en-IN", {
@@ -263,6 +278,7 @@ export default function TableDemo() {
               />
             ) : (
               <LocalChart
+                id={"1"}
                 sourceAmount={"amount"}
                 xLabel={"title"}
                 bottomTitle="title"
@@ -352,7 +368,7 @@ export default function TableDemo() {
               "..."
             ) : (
               <LocalChart
-                className="mt-20"
+                id={"2"}
                 sourceAmount={"amount"}
                 bottomTitle="date"
                 xLabel={""}
@@ -369,6 +385,7 @@ export default function TableDemo() {
                 "..."
               ) : (
                 <LocalChart
+                  id={"3"}
                   sourceAmount={"amount"}
                   xLabel={""}
                   bottomTitle="date"
@@ -384,6 +401,7 @@ export default function TableDemo() {
               "..."
             ) : (
               <LocalChart
+                id={"4"}
                 bottomTitle="date"
                 sourceAmount={"amount"}
                 xLabel={""}
@@ -462,6 +480,7 @@ export default function TableDemo() {
                     <TableCell className="">
                       <a href={`/transactions/${vendors.transactionID} `}>
                         <Image
+                          alt="Image arrow right"
                           className=" w-2"
                           width={2}
                           height={2}
@@ -480,6 +499,7 @@ export default function TableDemo() {
             "..."
           ) : (
             <LocalChart
+              id={"50"}
               sourceAmount={"amount"}
               xLabel={"title"}
               bottomTitle="title"
@@ -543,6 +563,7 @@ export default function TableDemo() {
                     <TableCell className="">
                       <a href="">
                         <Image
+                          alt={"arrow-right"}
                           className=" w-2"
                           width={2}
                           height={2}
@@ -561,6 +582,7 @@ export default function TableDemo() {
             "..."
           ) : (
             <LocalChart
+              id={"1"}
               sourceAmount={"amount"}
               xLabel={"title"}
               bottomTitle="title"
