@@ -52,6 +52,7 @@ export default function TableDemo() {
     // transaction_dummy.results[0],
     null,
   );
+  const [isVisible, setIsVisible] = useState(true);
 
   UserProfile().then((profile) => {
     setUser(profile);
@@ -60,6 +61,27 @@ export default function TableDemo() {
   const pathname = usePathname();
 
   const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Calculate if we are at the bottom of the page
+      const isAtBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+
+      if (isAtBottom) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   useEffect(() => {
     let id = pathname.split("/")[2];
     console.log("type,", id);
@@ -77,6 +99,9 @@ export default function TableDemo() {
     });
     console.log(UserProfile());
   }, []);
+  const didPending = () => {
+    toast.warning(`Item has been put to onhold`);
+  };
   const didApprove = async () => {
     setStatus(true);
     toast.promise(approveService(), {
@@ -417,62 +442,87 @@ export default function TableDemo() {
     currency: "PHP",
   });
   return (
-    <div className="">
-      <SideNavigation />
-      <HeaderPage
-        title={`Transaction Details! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
-        subtitle=""
-      />
-
-      <TimeLine />
-      <div className="ml-20 mr-20 mt-20 mb-20 ">
-        <div className="grid grid-cols-2 ">
-          <p className="text-xs"> Transaction Details </p>
-          <div>{/* <Badge variant="destructive">Un Paid</Badge> */}</div>
-          <h1 className="text-[24px] mb font-bold">
-            {" "}
-            Transaction ID [{transactionID}]
-          </h1>
-        </div>
-        <Badge variant="destructive" className="bg-red-600 text-xs">
-          Unpaid
-        </Badge>
-      </div>
-      <div className="grid grid-rows-2 grid-flow-col gap-2 ml-20 mr-10">
-        <div className="   col-span-2 ">
-          <div className="mb-10">
-            <span className="text-md font-bold ">Cart Details</span>
+    <>
+      <div className="">
+        <SideNavigation />
+        <HeaderPage
+          title={`Transaction Details! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+          subtitle=""
+        />
+        <TimeLine />
+        <div className="ml-20 mr-20 mt-20 mb-20 ">
+          <div className="grid grid-cols-2 ">
+            <p className="text-xs"> Transaction Details </p>
+            <div>{/* <Badge variant="destructive">Un Paid</Badge> */}</div>
+            <h1 className="text-[24px] mb font-bold">
+              Transaction ID
+              <span className="bg-[#D4ED31] p-2">[{transactionID}]</span>
+            </h1>
           </div>
-
-          {transactionDetails == null ? (
-            <Skeleton
-              count={5}
-              wrapper={InlineWrapperWithMargin}
-              inline
-              width={90}
-            />
-          ) : (
-            renderCart()
-          )}
+          <Badge variant="destructive" className="bg-red-600 text-xs">
+            Unpaid
+          </Badge>
         </div>
-        <div className=" w-full  row-span-2  ">
-          <Card className="hover:shadow-lg -w-20">
-            <CardHeader>
-              <CardTitle className="text-md">Agent Details</CardTitle>
-              <CardDescription className="">
-                {transactionDetails == null ? (
-                  <Skeleton
-                    count={5}
-                    wrapper={InlineWrapperWithMargin}
-                    inline
-                    width={90}
-                  />
-                ) : null}
+        <div className="grid grid-rows-2 grid-flow-col gap-2 ml-20 mr-10">
+          <div className="   col-span-2 ">
+            <div className="mb-10">
+              <span className="text-md font-bold ">Cart Details</span>
+            </div>
 
-                <div className="text-sm text-black flex-1 whitespace-pre-wrap p-4 font-medium">
-                  Raffin Agent
-                </div>
-                <div>
+            {transactionDetails == null ? (
+              <Skeleton
+                count={5}
+                wrapper={InlineWrapperWithMargin}
+                inline
+                width={90}
+              />
+            ) : (
+              renderCart()
+            )}
+          </div>
+          <div className=" w-full  row-span-2  ">
+            <Card className="hover:shadow-lg -w-20">
+              <CardHeader>
+                <CardTitle className="text-md">Agent Details</CardTitle>
+                <CardDescription className="">
+                  {transactionDetails == null ? (
+                    <Skeleton
+                      count={5}
+                      wrapper={InlineWrapperWithMargin}
+                      inline
+                      width={90}
+                    />
+                  ) : null}
+
+                  <div className="text-sm text-black flex-1 whitespace-pre-wrap p-4 font-medium">
+                    Raffin Agent
+                  </div>
+                  <div>
+                    {transactionDetails == null ? (
+                      <Skeleton
+                        count={5}
+                        wrapper={InlineWrapperWithMargin}
+                        inline
+                        width={90}
+                      />
+                    ) : (
+                      <Badge variant={"default"} className="mr-4">
+                        {transactionDetails.agent.transactionState.toUpperCase()}
+                      </Badge>
+                    )}
+                    by stockman
+                  </div>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* <p className="font-bold">Order Progress</p> */}
+              </CardContent>
+              <CardFooter></CardFooter>
+            </Card>
+            <Card className="hover:shadow-lg -w-20 mt-10">
+              <CardHeader>
+                <CardTitle className="text-md">Store Details</CardTitle>
+                <CardDescription className="">
                   {transactionDetails == null ? (
                     <Skeleton
                       count={5}
@@ -481,23 +531,42 @@ export default function TableDemo() {
                       width={90}
                     />
                   ) : (
-                    <Badge variant={"default"} className="mr-4">
-                      {transactionDetails.agent.transactionState.toUpperCase()}
-                    </Badge>
+                    <>
+                      <div>
+                        {transactionDetails.transaction.vendor.vendorTitle}
+                      </div>
+                      <div>
+                        {transactionDetails.transaction.vendor._id.slice(-6)}
+                      </div>
+                      <div>
+                        <img
+                          src={transactionDetails.transaction.vendor.img}
+                          className="mr-2 h-10 w-10 rounded-full hover:shadow-lg"
+                        />
+                      </div>
+                    </>
                   )}
-                  by stockman
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Store Location</p>
+              </CardContent>
+              <CardFooter>
+                <div className="grid grid-rows-2">
+                  <span>Store Contact</span>
+                  <Button className="rounded-full text-xs">093636739900</Button>
                 </div>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {/* <p className="font-bold">Order Progress</p> */}
-            </CardContent>
-            <CardFooter></CardFooter>
-          </Card>
-          <Card className="hover:shadow-lg -w-20 mt-10">
-            <CardHeader>
-              <CardTitle className="text-md">Store Details</CardTitle>
-              <CardDescription className="">
+              </CardFooter>
+            </Card>
+
+            <Card className="hover:shadow-lg -w-20 mt-10">
+              <CardHeader>
+                <CardTitle className="text-md">Attached files</CardTitle>
+                <CardDescription className="text-xs">
+                  Attached by Agents
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 {transactionDetails == null ? (
                   <Skeleton
                     count={5}
@@ -506,88 +575,44 @@ export default function TableDemo() {
                     width={90}
                   />
                 ) : (
-                  <>
-                    <div>
-                      {transactionDetails.transaction.vendor.vendorTitle}
-                    </div>
-                    <div>
-                      {transactionDetails.transaction.vendor._id.slice(-6)}
-                    </div>
-                    <div>
-                      <img
-                        src={transactionDetails.transaction.vendor.img}
-                        className="mr-2 h-10 w-10 rounded-full hover:shadow-lg"
-                      />
-                    </div>
-                  </>
+                  <div className="flex">{renderFiles()}</div>
                 )}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Store Location</p>
-            </CardContent>
-            <CardFooter>
-              <div className="grid grid-rows-2">
-                <span>Store Contact</span>
-                <Button className="rounded-full text-xs">093636739900</Button>
-              </div>
-            </CardFooter>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-lg -w-20 mt-10">
-            <CardHeader>
-              <CardTitle className="text-md">Attached files</CardTitle>
-              <CardDescription className="text-xs">
-                Attached by Agents
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {transactionDetails == null ? (
-                <Skeleton
-                  count={5}
-                  wrapper={InlineWrapperWithMargin}
-                  inline
-                  width={90}
-                />
-              ) : (
-                <div className="flex">{renderFiles()}</div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg -w-20 mt-10 ">
-            <CardHeader>
-              <CardTitle className="text-md">History Logs</CardTitle>
-              <CardDescription className="text-xs">
-                List of activity
-              </CardDescription>
-            </CardHeader>
-            <CardContent className=" p-2">
-              {transactionDetails == null ? (
-                <Skeleton
-                  count={5}
-                  wrapper={InlineWrapperWithMargin}
-                  inline
-                  width={90}
-                />
-              ) : (
-                <div className="">
-                  <Table className="text-xs">
-                    <TableCaption>A list of recent transaction.</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[100px] ">Type</TableHead>
-                        <TableHead className="text-right">Date</TableHead>
-                        <TableHead>Time</TableHead>
-                        {/* <TableHead className="text-right">Amount</TableHead> */}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>{renderLogs()}</TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-            {/* {transactionDetails == null ? (
+            <Card className="hover:shadow-lg -w-20 mt-10 ">
+              <CardHeader>
+                <CardTitle className="text-md">History Logs</CardTitle>
+                <CardDescription className="text-xs">
+                  List of activity
+                </CardDescription>
+              </CardHeader>
+              <CardContent className=" p-2">
+                {transactionDetails == null ? (
+                  <Skeleton
+                    count={5}
+                    wrapper={InlineWrapperWithMargin}
+                    inline
+                    width={90}
+                  />
+                ) : (
+                  <div className="">
+                    <Table className="text-xs">
+                      <TableCaption>A list of recent transaction.</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[100px] ">Type</TableHead>
+                          <TableHead className="text-right">Date</TableHead>
+                          <TableHead>Time</TableHead>
+                          {/* <TableHead className="text-right">Amount</TableHead> */}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>{renderLogs()}</TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+              {/* {transactionDetails == null ? (
               <Skeleton
                 count={5}
                 wrapper={InlineWrapperWithMargin}
@@ -597,23 +622,74 @@ export default function TableDemo() {
             ) : (
               <div className="">{renderLogs()}</div>
             )} */}
-          </Card>
+            </Card>
+          </div>
+        </div>
+        {
+          transactionDetails == null ? (
+            <Skeleton
+              count={5}
+              wrapper={InlineWrapperWithMargin}
+              inline
+              width={90}
+            />
+          ) : null
+          // displayOrderProgress(transactionDetails.agent.transactionState)
+        }
+
+        {renderButton()}
+      </div>
+
+      <div
+        className={`${isVisible ? "block " : " hidden"} transition ease-out`}
+        style={{
+          position: "fixed",
+          bottom: 20,
+          right: 20,
+          zIndex: 1,
+          justifyItems: "center",
+        }}
+      >
+        <div className=" w-auto">
+          <span className="p-2">
+            <Button
+              disabled={status}
+              onClick={() => didPending()}
+              className={
+                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                  : "rounded-full bg-[#dcdde1] mb-4 text-xs text-black"
+              }
+            >
+              On-Hold
+            </Button>
+            <Button
+              disabled={status}
+              onClick={() => didApprove()}
+              className={
+                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                  : "rounded-full bg-[#c23616] mb-4 text-xs ml-2 mr-2"
+              }
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={status}
+              onClick={() => didApprove()}
+              className={
+                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                  : "rounded-full bg-blue-800 mb-4 text-xs"
+              }
+            >
+              Approve this order
+            </Button>
+            {/* ApprovedPendingDenied */}
+          </span>
         </div>
       </div>
-      {
-        transactionDetails == null ? (
-          <Skeleton
-            count={5}
-            wrapper={InlineWrapperWithMargin}
-            inline
-            width={90}
-          />
-        ) : null
-        // displayOrderProgress(transactionDetails.agent.transactionState)
-      }
-
-      {renderButton()}
-    </div>
+    </>
   );
 }
 

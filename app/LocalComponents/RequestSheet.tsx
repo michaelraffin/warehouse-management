@@ -1,3 +1,5 @@
+"use client";
+import React, { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,10 +45,10 @@ export default function RequestContent(props: any) {
       details.updateType = "";
       setContent(details);
     }
-  });
-  useEffect(() => {
-    console.log("content-->XXXX", content);
-  }, [content]);
+  }, []);
+  // useEffect(() => {
+  //   console.log("use effect-->XXXX", content);
+  // }, [content]);
   const didTypeRemarks = (event: any) => {
     const { value } = event.target; // Get the input value
     setRemarksV2(value);
@@ -54,7 +56,7 @@ export default function RequestContent(props: any) {
   const didDenied = () => {
     addNewRemark("Denied");
 
-    console.log("AXIOS->", content);
+    console.log("Updated V2 content:", content);
     props.denied(content);
   };
   const didTapped = (isCancel: boolean) => {
@@ -167,7 +169,7 @@ export default function RequestContent(props: any) {
         }
       }
     } catch (error) {
-      return nill;
+      return null;
     }
   };
   const displayRemarks = (e: any) => {
@@ -189,8 +191,13 @@ export default function RequestContent(props: any) {
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
-          <SheetTitle>Transaction ID: {props.details.transactionID}</SheetTitle>
-          {console.log(props.details)}
+          <SheetTitle>
+            Transaction ID:{" "}
+            <span className="bg-[#C4E538] p-2 ">
+              {props.details.transactionID}
+            </span>
+          </SheetTitle>
+
           <SheetDescription className="text-xs">
             Make changes to your profile here. Click save when you're done.
           </SheetDescription>
@@ -251,7 +258,7 @@ export default function RequestContent(props: any) {
               onChange={didTypeRemarks}
               placeholder={displayRemarks(content)}
             />
-            {finalRemarks()}
+            {finalRemarks(null)}
           </div>
         </div>
         {footerContent()}

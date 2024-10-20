@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import moment from "moment";
@@ -283,7 +284,7 @@ export default function TableDemo() {
                 <TableHead>Status</TableHead>
                 <TableHead>MOP</TableHead>
                 <TableHead className="text-center">Vendor</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="text-right">Details</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -332,6 +333,20 @@ export default function TableDemo() {
                     </Button> */}
                   </TableCell>
                   <TableCell>{formatter.format(invoice.grandTotal)}</TableCell>
+                  <TableCell>
+                    <a
+                      href={`/transactions/${invoice.transactionID}`}
+                      target="_blank"
+                    >
+                      <Image
+                        alt="Image arrow right"
+                        className=" w-2"
+                        width={2}
+                        height={2}
+                        src="/arrow-right.png"
+                      />
+                    </a>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
