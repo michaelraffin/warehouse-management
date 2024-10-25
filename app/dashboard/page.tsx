@@ -478,7 +478,10 @@ export default function TableDemo() {
                       {/* arrow-right.png */}
                     </TableCell>
                     <TableCell className="">
-                      <a href={`/transactions/${vendors.transactionID} `}>
+                      <a
+                        href={`/transactions/${vendors.transactionID} `}
+                        target="_blank"
+                      >
                         <Image
                           alt="Image arrow right"
                           className=" w-2"

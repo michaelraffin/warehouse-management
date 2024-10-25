@@ -127,7 +127,7 @@ export default function TransactionSheet(props: any) {
       <SheetTrigger asChild>
         <Button className="text-xs" disabled={props.disabled}>
           {console.log(props.titleButton)}
-          {props.titleButton === undefined ? props.titleButton : "View Request"}
+          {props.titleButton === undefined ? "View Request" : props.titleButton}
         </Button>
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">

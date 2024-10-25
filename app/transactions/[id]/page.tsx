@@ -9,6 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { useRouter, usePathname } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
@@ -48,6 +59,8 @@ export default function TableDemo() {
   const [userProfile, setUser] = useState(null);
   const [requestItems, setRequestOrder] = useState([]);
   const [transactionID, setTransactionID] = useState("");
+  const [reasonOnHolding, setStateReason] = useState("");
+
   const [transactionDetails, setTransactionDetails] = useState(
     // transaction_dummy.results[0],
     null,
@@ -100,11 +113,43 @@ export default function TableDemo() {
     console.log(UserProfile());
   }, []);
   const didPending = () => {
-    toast.warning(`Item has been put to onhold`);
+    // toast.warning(`Item has been put to onhold`);
+    setStatus(true);
+    let state = "Hold_by_Office";
+    let type_HOO = "Hold-HOO";
+    toast.promise(didOnHoldService(state, type_HOO), {
+      loading: "Loading...",
+      success: (data) => {
+        setTransactionDetails(data);
+        setStatus(false);
+        console.log("data updated response", data);
+        return `${transactionID} Item has been put to onhold`;
+        // ${data.name}
+      },
+      error: "Error",
+    });
+    // let source :any= transactionDetails;
+    // source.updateType = "Denied";
+    // console.log("Before displayAlert", source);
+
+    // const updateService = async () => {
+    //   let payload:any = transactionDetails;
+    //   payload.status = "Denied";
+    //   payload.officeStatus = {
+    //     status: "Denied",
+    //     dateLog: new Date(),
+    //   };
+    //   let productList = await axios.post(
+    //     "/updateItem/LesseeFullfilment",
+    //     payload,
+    //   );
+    //   return productList;
+    // };
   };
+
   const didApprove = async () => {
     setStatus(true);
-    toast.promise(approveService(), {
+    toast.promise(approveService("", "Approved"), {
       loading: "Loading...",
       success: (data) => {
         setStatus(false);
@@ -116,7 +161,55 @@ export default function TableDemo() {
       error: "Error",
     });
   };
-  const approveService = async () => {
+  const didReject = async () => {
+    setStatus(true);
+    toast.promise(approveService("", "Approved"), {
+      loading: "Loading...",
+      success: (data) => {
+        setStatus(false);
+        setTransactionDetails(data);
+        console.log("data updated response", data);
+        return `${transactionID} has been updated`;
+        // ${data.name}
+      },
+      error: "Error",
+    });
+  };
+  const didOnHoldService = async (type: string, status: string) => {
+    let state = "Hold_by_Office";
+    let type_HOO = "Hold-HOO";
+    if (transactionDetails.status === "Approved") {
+      return false;
+    }
+    try {
+      let data: any = transactionDetails;
+      data.status = state;
+      data.agent.transactionState = state;
+      let payloads = {
+        type: "Hold-HOO", // Approved by HOO (Head of Office)
+        date: new Date(),
+        remarks: reasonOnHolding,
+        formattedDate: moment(Date()).format("YYYY-MM-DD").toString(),
+      };
+
+      if (data.logs === undefined) {
+        data.logs = [payloads];
+      } else {
+        data.logs.push(payloads);
+      }
+
+      let agentResponse = await axios.post(
+        "/updateItem/LesseeTransaction",
+        data,
+      );
+      window.location.reload();
+      return agentResponse.data.results;
+    } catch (error) {
+      console.log("error Product", error);
+      return null;
+    }
+  };
+  const approveService = async (type: string, status: string) => {
     let state = "Approved_by_Office";
     if (transactionDetails.status === "Approve") {
       return false;
@@ -125,15 +218,15 @@ export default function TableDemo() {
       let data: any = transactionDetails;
       data.status = state;
       data.agent.transactionState = state;
-      let payloads = [
-        {
-          type: "Approved-HOO", // Approved by HOO (Head of Office)
-          date: new Date(),
-          formattedDate: moment(Date()).format("YYYY-MM-DD").toString(),
-        },
-      ];
+      let payloads = {
+        type: "Approved-HOO", // Approved by HOO (Head of Office)
+        date: new Date(),
+        remarks: "N/A",
+        formattedDate: moment(Date()).format("YYYY-MM-DD").toString(),
+      };
+
       if (data.logs === undefined) {
-        data.logs = payloads;
+        data.logs = [payloads];
       } else {
         data.logs.push(payloads);
       }
@@ -152,13 +245,16 @@ export default function TableDemo() {
   const fetchTransaction = (id: string) => {
     const asyncService = async () => {
       try {
+        let query = {
+          transactionID: id,
+        };
         const data = {
           id: id,
-          queryData: { transactionID: id },
-          queryType: "custom",
+          queryData: query, // { transactionID: id },
+          queryType: "transactionID",
           isAPI: true,
         };
-        // const response = await axios.post("/store/LesseeFullfilment", data);
+
         let productList = await axiosV2("dsadsa").post(
           `${url}/store/LesseeTransaction`,
           {
@@ -166,13 +262,18 @@ export default function TableDemo() {
             className: "LesseeTransaction",
           },
         );
-        console.log("productList", productList);
         return productList;
-      } catch (error) {}
+      } catch (error) {
+        toast.error("something went wrong...");
+      }
     };
     asyncService().then((item) => {
-      console.log("asyncService", item);
-      setTransactionDetails(item.data.results[0]);
+      const filteredTransactions = item.data.results.filter(
+        (result) => result.transactionID === id,
+      );
+      console.log("asyncService", filteredTransactions);
+      setStatus(false);
+      setTransactionDetails(filteredTransactions[0]);
     });
   };
   const didUpdate = (e, id) => {
@@ -307,37 +408,51 @@ export default function TableDemo() {
     let content: [any] = [];
     transactionDetails.attachedFile.map((item) => {
       content.push(
-        <img
-          src={item}
-          className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
-        />,
+        <a href={item} download={item}>
+          <img
+            src={item}
+            download={item}
+            className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
+          />
+        </a>,
       );
     });
     return content;
   };
   const renderLogs = () => {
     let content: [any] = [];
-    transactionDetails.logs.map((item) => {
-      console.log("logs", item);
-      content.push(
-        <TableRow>
-          <TableCell className="font-medium w-[80px] ">{item.type}</TableCell>
-          <TableCell className="text-right">
-            <div className=" ">
-              {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
-              {moment(item.date).format("YYYY-MM-DD").toString()}
-            </div>
-          </TableCell>
-          <TableCell>
-            <div className=" ">
-              {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
-              {moment(item.date).format("hh:mm a").toString()}
-            </div>
-          </TableCell>
-        </TableRow>,
-      );
-    });
-    return content;
+    if (
+      Array.isArray(transactionDetails?.logs) ||
+      transactionDetails?.logs != undefined
+    ) {
+      transactionDetails?.logs?.map((item) => {
+        console.log("logs", item);
+        content.push(
+          <TableRow>
+            <TableCell className="font-medium w-[80px] ">{item.type}</TableCell>
+            <TableCell className="text-right">
+              <div className=" ">
+                {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
+                {moment(item.date).format("YYYY-MM-DD").toString()}
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className=" ">
+                {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
+                {moment(item.date).format("hh:mm A").toString()}
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className=" ">
+                {/* <Image className="w-2" width={2} height={2} src="/clock.png" /> */}
+                {item.remarks}
+              </div>
+            </TableCell>
+          </TableRow>,
+        );
+      });
+      return content.reverse();
+    }
   };
   const displayOrderProgress = (type: string) => {
     return (
@@ -399,35 +514,218 @@ export default function TableDemo() {
   function InlineWrapperWithMargin({ children }) {
     return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
   }
-  const renderButton = () => {
-    try {
+  const renderOnHoldButton = () => {
+    {
+      if (transactionDetails?.status != "Hold_by_Office") {
+        return (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                disabled={status}
+                variant="outline"
+                className="rounded-full"
+              >
+                On hold
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="mb-4">
+                  On holding Transaction ID{" "}
+                  <span className="bg-[#D4ED31] p-2">[{transactionID}]</span>{" "}
+                </DialogTitle>
+                <DialogDescription>
+                  Let your team know the reason of
+                  <span className="font-bold text-red-600">
+                    {" "}
+                    ON HOLDING
+                  </span>{" "}
+                  this transaction.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className=" items-center gap-4">
+                  <Label htmlFor="username" className="text-right mb-2">
+                    Type your reason.
+                  </Label>
+                  <Textarea
+                    className="w-full mt-4"
+                    placeholder="Lack of receipt"
+                    onChange={(e) => setStateReason(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="submit" onClick={() => didPending()}>
+                    {status ? "Loading..." : "Submit"}
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        );
+      }
+    }
+  };
+  const renderRightButton = () => {
+    if (transactionDetails.status != "Approved_by_Office") {
       return (
-        <div className="ml-20 mb-20   col-auto">
-          <Button
-            disabled={status}
-            onClick={() => didApprove()}
-            className={
-              transactionDetails.status.toLowerCase() ===
-              "Approved_by_Office".toLowerCase()
-                ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
-                : "rounded-full bg-blue-800 mb-4 text-xs"
-            }
-          >
-            {transactionDetails.status.toLowerCase() ===
-            "Approved_by_Office".toLowerCase()
-              ? "Already approved"
-              : status
-                ? "Updating..."
-                : "  Approve This Transaction"}
-          </Button>
-          <br />
-          <CardDescription color="text-xs ">
-            Approve this transaction according to your requirements
-          </CardDescription>
+        <div
+          className={`${isVisible ? "block " : " hidden"} transition ease-out`}
+          style={{
+            position: "fixed",
+            bottom: 20,
+            right: 20,
+            zIndex: 1,
+            justifyItems: "center",
+          }}
+        >
+          <div className=" w-auto">
+            <span className="p-2">
+              {renderOnHoldButton()}
+
+              <Button
+                disabled={status}
+                onClick={() => didApprove()}
+                className={
+                  "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                    ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                    : "rounded-full bg-[#c23616] mb-4 text-xs ml-2 mr-2"
+                }
+              >
+                Rejected
+              </Button>
+              <Button
+                disabled={status}
+                onClick={() => didApprove()}
+                className={
+                  "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                    ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                    : "rounded-full bg-blue-800 mb-4 text-xs"
+                }
+              >
+                Approve this order
+              </Button>
+              {/* ApprovedPendingDenied */}
+            </span>
+          </div>
         </div>
       );
+    } else {
+      return (
+        <div
+          className={`${isVisible ? "block " : " hidden"} transition ease-out`}
+          style={{
+            position: "fixed",
+            bottom: 20,
+            right: 20,
+            zIndex: 1,
+            justifyItems: "center",
+          }}
+        >
+          Approved
+        </div>
+      );
+    }
+  };
+  const renderLeftButton = () => {
+    try {
+      if (transactionDetails.status != "Approved_by_Office") {
+        return (
+          <div className="ml-20">
+            {renderOnHoldButton()}
+            <Button
+              disabled={status}
+              onClick={() => didApprove()}
+              className={
+                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                  : "rounded-full bg-[#c23616] mb-4 text-xs ml-2 mr-2"
+              }
+            >
+              Rejected
+            </Button>
+
+            <Button
+              disabled={status}
+              onClick={() => didApprove()}
+              className={
+                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
+                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+                  : "rounded-full bg-blue-800 mb-4 text-xs"
+              }
+            >
+              Approve this order
+            </Button>
+          </div>
+        );
+      }
+      // else if (transactionDetails?.status != "Hold_by_Office") {
+      //   return (
+      //     <div className="ml-20 mb-20   col-auto">
+      //       <Button
+      //         disabled={status}
+      //         onClick={() => didApprove()}
+      //         className={
+      //           transactionDetails.status.toLowerCase() ===
+      //           "Approved_by_Office".toLowerCase()
+      //             ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
+      //             : "rounded-full bg-blue-800 mb-4 text-xs"
+      //         }
+      //       >
+      //         {transactionDetails.status.toLowerCase() ===
+      //         "Approved_by_Office".toLowerCase()
+      //           ? "Already approved"
+      //           : status
+      //             ? "Updating..."
+      //             : "  Approve This Transaction"}
+      //       </Button>
+      //       <br />
+      //       <CardDescription color="text-xs ">
+      //         Approve this transaction according to your requirements
+      //       </CardDescription>
+      //     </div>
+      //   );
+      // }
+      else {
+        return null;
+      }
     } catch (error) {
       null;
+    }
+  };
+  const displayEmptyText = () => {
+    console.log("Display logs", Array.isArray(transactionDetails?.logs));
+    if (
+      Array.isArray(transactionDetails?.logs) == false &&
+      transactionDetails?.logs?.lenght === 0
+    ) {
+      return (
+        <Label className=" ml-4 mt-4 font-semibold mb-10 text-gray-400">
+          No logs we're recorded
+        </Label>
+        // <img
+        //   className="w-[200px] h-200px"
+        //   src="https://cdn.dribbble.com/userupload/3282338/file/original-ca78d4c54bc80f3a331dc906a2d1512b.png?resize=1504x1128"
+        // />
+      );
+    } else {
+      return (
+        <Table className="text-xs">
+          <TableCaption>A list of recent transaction.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px] ">Type</TableHead>
+              <TableHead className="text-right">Date</TableHead>
+              <TableHead>Time</TableHead>
+
+              {/* <TableHead className="text-right">Amount</TableHead> */}
+            </TableRow>
+          </TableHeader>
+          <TableBody>{renderLogs()}</TableBody>
+        </Table>
+      );
     }
   };
   const renderCart = () => {
@@ -445,11 +743,20 @@ export default function TableDemo() {
     <>
       <div className="">
         <SideNavigation />
+
         <HeaderPage
           title={`Transaction Details! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
           subtitle=""
         />
         <TimeLine />
+        <div
+          className={`${transactionDetails?.status === "Approved_by_Office" ? "w-full  justify-center items-center  grid " : " hidden"} transition ease-out`}
+        >
+          <img src="/checkmark.gif" className="w-auto h-64 " />
+          <span className="font-bold ml-14">
+            Transaction has been approved.
+          </span>
+        </div>
         <div className="ml-20 mr-20 mt-20 mb-20 ">
           <div className="grid grid-cols-2 ">
             <p className="text-xs"> Transaction Details </p>
@@ -459,8 +766,11 @@ export default function TableDemo() {
               <span className="bg-[#D4ED31] p-2">[{transactionID}]</span>
             </h1>
           </div>
-          <Badge variant="destructive" className="bg-red-600 text-xs">
-            Unpaid
+
+          <Badge variant="default" className="text-xs uppercase">
+            {transactionDetails?.status != undefined
+              ? transactionDetails.status
+              : "...."}
           </Badge>
         </div>
         <div className="grid grid-rows-2 grid-flow-col gap-2 ml-20 mr-10">
@@ -563,7 +873,7 @@ export default function TableDemo() {
               <CardHeader>
                 <CardTitle className="text-md">Attached files</CardTitle>
                 <CardDescription className="text-xs">
-                  Attached by Agents
+                  Attached by Agent
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -596,20 +906,7 @@ export default function TableDemo() {
                     width={90}
                   />
                 ) : (
-                  <div className="">
-                    <Table className="text-xs">
-                      <TableCaption>A list of recent transaction.</TableCaption>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[100px] ">Type</TableHead>
-                          <TableHead className="text-right">Date</TableHead>
-                          <TableHead>Time</TableHead>
-                          {/* <TableHead className="text-right">Amount</TableHead> */}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>{renderLogs()}</TableBody>
-                    </Table>
-                  </div>
+                  <div className="">{displayEmptyText()}</div>
                 )}
               </CardContent>
               {/* {transactionDetails == null ? (
@@ -636,58 +933,8 @@ export default function TableDemo() {
           ) : null
           // displayOrderProgress(transactionDetails.agent.transactionState)
         }
-
-        {renderButton()}
-      </div>
-
-      <div
-        className={`${isVisible ? "block " : " hidden"} transition ease-out`}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          right: 20,
-          zIndex: 1,
-          justifyItems: "center",
-        }}
-      >
-        <div className=" w-auto">
-          <span className="p-2">
-            <Button
-              disabled={status}
-              onClick={() => didPending()}
-              className={
-                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
-                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
-                  : "rounded-full bg-[#dcdde1] mb-4 text-xs text-black"
-              }
-            >
-              On-Hold
-            </Button>
-            <Button
-              disabled={status}
-              onClick={() => didApprove()}
-              className={
-                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
-                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
-                  : "rounded-full bg-[#c23616] mb-4 text-xs ml-2 mr-2"
-              }
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={status}
-              onClick={() => didApprove()}
-              className={
-                "Approved_by_Office" === "Approved_by_Office".toLowerCase()
-                  ? "rounded-full bg-gray-200 mb-4 text-xs text-black"
-                  : "rounded-full bg-blue-800 mb-4 text-xs"
-              }
-            >
-              Approve this order
-            </Button>
-            {/* ApprovedPendingDenied */}
-          </span>
-        </div>
+        {/* //LEFT */}
+        {renderLeftButton()}
       </div>
     </>
   );

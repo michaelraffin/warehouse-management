@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { BeakerIcon } from "@heroicons/react/24/solid";
 import TransactionHistory from "@/dummy/transaction_history.json";
 import { toast } from "sonner";
+import Link from "next/link";
 let tableWidth = "w-[70%]";
 export default function TableDemo() {
   const [request, setRequest] = useState(invoices);
@@ -37,7 +38,7 @@ export default function TableDemo() {
   useEffect(() => {
     fetchTransactionHistory().then((response) => {
       setRequestOrder(response.data.results);
-      toast.success("Event has been created.");
+      toast.success("Item is ready.");
     });
     // setRequestOrder(TransactionHistory.results.slice(0, 20));
     UserProfile().then((profile) => {
@@ -293,12 +294,14 @@ export default function TableDemo() {
                   {/* //ALLL */}
                   {console.log("Transaction history", invoice)}
                   <TableCell className="font-medium">
-                    <RequestSheet
-                      void={(details) => displayAlert(details)}
-                      update={(details) => displayAlert(details)}
-                      details={invoice}
-                      titleButton="View Details"
-                    />
+                    <Link href={`/transactions/${invoice.transactionID}`}>
+                      <RequestSheet
+                        // void={(details) => console.log(details)}
+                        // update={(details) => console.log(details)}
+                        details={invoice}
+                        titleButton={`View Details ${invoice?.transactionID != undefined ? invoice?.transactionID : "..."}`}
+                      />
+                    </Link>
                   </TableCell>
                   {/* {invoice.invoice}  */}
                   <TableCell
