@@ -601,7 +601,8 @@ export default function TableDemo() {
     }).format(value);
 
   function InlineWrapperWithMargin(children: any) {
-    return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
+    return <span style={{ marginRight: "0.5rem" }} />;
+    // return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
   }
   const renderOnHoldButton = () => {
     {
