@@ -46,8 +46,6 @@ import {
 } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import TransactionHistory from "@/dummy/transaction_history.json";
-import transaction_dummy from "@/dummy/dummy.json";
 import TimeLine from "@/app/LocalComponents/ProgressBar";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -291,7 +289,6 @@ export default function TableDemo() {
         "/updateItem/LesseeTransaction",
         data,
       );
-      window.location.reload();
       return agentResponse.data.results;
     } catch (error) {
       console.log("error Product", error);
