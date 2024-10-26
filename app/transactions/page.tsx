@@ -26,20 +26,122 @@ import { BeakerIcon } from "@heroicons/react/24/solid";
 import TransactionHistory from "@/dummy/transaction_history.json";
 import { toast } from "sonner";
 import Link from "next/link";
+import { AxiosResponse } from "axios";
 let tableWidth = "w-[70%]";
+
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
+interface DiscountedItem {
+  isPercentage: boolean;
+  requiredCategory: string[];
+  requiredAmount: number;
+  discountedPrice: number;
+  message: string;
+}
+
+interface PromoCode {
+  type: string;
+  valid: string;
+  dateFrom: string; // Use Date type if you want to handle dates properly
+  dateTo: string; // Use Date type if you want to handle dates properly
+  acquiredCustomer: number;
+  maxLimit: number;
+  discountedItems: DiscountedItem;
+}
+
+interface PaymentMethod {
+  type: string;
+  checknumber: string;
+}
+
+interface TransactionLog {
+  transactionID: string;
+}
+
+interface Product {
+  _id: string;
+  local_id: string;
+  paymentStatus: string;
+  totalAmount: string;
+  title: string;
+  stocks: number;
+  img: string;
+  status: boolean;
+  totalSold: number;
+  transactionLogs: TransactionLog[];
+  restockLogs: TransactionLog[];
+  price: number;
+  case_quantity: number;
+}
+
+interface Vendor {
+  _id: string;
+  vendorID: string;
+  vendorTitle: string;
+  paymentMethod: string;
+  stocks: string;
+  img: string;
+  status: boolean;
+  totalSpent: number;
+  transactionLogs: TransactionLog[];
+}
+
+interface Transaction {
+  vendor: Vendor;
+  payment_method: PaymentMethod;
+  promoCode: PromoCode;
+  date_created: string; // Use Date type if you want to handle dates properly
+  grandTotal: number;
+  data_state: string;
+  cart: Product[];
+}
+interface AgentAssinged {
+  fullName: string;
+}
+//MAIN
+interface Order {
+  _id: string;
+  id: string;
+  assigned_to: AgentAssinged;
+  paymentStatus: string;
+  totalAmount: string;
+  payment_method: PaymentMethod;
+  promoCode: PromoCode;
+  transaction: Transaction;
+  transactionID: String;
+  vendor: Vendor;
+  date_created: string; // Use Date type if you want to handle dates properly
+  grandTotal: number;
+  data_state: string;
+  status: string;
+  officeStatus: any;
+  stockman: string;
+  // payload.status = "Approved";
+  // payload.officeStatus = {
+}
+
 export default function TableDemo() {
   const [request, setRequest] = useState(invoices);
   const [reRequest, setRefRequest] = useState(invoices);
-  const [userProfile, setUser] = useState(null);
-  const [requestItems, setRequestOrder] = useState([]);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
+  const [requestItems, setRequestOrder] = useState<Order[]>([]);
   UserProfile().then((profile) => {
     setUser(profile);
   });
+
+  let transactionService = async () => {
+    let results: [Order] = await fetchTransactionHistory();
+    setRequestOrder(results);
+    toast.success("Item is ready.");
+    // });
+  };
   useEffect(() => {
-    fetchTransactionHistory().then((response) => {
-      setRequestOrder(response.data.results);
-      toast.success("Item is ready.");
-    });
+    transactionService();
     // setRequestOrder(TransactionHistory.results.slice(0, 20));
     UserProfile().then((profile) => {
       setUser(profile);
@@ -47,22 +149,22 @@ export default function TableDemo() {
     console.log(UserProfile());
   }, []);
 
-  const didUpdate = (e, id) => {
-    try {
-      let list = request.map((item) => {
-        if (item.id == id) {
-          item.paymentStatus = e;
-          return item;
-        } else {
-          return item;
-        }
-      });
-      setRequest(list);
-    } catch (error) {
-      alert("Oppss");
-    }
-  };
-  const displayAlert = (item) => {
+  // const didUpdate = (e, id) => {
+  //   try {
+  //     let list = request.map((item) => {
+  //       if (item.id == id) {
+  //         item.paymentStatus = e;
+  //         return item;
+  //       } else {
+  //         return item;
+  //       }
+  //     });
+  //     setRequest(list);
+  //   } catch (error) {
+  //     alert("Oppss");
+  //   }
+  // };
+  const displayAlert = (item: Order) => {
     console.log(item);
 
     // didUpdate("Denied", item.id);
@@ -127,13 +229,12 @@ export default function TableDemo() {
         isAPI: true,
       };
       const response = await axios.post("/store/LesseeTransaction", data);
-      console.log(response.data);
-      return response;
+      return response.data.results;
     } catch (error) {
       console.log("errorr fetchTransactionHistory", error);
     }
   }
-  const searchRequest = (e) => {
+  const searchRequest = (e: any) => {
     try {
       let searchedValue = e.target.value.toLowerCase();
       let personStaff = invoices;
@@ -143,21 +244,21 @@ export default function TableDemo() {
       setRequest(filteredStaff);
     } catch (error) {}
   };
-  const getVendorTitle = (data) => {
+  const getVendorTitle = (data: Order) => {
     try {
       return data.vendor.vendorTitle;
     } catch (error) {
       return null;
     }
   };
-  const getVendorImage = (data) => {
+  const getVendorImage = (data: Order) => {
     try {
       return data.vendor.img;
     } catch (error) {
-      return null;
+      return "";
     }
   };
-  const getPaymentType = (data) => {
+  const getPaymentType = (data: Order) => {
     try {
       return data.payment_method.type;
     } catch (error) {
@@ -177,7 +278,7 @@ export default function TableDemo() {
       <SideNavigation />
 
       <HeaderPage
-        title={`Your Transactions! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`Your Transactions! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
       {/* <div className="ml-20 mt-20">
@@ -289,10 +390,8 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems.map((invoice) => (
+              {requestItems.map((invoice: Order) => (
                 <TableRow key={invoice._id}>
-                  {/* //ALLL */}
-                  {console.log("Transaction history", invoice)}
                   <TableCell className="font-medium">
                     <Link href={`/transactions/${invoice.transactionID}`}>
                       <RequestSheet
@@ -313,6 +412,7 @@ export default function TableDemo() {
                   <TableCell className="text-center">
                     <p className="text-xs">{getVendorTitle(invoice)}</p>
                     <img
+                      alt="image vendor"
                       src={getVendorImage(invoice)}
                       className="mr-2 h-10 w-10 rounded-full hover:shadow-lg"
                     />
@@ -355,7 +455,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent value="Approved">
           <Table className={`${tableWidth}`}>
             <TableCaption>A list of request.</TableCaption>
@@ -369,14 +468,14 @@ export default function TableDemo() {
             </TableHeader>
             <TableBody>
               {requestItems
-                .filter((item) => item.status === "Approved")
-                .map((invoice) => (
+                .filter((item: Order) => item.status === "Approved")
+                .map((invoice: Order) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
                       {" "}
                       <RequestSheet
                         disabled={true}
-                        void={(details) => displayAlert(details)}
+                        void={(details: Order) => displayAlert(details)}
                         details={invoice}
                       />
                     </TableCell>
@@ -395,6 +494,7 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
+        Approved_by_Office Hold_by_Office
         <TabsContent value="Pending">
           <Table className={`${tableWidth}`}>
             <TableCaption>A list of request.</TableCaption>
@@ -408,8 +508,8 @@ export default function TableDemo() {
             </TableHeader>
             <TableBody>
               {requestItems
-                .filter((item) => item.status === "Pending")
-                .map((invoice) => (
+                .filter((item: Order) => item.status === "Pending")
+                .map((invoice: Order) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">Status</TableCell>
 
@@ -424,7 +524,7 @@ export default function TableDemo() {
                     </TableCell>
                     <TableCell className="text-xs">
                       <div className="text-md font-bold uppercase grid grid-cols-2 ">
-                        <p> {invoice.stockman} </p>
+                        <p> {invoice?.stockman} </p>
                         <div className="grid grid-cols-2 gap-2">
                           <p className="grid ">
                             {" "}
@@ -460,7 +560,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent value="Denied">
           <Table className={`${tableWidth}`}>
             <TableCaption>A list of request.</TableCaption>
@@ -480,7 +579,7 @@ export default function TableDemo() {
                     <TableCell className="font-medium">
                       {" "}
                       <RequestSheet
-                        void={(details) => displayAlert(details)}
+                        void={(details: Order) => displayAlert(details)}
                         details={invoice}
                         titleButton={"View Details"}
                       />
@@ -500,7 +599,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>

@@ -36,16 +36,43 @@ import { UserProfile } from "../../Utils/userProfile";
 import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
 import Link from "next/link";
 import LocalChart from "../LocalComponents/Charts";
+interface TransactionLog {
+  transactionID: string; // Assuming transactionID is a string
+}
 
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
+interface Vendor {
+  id: string;
+  _id: string; // The unique identifier for the product
+  vendorID: string; // The unique identifier for the vendor
+  vendorTitle: string; // The title of the vendor
+  paymentMethod: string; // The payment method used
+  stocks: string; // The number of stocks available
+  img: string; // The image URL for the product
+  status: boolean; // The availability status of the product
+  totalSpent: number; // The total amount spent
+  transactionLogs: TransactionLog[]; // An array of transaction logs
+  coordinates: { lat: number; lng: number };
+  lat: number;
+  lng: number;
+  paymentStatus: string;
+  totalAmount: number;
+}
 export default function TableDemo() {
   const { toast } = useToast();
-  const [products, setProducts] = useState([]);
-  const [userProfile, setUser] = useState(null);
+  const [products, setProducts] = useState<Vendor[]>([]);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
-  const [productTitle, setProducTitle] = useState(null);
+  const [productTitle, setProducTitle] = useState<String | null>(null);
   const [productQuantity, setProducQuantity] = useState(null);
   const [storeCoordinates, setStoreCoordinates] = useState(null);
-  const [imageLink, setImageLink] = useState(null);
+  const [imageLink, setImageLink] = useState<String | null>(null);
 
   let parentClass = "LesseeVendor";
   useEffect(() => {
@@ -103,8 +130,8 @@ export default function TableDemo() {
       console.log("error Product", error);
     }
   };
-  const didStatusUpdate = (e, id) => {
-    let list = products.map((item) => {
+  const didStatusUpdate = (e: any, id: any) => {
+    let list = products.map((item: Vendor) => {
       if (item.id == id) {
         item.status = e;
         return item;
@@ -163,7 +190,7 @@ export default function TableDemo() {
     <div className="">
       <SideNavigation />
       <HeaderPage
-        title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`Your customers ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
       {/* <Map initialLocation={{ lat: 124.238151, lng: 8.226861 }} /> */}
@@ -203,10 +230,10 @@ export default function TableDemo() {
         <AddProduct
           buttonTitle={"Add Vendor"}
           upload_here={UploadImageService}
-          image_file={(e) => setImageLink(e)}
-          title={(e) => setProducTitle(e)}
-          quantity={(e) => setProducQuantity(e)}
-          didSubmit={(e) => submitProduct()}
+          image_file={(e: any) => setImageLink(e)}
+          title={(e: any) => setProducTitle(e)}
+          quantity={(e: any) => setProducQuantity(e)}
+          didSubmit={(e: any) => submitProduct()}
         />
         <TabsContent
           value="AllProducts"
@@ -224,14 +251,14 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((invoice) => (
+              {products.map((invoice: Vendor) => (
                 <TableRow key={invoice.id}>
                   <TableCell className="font-medium">
                     <p className="text-xs">{invoice.vendorTitle}</p>
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                   </TableCell>
                   <TableCell
-                    className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                    className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                   >
                     <img
                       src={invoice.img}
@@ -289,13 +316,13 @@ export default function TableDemo() {
             </TableHeader>
             <TableBody>
               {products
-                .filter((item) => item.status)
+                .filter((item: Vendor) => item.status)
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
                       {" "}
                       <RequestSheet
-                        void={(details) => displayAlert()}
+                        void={(details: Vendor) => displayAlert()}
                         details={invoice}
                       />
                     </TableCell>
@@ -306,7 +333,10 @@ export default function TableDemo() {
                       {invoice.paymentStatus}
                     </TableCell>
                     <TableCell>
-                      <Progress value={invoice.stocks} className="w-[60%]" />
+                      <Progress
+                        value={Number(invoice.stocks)}
+                        className="w-[60%]"
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       {invoice.totalAmount}{" "}
@@ -339,7 +369,7 @@ export default function TableDemo() {
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
                       <RequestSheet
-                        void={(details) => displayAlert()}
+                        void={(details: Vendor) => displayAlert()}
                         details={invoice}
                       />
                     </TableCell>
@@ -350,7 +380,10 @@ export default function TableDemo() {
                       {invoice.paymentStatus}
                     </TableCell>
                     <TableCell>
-                      <Progress value={invoice.stocks} className="w-[60%]" />
+                      <Progress
+                        value={Number(invoice.stocks)}
+                        className="w-[60%]"
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       {invoice.totalAmount}

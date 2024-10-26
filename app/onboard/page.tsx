@@ -159,7 +159,7 @@ export default function Auth() {
           <div className="mt-10 mb-10">
             <RadioGroup
               disabled={status}
-              onValueChange={(e) => setUserType(e)}
+              onValueChange={(e: any) => setUserType(e)}
               defaultValue="option-one"
             >
               <div className="flex items-center space-x-2">

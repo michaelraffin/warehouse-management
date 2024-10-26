@@ -52,17 +52,111 @@ import TimeLine from "@/app/LocalComponents/ProgressBar";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 let tableWidth = "w-[70%]";
+
+interface DiscountedItem {
+  isPercentage: boolean;
+  requiredCategory: string[];
+  requiredAmount: number;
+  discountedPrice: number;
+  message: string;
+}
+
+interface PromoCode {
+  type: string;
+  valid: string;
+  dateFrom: string; // Use Date type if you want to handle dates properly
+  dateTo: string; // Use Date type if you want to handle dates properly
+  acquiredCustomer: number;
+  maxLimit: number;
+  discountedItems: DiscountedItem;
+}
+
+interface PaymentMethod {
+  type: string;
+  checknumber: string;
+}
+
+interface TransactionLog {
+  transactionID: string;
+}
+
+interface Product {
+  _id: string;
+  name: string;
+  local_id: string;
+  paymentStatus: string;
+  totalAmount: string;
+  title: string;
+  stocks: number;
+  img: string;
+  size: string;
+  color: string;
+  status: boolean;
+  totalSold: number;
+  transactionLogs: TransactionLog[];
+  restockLogs: TransactionLog[];
+  price: number;
+  case_quantity: number;
+}
+
+interface Vendor {
+  _id: string;
+  vendorID: string;
+  vendorTitle: string;
+  paymentMethod: string;
+  stocks: string;
+  img: string;
+  status: boolean;
+  totalSpent: number;
+  transactionLogs: TransactionLog[];
+}
+
+interface Transaction {
+  vendor: Vendor;
+  payment_method: PaymentMethod;
+  promoCode: PromoCode;
+  date_created: string; // Use Date type if you want to handle dates properly
+  grandTotal: number;
+  data_state: string;
+  cart: Product[];
+}
+//MAIN
+interface Agent {
+  transactionState: String;
+}
+interface Order {
+  logs: any;
+  _id: string;
+  agent: Agent;
+  transactionID: string;
+  payment_method: PaymentMethod;
+  promoCode: PromoCode;
+  transaction: Transaction;
+  vendor: Vendor;
+  date_created: string; // Use Date type if you want to handle dates properly
+  grandTotal: number;
+  data_state: string;
+  status: string;
+  attachedFile: [string];
+}
+
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
 export default function TableDemo() {
   const [request, setRequest] = useState(invoices);
   const [status, setStatus] = useState(false);
   const [reRequest, setRefRequest] = useState(invoices);
-  const [userProfile, setUser] = useState(null);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [requestItems, setRequestOrder] = useState([]);
   const [transactionID, setTransactionID] = useState("");
   const [reasonOnHolding, setStateReason] = useState("");
 
-  const [transactionDetails, setTransactionDetails] = useState(
-    // transaction_dummy.results[0],
+  const [transactionDetails, setTransactionDetails] = useState<Order | null>(
     null,
   );
   const [isVisible, setIsVisible] = useState(true);
@@ -103,14 +197,9 @@ export default function TableDemo() {
   }, []);
   useEffect(() => {}, [transactionDetails]);
   useEffect(() => {
-    // fetchTransactionHistory().then((response) => {
-    //   setRequestOrder(response.data.results);
-    // });
-    setRequestOrder(TransactionHistory.results.slice(0, 20));
     UserProfile().then((profile) => {
       setUser(profile);
     });
-    console.log(UserProfile());
   }, []);
   const didPending = () => {
     // toast.warning(`Item has been put to onhold`);
@@ -178,7 +267,7 @@ export default function TableDemo() {
   const didOnHoldService = async (type: string, status: string) => {
     let state = "Hold_by_Office";
     let type_HOO = "Hold-HOO";
-    if (transactionDetails.status === "Approved") {
+    if (transactionDetails?.status === "Approved") {
       return false;
     }
     try {
@@ -211,7 +300,7 @@ export default function TableDemo() {
   };
   const approveService = async (type: string, status: string) => {
     let state = "Approved_by_Office";
-    if (transactionDetails.status === "Approve") {
+    if (transactionDetails?.status === "Approve") {
       return false;
     }
     try {
@@ -267,60 +356,60 @@ export default function TableDemo() {
         toast.error("something went wrong...");
       }
     };
-    asyncService().then((item) => {
+    asyncService().then((item: any) => {
       const filteredTransactions = item.data.results.filter(
-        (result) => result.transactionID === id,
+        (result: Order) => result?.transactionID === id,
       );
       console.log("asyncService", filteredTransactions);
       setStatus(false);
       setTransactionDetails(filteredTransactions[0]);
     });
   };
-  const didUpdate = (e, id) => {
-    try {
-      let list = request.map((item) => {
-        if (item.id == id) {
-          item.paymentStatus = e;
-          return item;
-        } else {
-          return item;
-        }
-      });
-      setRequest(list);
-    } catch (error) {
-      alert("Oppss");
-    }
-  };
-  const displayAlert = (item) => {
-    console.log(item);
+  // const didUpdate = (e, id) => {
+  //   try {
+  //     let list = request.map((item) => {
+  //       if (item.id == id) {
+  //         item.paymentStatus = e;
+  //         return item;
+  //       } else {
+  //         return item;
+  //       }
+  //     });
+  //     setRequest(list);
+  //   } catch (error) {
+  //     alert("Oppss");
+  //   }
+  // };
+  // const displayAlert = (item) => {
+  //   console.log(item);
 
-    // didUpdate("Denied", item.id);
-    const updateService = async () => {
-      let payload = item;
-      payload.status = "Approved";
-      payload.officeStatus = {
-        status: "Approve",
-        dateLog: new Date(),
-      };
-      let productList = await axios.post(
-        "/updateItem/LesseeTransaction",
-        payload,
-      );
-      return productList;
-    };
-    toast.loading("Loading...");
+  //   // didUpdate("Denied", item.id);
+  //   const updateService = async () => {
+  //     let payload = item;
+  //     payload.status = "Approved";
+  //     payload.officeStatus = {
+  //       status: "Approve",
+  //       dateLog: new Date(),
+  //     };
+  //     let productList = await axios.post(
+  //       "/updateItem/LesseeTransaction",
+  //       payload,
+  //     );
+  //     return productList;
+  //   };
+  //   toast.loading("Loading...");
 
-    updateService().then((item) => {
-      toast.dismiss();
-      toast.success("Sonner toast has been added");
-    });
+  //   updateService().then((item) => {
+  //     toast.dismiss();
+  //     toast.success("Sonner toast has been added");
+  //   });
 
-    // toast({
-    //   title: "Scheduled: Catch up",
-    //   description: "Friday, February 10, 2023 at 5:57 PM",
-    // });
-    //      })
-  };
+  //   // toast({
+  //   //   title: "Scheduled: Catch up",
+  //   //   description: "Friday, February 10, 2023 at 5:57 PM",
+  //   // });
+  //   //      })
+  // };
 
   // const fetchTransaction = () => {
   //   const asyncService = async () => {
@@ -350,39 +439,39 @@ export default function TableDemo() {
   //     asyncService();
   //   });
   // };
-  async function fetchTransactionHistory() {
-    try {
-      const data = {
-        // id: "65435a78da64626d59397ff4",
-        // queryType: "all",
-        // lesseOwner: "653ce1caa775d7aeaa34cf0b",
-        isAPI: true,
-      };
-      const response = await axios.post("/store/LesseeTransaction", data);
-      console.log(response.data);
-      return response;
-    } catch (error) {
-      console.log("errorr fetchTransactionHistory", error);
-    }
-  }
-  const searchRequest = (e) => {
-    try {
-      let searchedValue = e.target.value.toLowerCase();
-      let personStaff = invoices;
-      const filteredStaff = request.filter((person) => {
-        return person.id.toLowerCase().includes(searchedValue);
-      });
-      setRequest(filteredStaff);
-    } catch (error) {}
-  };
+  // async function fetchTransactionHistory() {
+  //   try {
+  //     const data = {
+  //       // id: "65435a78da64626d59397ff4",
+  //       // queryType: "all",
+  //       // lesseOwner: "653ce1caa775d7aeaa34cf0b",
+  //       isAPI: true,
+  //     };
+  //     const response = await axios.post("/store/LesseeTransaction", data);
+  //     console.log(response.data);
+  //     return response;
+  //   } catch (error) {
+  //     console.log("errorr fetchTransactionHistory", error);
+  //   }
+  // }
+  // const searchRequest = (e) => {
+  //   try {
+  //     let searchedValue = e.target.value.toLowerCase();
+  //     let personStaff = invoices;
+  //     const filteredStaff = request.filter((person) => {
+  //       return person.id.toLowerCase().includes(searchedValue);
+  //     });
+  //     setRequest(filteredStaff);
+  //   } catch (error) {}
+  // };
 
-  const getPaymentType = (data) => {
-    try {
-      return data.payment_method.type;
-    } catch (error) {
-      return null;
-    }
-  };
+  // const getPaymentType = (data) => {
+  //   try {
+  //     return data.payment_method.type;
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // };
   const getProgressColor = (value: string) => {
     switch (value.toLowerCase()) {
       case "pending":
@@ -405,30 +494,30 @@ export default function TableDemo() {
     }
   };
   const renderFiles = () => {
-    let content: [any] = [];
-    transactionDetails.attachedFile.map((item) => {
-      content.push(
-        <a href={item} download={item}>
+    let counter: number = 0;
+    return transactionDetails?.attachedFile.map((item) => {
+      counter += 1;
+      return (
+        <a key={counter} href={item} download={item}>
           <img
+            key={counter}
             src={item}
-            download={item}
             className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
           />
-        </a>,
+        </a>
       );
     });
-    return content;
+    // return content;
   };
   const renderLogs = () => {
-    let content: [any] = [];
+    // let content: [any] = [];
     if (
-      Array.isArray(transactionDetails?.logs) ||
+      Array.isArray(transactionDetails?.logs) != undefined ||
       transactionDetails?.logs != undefined
     ) {
-      transactionDetails?.logs?.map((item) => {
-        console.log("logs", item);
-        content.push(
-          <TableRow>
+      return transactionDetails?.logs?.map((item: any) => {
+        return (
+          <TableRow key={item.id}>
             <TableCell className="font-medium w-[80px] ">{item.type}</TableCell>
             <TableCell className="text-right">
               <div className=" ">
@@ -448,10 +537,10 @@ export default function TableDemo() {
                 {item.remarks}
               </div>
             </TableCell>
-          </TableRow>,
+          </TableRow>
         );
       });
-      return content.reverse();
+      // return content.reverse();
     }
   };
   const displayOrderProgress = (type: string) => {
@@ -477,7 +566,7 @@ export default function TableDemo() {
       </div>
     );
   };
-  const CartItem = ({ item }) => {
+  const CartItem = (item: Product) => {
     return (
       <div className="flex items-center p-4 border border-gray-200 rounded-lg mb-4 hover:shadow-sm">
         <img
@@ -511,7 +600,7 @@ export default function TableDemo() {
       currency: "PHP",
     }).format(value);
 
-  function InlineWrapperWithMargin({ children }) {
+  function InlineWrapperWithMargin(children: any) {
     return <span style={{ marginRight: "0.5rem" }}>{children}</span>;
   }
   const renderOnHoldButton = () => {
@@ -569,7 +658,7 @@ export default function TableDemo() {
     }
   };
   const renderRightButton = () => {
-    if (transactionDetails.status != "Approved_by_Office") {
+    if (transactionDetails?.status != "Approved_by_Office") {
       return (
         <div
           className={`${isVisible ? "block " : " hidden"} transition ease-out`}
@@ -631,7 +720,7 @@ export default function TableDemo() {
   };
   const renderLeftButton = () => {
     try {
-      if (transactionDetails.status != "Approved_by_Office") {
+      if (transactionDetails?.status != "Approved_by_Office") {
         return (
           <div className="ml-20">
             {renderOnHoldButton()}
@@ -729,11 +818,15 @@ export default function TableDemo() {
     }
   };
   const renderCart = () => {
-    var content: [any] = [];
-    transactionDetails.transaction.cart.map((item) => {
-      content.push(<CartItem item={item} />);
+    let counter: number = 0;
+    return transactionDetails?.transaction.cart.map((item: Product) => {
+      counter += 1;
+      return (
+        <div key={counter}>
+          <CartItem {...item} />
+        </div>
+      );
     });
-    return content;
   };
   const formatter = new Intl.NumberFormat("en-PH", {
     style: "currency",
@@ -745,7 +838,7 @@ export default function TableDemo() {
         <SideNavigation />
 
         <HeaderPage
-          title={`Transaction Details! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+          title={`Transaction Details! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
           subtitle=""
         />
         <TimeLine />
@@ -817,7 +910,7 @@ export default function TableDemo() {
                       />
                     ) : (
                       <Badge variant={"default"} className="mr-4">
-                        {transactionDetails.agent.transactionState.toUpperCase()}
+                        {transactionDetails?.agent?.transactionState.toUpperCase()}
                       </Badge>
                     )}
                     by stockman

@@ -26,12 +26,38 @@ import { Toast } from "@radix-ui/react-toast";
 import { Toaster } from "@/components/ui/toaster";
 
 let tableWidth = "w-[70%]";
+
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
+interface AssignedTo {
+  fullName?: string;
+}
+
+interface ProductDetails {
+  id?: String;
+  status?: any;
+  title?: string;
+  img: string;
+  stocks: any;
+  paymentStatus: any;
+  price: number;
+  totalAmount: number;
+  transactionID: string;
+  stockman: any;
+  date_created: any;
+  assigned_to: AssignedTo;
+}
 export default function TableDemo() {
   const { toast } = useToast();
   const [request, setRequest] = useState(invoices);
   const [reRequest, setRefRequest] = useState(invoices);
-  const [userProfile, setUser] = useState(null);
-  const [requestItems, setRequestOrder] = useState([]);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
+  const [requestItems, setRequestOrder] = useState<[ProductDetails] | []>([]);
   UserProfile().then((profile) => {
     setUser(profile);
   });
@@ -48,7 +74,7 @@ export default function TableDemo() {
     console.log(UserProfile());
   }, []);
 
-  const didUpdate = (e, id) => {
+  const didUpdate = (e: any, id: any) => {
     try {
       let list = request.map((item) => {
         if (item.id == id) {
@@ -63,7 +89,7 @@ export default function TableDemo() {
       alert("Oppss");
     }
   };
-  const deniedTransaction = (item) => {
+  const deniedTransaction = (item: any) => {
     alert("DOne");
     // let source = item;
     // source.updateType = "Denied";
@@ -92,7 +118,7 @@ export default function TableDemo() {
     // delete item.updateType;
     // console.log("After displayAlert", source);
   };
-  const displayAlert = (item) => {
+  const displayAlert = (item: any) => {
     console.log("Before displayAlert", item);
     delete item.updateType;
     console.log("After displayAlert", item);
@@ -165,7 +191,7 @@ export default function TableDemo() {
     }
   }
   const displayRemarks = (e: any) => {};
-  const searchRequest = (e) => {
+  const searchRequest = (e: any) => {
     try {
       let searchedValue = e.target.value.toLowerCase();
       let personStaff = invoices;
@@ -180,7 +206,7 @@ export default function TableDemo() {
       <SideNavigation />
 
       <HeaderPage
-        title={`Request! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`Request! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
       {/* <div className="ml-20 mt-20">
@@ -291,14 +317,16 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems.reverse().map((invoice) => (
-                <TableRow key={invoice.id}>
+              {requestItems.reverse().map((invoice: ProductDetails) => (
+                <TableRow key={invoice.price}>
                   <TableCell className="font-medium">
                     <RequestSheet
                       titleButton={`View ${invoice.transactionID}`}
                       disabled={false}
-                      void={(details) => displayAlert(details)}
-                      update={(details) => displayAlert(details)}
+                      void={(details: ProductDetails) => displayAlert(details)}
+                      update={(details: ProductDetails) =>
+                        displayAlert(details)
+                      }
                       details={invoice}
                     />
                   </TableCell>
@@ -364,13 +392,17 @@ export default function TableDemo() {
                 )
                 .reverse()
                 .map((invoice) => (
-                  <TableRow key={invoice.id}>
+                  <TableRow key={invoice.price}>
                     <TableCell className="font-medium">
                       <RequestSheet
                         titleButton={`View ${invoice.transactionID}`}
                         disabled={false}
-                        void={(details) => displayAlert(details)}
-                        update={(details) => displayAlert(details)}
+                        void={(details: ProductDetails) =>
+                          displayAlert(details)
+                        }
+                        update={(details: ProductDetails) =>
+                          displayAlert(details)
+                        }
                         details={invoice}
                       />
                     </TableCell>
@@ -437,14 +469,20 @@ export default function TableDemo() {
                     item.status === "Pending" || item.status === undefined,
                 )
                 .map((invoice) => (
-                  <TableRow key={invoice.id}>
+                  <TableRow key={invoice.price}>
                     <TableCell className="font-medium">
                       <RequestSheet
                         titleButton={`View ${invoice.transactionID}`}
                         disabled={false}
-                        void={(details) => displayAlert(details)}
-                        update={(details) => displayAlert(details)}
-                        denied={(details) => deniedTransaction(details)}
+                        void={(details: ProductDetails) =>
+                          displayAlert(details)
+                        }
+                        update={(details: ProductDetails) =>
+                          displayAlert(details)
+                        }
+                        denied={(details: ProductDetails) =>
+                          deniedTransaction(details)
+                        }
                         details={invoice}
                       />
                     </TableCell>
@@ -510,11 +548,13 @@ export default function TableDemo() {
               {requestItems
                 .filter((item) => item.paymentStatus === "Denied")
                 .map((invoice) => (
-                  <TableRow key={invoice.id}>
+                  <TableRow key={invoice.price}>
                     <TableCell className="font-medium">
                       {" "}
                       <RequestSheet
-                        void={(details) => displayAlert(details)}
+                        void={(details: ProductDetails) =>
+                          displayAlert(details)
+                        }
                         details={invoice}
                       />
                     </TableCell>
