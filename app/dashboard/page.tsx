@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { ReactNode } from "react";
 import {
   Table,
@@ -30,6 +30,38 @@ import { Button } from "@/components/ui/button";
 import { axios, url, axiosV2 } from "@/Utils/axios";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import loadinggg from "./loading";
+import { BarChartVertical } from "../LocalComponents/Charts/BarcharVertical";
+import { MainChart } from "../LocalComponents/Charts/MainChart";
+const chartData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+];
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "#2563eb",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "#60a5fa",
+  },
+} satisfies ChartConfig;
+
 interface UserProfile {
   user_details: {
     firstName: string;
@@ -37,6 +69,14 @@ interface UserProfile {
   };
 }
 
+function InlineWrapperWithMargin({ children }: { children?: ReactNode }) {
+  return <div style={{ marginRight: "0.5rem" }}>{children}</div>;
+}
+function Loading() {
+  return (
+    <Skeleton count={5} wrapper={InlineWrapperWithMargin} inline width={90} />
+  );
+}
 export default function TableDemo() {
   let [userProfile, setUser] = useState<UserProfile | null>(null);
   const [myVendors, setVendors] = useState([]);
@@ -196,6 +236,25 @@ export default function TableDemo() {
       <div className="ml-20 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ">
         <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
           {/* //LEFT */}
+          <MainChart />
+          {/* <ChartContainer
+            config={chartConfig}
+            className="min-h-[200px] w-full h-1/8"
+          >
+            <BarChart accessibilityLayer data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+              <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            </BarChart>
+          </ChartContainer> */}
           <h1 className="text-md ml-2 font-bold text-black">Top Sales</h1>
           <div className=" mb-20">
             <div className="m-2   grid w-full grid-cols-3 gap-4">
@@ -203,7 +262,7 @@ export default function TableDemo() {
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
 
-                  <p className="text-2xl font-medium text-gray-900">
+                  <p className="text-2xl text-xs text-gray-900">
                     {numberFormat(dailySales)}
                   </p>
                 </div>
@@ -225,7 +284,7 @@ export default function TableDemo() {
                   </svg>
 
                   <p className="flex gap-2 text-xs">
-                    <span className="font-medium"> 67.81% </span>
+                    <span className="text-xs"> 67.81% </span>
 
                     <span className="text-gray-500"> Since last week </span>
                   </p>
@@ -236,7 +295,7 @@ export default function TableDemo() {
                 <div>
                   <p className="text-sm text-gray-500">Profit Yesteday</p>
 
-                  <p className="text-2xl font-medium text-gray-900">
+                  <p className="text-2xl text-xs text-gray-900">
                     {numberFormat(dailySales)}
                   </p>
                 </div>
@@ -258,7 +317,7 @@ export default function TableDemo() {
                   </svg>
 
                   <p className="flex gap-2 text-xs">
-                    <span className="font-medium"> 67.81% </span>
+                    <span className="text-xs"> 67.81% </span>
                     <span className="text-gray-500"> Since last week </span>
                   </p>
                 </div>
@@ -274,7 +333,7 @@ export default function TableDemo() {
                 src={
                   "https://cdn.dribbble.com/userupload/11708150/file/original-825be68b3517931ad747e0180a4116d3.png?resize=1504x1128"
                 }
-                className=" h-full w-full  object-cover  "
+                className=" h-full w-full  object-cover  hidden"
               />
             ) : (
               <LocalChart
@@ -298,7 +357,7 @@ export default function TableDemo() {
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
 
-                  <p className="text-2xl font-medium text-gray-900">$240.94</p>
+                  <p className="text-2xl text-xs text-gray-900">$240.94</p>
                 </div>
 
                 <div className="mt-1 flex gap-1 text-green-600">
@@ -318,7 +377,7 @@ export default function TableDemo() {
                   </svg>
 
                   <p className="flex gap-2 text-xs">
-                    <span className="font-medium"> 67.81% </span>
+                    <span className="text-xs"> 67.81% </span>
 
                     <span className="text-gray-500"> Since last week </span>
                   </p>
@@ -329,7 +388,7 @@ export default function TableDemo() {
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
 
-                  <p className="text-2xl font-medium text-gray-900">$240.94</p>
+                  <p className="text-2xl text-xs text-gray-900">$240.94</p>
                 </div>
 
                 <div className="mt-1 flex gap-1 text-red-600">
@@ -349,14 +408,14 @@ export default function TableDemo() {
                   </svg>
 
                   <p className="flex gap-2 text-xs">
-                    <span className="font-medium"> 67.81% </span>
+                    <span className="text-xs"> 67.81% </span>
                     <span className="text-gray-500"> Since last week </span>
                   </p>
                 </div>
               </article>
             </div>
           </div>
-          <div className="mt-20 h-20 w-[100%]">
+          <div className="mt-20  h-72 w-[100%]">
             <div className="grid-cols10 mb-10 grid w-[350px]">
               <a className="text-xs text-blue-800" href="reports/products">
                 View Products Reports
@@ -364,6 +423,7 @@ export default function TableDemo() {
               {/* <p className="text-xs">View Weekly Sales</p> */}
               {/* <Button className="mb-10">View reports</Button> */}
             </div>
+            <BarChartVertical />
             {weekySales === null ? (
               "..."
             ) : (
@@ -411,10 +471,9 @@ export default function TableDemo() {
           </div>
         </div>
       </div>
-
       {/* //TABLE */}
       <div className="mt-40 ml-24 text-lg font-bold">Your Transactions</div>
-      <Tabs
+      {/* <Tabs
         defaultValue="account"
         className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"
       >
@@ -474,8 +533,6 @@ export default function TableDemo() {
                     </TableCell>
                     <TableCell className="text-right">
                       {numberFormat(vendors.grandTotal)}
-
-                      {/* arrow-right.png */}
                     </TableCell>
                     <TableCell className="">
                       <a
@@ -510,9 +567,68 @@ export default function TableDemo() {
             />
           )}
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
       <div>{/* <MapV2 /> */}</div>
-      <div className="mt-40 ml-24 text-lg font-bold">Your Vendors</div>
+
+      <Suspense fallback={loadinggg()}>
+        <Table className="ml-20">
+          <TableCaption>A list of recent transaction.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[90px]">Vendor</TableHead>
+              <TableHead></TableHead>
+              <TableHead>Payment Type</TableHead>
+              <TableHead>Cart</TableHead>
+              <TableHead className="text-right">Total Purchased</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {topTransaction.map((vendors: any) => (
+              <TableRow key={vendors._id}>
+                <TableCell className="text-xs">
+                  {vendors.transactionID}
+                </TableCell>
+                <TableCell>
+                  <img
+                    src={vendors.vendor != undefined ? vendors.vendor.img : ""}
+                    className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
+                  />
+                </TableCell>{" "}
+                <TableCell className="text-xs">
+                  {vendors.payment_method != undefined
+                    ? vendors.payment_method.type.toUpperCase()
+                    : ""}
+                </TableCell>
+                <TableCell className="text-xs">
+                  {vendors.transaction != undefined
+                    ? vendors.transaction.cart.length
+                    : 0}{" "}
+                  Orders
+                </TableCell>
+                <TableCell className="text-right">
+                  {numberFormat(vendors.grandTotal)}
+                </TableCell>
+                <TableCell className="">
+                  <a
+                    href={`/transactions/${vendors.transactionID} `}
+                    target="_blank"
+                  >
+                    <Image
+                      alt="Image arrow right"
+                      className=" w-2"
+                      width={2}
+                      height={2}
+                      src="/arrow-right.png"
+                    />
+                  </a>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Suspense>
+      <div className="mt-40 ml-24 text-lg font-bold">Your Vendors Main</div>
       <Tabs
         defaultValue="account"
         className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"
@@ -548,7 +664,7 @@ export default function TableDemo() {
               <TableBody>
                 {myVendors.map((vendors: any) => (
                   <TableRow key={vendors._id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="text-xs">
                       {vendors.vendorTitle}
                     </TableCell>
                     <TableCell>
