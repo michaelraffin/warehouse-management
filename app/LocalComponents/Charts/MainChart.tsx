@@ -115,7 +115,7 @@ const chartData = [
 
 const chartConfig = {
   views: {
-    label: "Page Views",
+    label: "Stock Left",
   },
   desktop: {
     label: "Store",
@@ -130,8 +130,25 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
+type MainChartProps = {
+  chartTitle: string;
+  data: any;
+};
 
-export function MainChart() {
+export function MainChart({ chartTitle, data }: MainChartProps) {
+  const updateData = (data, chartData) => {
+    try {
+      return data.map((product) => ({
+        date: product.title,
+        desktop: Number(product.stocks),
+        mobile: Number(product.stocks),
+      }));
+    } catch (error) {
+      console.error("Error updating data:", error);
+      // alert("tops");
+      return chartData;
+    }
+  };
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("desktop");
 
@@ -142,12 +159,14 @@ export function MainChart() {
     }),
     [],
   );
-
+  React.useEffect(() => {
+    updateData(data, chartData);
+  }, []);
   return (
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Lai Warehouse Monthly Sales</CardTitle>
+          <CardTitle>{chartTitle}</CardTitle>
           <CardDescription>
             Showing total sales for the month of October
           </CardDescription>
@@ -180,7 +199,7 @@ export function MainChart() {
         >
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={updateData(data, chartData)}
             margin={{
               left: 12,
               right: 12,
@@ -194,11 +213,12 @@ export function MainChart() {
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                return value;
+                // const date = new Date(value);
+                // return date.toLocaleDateString("en-US", {
+                //   month: "short",
+                //   day: "numeric",
+                // });
               }}
             />
             <ChartTooltip

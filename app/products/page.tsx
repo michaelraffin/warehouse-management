@@ -25,7 +25,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { UploadImageService } from "../../Utils/image_uploader";
-
+import { BarChartVertical } from "../LocalComponents/Charts/BarcharVertical";
+import { MainChart } from "../LocalComponents/Charts/MainChart";
 import {
   Popover,
   PopoverContent,
@@ -219,7 +220,9 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
+
         <BottomDrawerSheet />
+
         <AddProduct
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
@@ -228,6 +231,9 @@ export default function TableDemo() {
           quantity={(e: any) => setProducQuantity(e)}
           didSubmit={(e: any) => submitProduct()}
         />
+        <div className="mt-20  h-full w-[98%] mr-20">
+          <MainChart data={products} chartTitle={"Your Products score board"} />
+        </div>
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}

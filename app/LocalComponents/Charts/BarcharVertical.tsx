@@ -54,8 +54,8 @@ export function BarChartVertical() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart - Custom Label</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle className="text-md">Daily Sales</CardTitle>
+        <CardDescription>October 1 - 2024</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

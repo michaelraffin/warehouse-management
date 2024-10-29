@@ -236,7 +236,7 @@ export default function TableDemo() {
       <div className="ml-20 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ">
         <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
           {/* //LEFT */}
-          <MainChart />
+          <MainChart chartTitle={"Lai Warehouse Monthly Sales"} />
           {/* <ChartContainer
             config={chartConfig}
             className="min-h-[200px] w-full h-1/8"
@@ -256,7 +256,7 @@ export default function TableDemo() {
             </BarChart>
           </ChartContainer> */}
           <h1 className="text-md ml-2 font-bold text-black">Top Sales</h1>
-          <div className=" mb-20">
+          <div className=" mb-20 hidden">
             <div className="m-2   grid w-full grid-cols-3 gap-4">
               <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
                 <div>
@@ -680,7 +680,7 @@ export default function TableDemo() {
                       {numberFormat(vendors.totalSpent)}
                     </TableCell>
                     <TableCell className="">
-                      <a href="">
+                      <a href={`store/${vendors.vendorID}`} target="_blank">
                         <Image
                           alt={"arrow-right"}
                           className=" w-2"

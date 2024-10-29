@@ -341,10 +341,15 @@ export default function TableDemo() {
           isAPI: true,
         };
 
+        let payload = {
+          isAPI: true,
+          queryData: query,
+          queryType: "filter",
+        };
         let productList = await axiosV2("dsadsa").post(
           `${url}/store/LesseeTransaction`,
           {
-            details: data,
+            details: payload,
             className: "LesseeTransaction",
           },
         );
@@ -839,7 +844,9 @@ export default function TableDemo() {
           title={`Transaction Details! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
           subtitle=""
         />
-        <TimeLine />
+        {transactionDetails?.agent?.transactionState != "Approved_by_Office" ? (
+          <TimeLine />
+        ) : null}
         <div
           className={`${transactionDetails?.status === "Approved_by_Office" ? "w-full  justify-center items-center  grid " : " hidden"} transition ease-out`}
         >
@@ -908,7 +915,7 @@ export default function TableDemo() {
                       />
                     ) : (
                       <Badge variant={"default"} className="mr-4">
-                        {transactionDetails?.agent?.transactionState.toUpperCase()}
+                        {transactionDetails?.agent?.transactionState}
                       </Badge>
                     )}
                     by stockman
