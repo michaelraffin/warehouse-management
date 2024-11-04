@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import moment from "moment";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
-import AddProduct from "@/app/LocalComponents/AddProductSheet";
+import AddStore from "@/app/LocalComponents/AddStoreSheet";
 import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,7 @@ export default function TableDemo() {
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState<String | null>(null);
   const [productQuantity, setProducQuantity] = useState(null);
+  const [contactNumber, setContactNumber] = useState<String | null>(null);
   const [storeCoordinates, setStoreCoordinates] = useState(null);
   const [imageLink, setImageLink] = useState<String | null>(null);
 
@@ -124,7 +125,7 @@ export default function TableDemo() {
       let productList = await axiosV2("dsadsa").post(
         `${url}/store/${parentClass}`,
       );
-      setProducts(productList.data.results);
+      setProducts(productList.data.results.reverse());
       setStatus(false);
     } catch (error) {
       console.log("error Product", error);
@@ -161,13 +162,15 @@ export default function TableDemo() {
     });
   };
 
-  const submitProduct = () => {
+  const addVendor = () => {
     const asyncService = async () => {
       try {
         let payload = {
           vendorID: generateRandomString(),
           vendorTitle: productTitle,
-          paymentMethod: "Credit Card",
+          vendorDescription: productQuantity,
+          vendorContactNumber: contactNumber,
+          paymentMethod: "N/A",
           stocks: productQuantity,
           img: imageLink,
           status: false,
@@ -190,7 +193,7 @@ export default function TableDemo() {
     <div className="">
       <SideNavigation />
       <HeaderPage
-        title={`Your customers ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
+        title={`Your Vendors ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
       {/* <Map initialLocation={{ lat: 124.238151, lng: 8.226861 }} /> */}
@@ -227,13 +230,14 @@ export default function TableDemo() {
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
         <BottomDrawerSheet />
-        <AddProduct
+        <AddStore
           buttonTitle={"Add Vendor"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
           title={(e: any) => setProducTitle(e)}
           quantity={(e: any) => setProducQuantity(e)}
-          didSubmit={(e: any) => submitProduct()}
+          didSubmit={(e: any) => addVendor()}
+          contactNumber={(e: any) => setContactNumber(e)}
         />
         <TabsContent
           value="AllProducts"
@@ -243,7 +247,7 @@ export default function TableDemo() {
             <TableCaption>A list of request.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Name</TableHead>
+                <TableHead className="w-[100px]">Vendor </TableHead>
                 <TableHead>Logo</TableHead>
                 <TableHead>View details</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
@@ -278,7 +282,7 @@ export default function TableDemo() {
                     <div className="w-60 h-20">
                       <LocalChart />
                     </div>
-                    {invoice.stocks}/20
+                    {invoice.vendorDescription}
                     <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                   </TableCell>
                   <TableCell className="text-right">
