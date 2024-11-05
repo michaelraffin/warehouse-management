@@ -146,6 +146,20 @@ function SideNavigation() {
 
                     <li>
                       <a
+                        href="/store"
+                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                      >
+                        <img
+                          className="h6 w-6"
+                          src="https://localflowershop.sgp1.digitaloceanspaces.com/product/1707533414886-store.png"
+                        ></img>
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
+                          Vendor
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
                         href="/staff"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
@@ -216,20 +230,6 @@ function SideNavigation() {
                         </svg>
                         <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Products
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/store"
-                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                      >
-                        <img
-                          className="h6 w-6"
-                          src="https://localflowershop.sgp1.digitaloceanspaces.com/product/1707533414886-store.png"
-                        ></img>
-                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
-                          Vendor
                         </span>
                       </a>
                     </li>

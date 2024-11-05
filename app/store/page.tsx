@@ -19,8 +19,9 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-import { useToast } from "@/components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
 import { Switch } from "@/components/ui/switch";
+import { Toaster, toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -33,7 +34,7 @@ import {
 } from "@/components/ui/popover";
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
-import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
+import { axiosV2Local, url, axiosV2, axios } from "../../Utils/axios";
 import Link from "next/link";
 import LocalChart from "../LocalComponents/Charts";
 interface TransactionLog {
@@ -49,6 +50,7 @@ interface UserProfile {
 }
 interface Vendor {
   id: string;
+  vendorDescription: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
   vendorTitle: string; // The title of the vendor
@@ -65,8 +67,9 @@ interface Vendor {
   totalAmount: number;
 }
 export default function TableDemo() {
-  const { toast } = useToast();
+  // const { toast } = useToast();
   const [products, setProducts] = useState<Vendor[]>([]);
+  const [vendorReference, setProductsReference] = useState<Vendor[]>([]);
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState<String | null>(null);
@@ -125,23 +128,64 @@ export default function TableDemo() {
       let productList = await axiosV2("dsadsa").post(
         `${url}/store/${parentClass}`,
       );
-      setProducts(productList.data.results.reverse());
+      setProducts(productList.data.results);
+      setProductsReference(productList.data.results);
       setStatus(false);
     } catch (error) {
       console.log("error Product", error);
     }
   };
-  const didStatusUpdate = (e: any, id: any) => {
-    let list = products.map((item: Vendor) => {
-      if (item.id == id) {
-        item.status = e;
-        return item;
-      } else {
-        return item;
+  const updateVendorService = async (data: Vendor) => {
+    try {
+      if (data === null) {
+        toast.error("No vendor data provided.");
+        return;
       }
-    });
+      data.status = !data.status;
+      let agentResponse = await axios.post(`/updateItem/${parentClass}`, data);
 
-    setProducts(list);
+      return agentResponse.data.results;
+    } catch (error) {
+      toast.error("Something went wrong...");
+    }
+  };
+  const didStatusUpdate = (e: any, id: any) => {
+    console.log(id);
+    let updatedList = products.map((item: Vendor) => {
+      if (item.vendorID === id) {
+        return { ...item, status: e };
+      }
+      return item;
+    });
+    setProducts(updatedList);
+    setProductsReference(updatedList);
+    let updateThis = products.find((item: Vendor) => item.vendorID === id);
+    if (updateVendorService.length != 0) {
+      toast.promise(updateVendorService(updateThis!), {
+        loading: "Loading...",
+        success: (data) => {
+          // setTransactionDetails(data);
+          setStatus(false);
+          console.log("data updated response", data);
+          return `${id} Item has been updated`;
+        },
+        error: "Error",
+      });
+    }
+  };
+  const didSearchedStore = (e: any, keyword: any) => {
+    if (keyword.length >= 2) {
+      const updatedList = products.filter(
+        (item) =>
+          item.vendorTitle.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.vendorID.toLowerCase().includes(keyword.toLowerCase()),
+        // item.vendorDescription.toLowerCase().includes(keyword.toLowerCase()
+        // ),
+      );
+      setProducts(updatedList);
+    } else {
+      setProducts(vendorReference);
+    }
   };
   const generateRandomString = () => {
     const characters =
@@ -203,7 +247,12 @@ export default function TableDemo() {
       >
         <TabsList className="rounded-full mb-20">
           <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
-            <Input type="email" placeholder="Search" className="rounded-full" />
+            <Input
+              type="text"
+              placeholder="Search"
+              className="rounded-full"
+              onChange={(e) => didSearchedStore(e.target.value, e.target.value)}
+            />
 
             {/* <Button type="submit" className='text-xs'>Search</Button> */}
           </div>
@@ -229,7 +278,7 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-        <BottomDrawerSheet />
+        {/* <BottomDrawerSheet /> */}
         <AddStore
           buttonTitle={"Add Vendor"}
           upload_here={UploadImageService}
@@ -244,41 +293,44 @@ export default function TableDemo() {
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
           <Table className="">
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
+            <TableCaption>{products.length} vendors found</TableCaption>
+            <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
-                <TableHead className="w-[100px]">Vendor </TableHead>
+                <TableHead className="w-[200px] ">Vendor </TableHead>
                 <TableHead>Logo</TableHead>
-                <TableHead>View details</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((invoice: Vendor) => (
+              {products.reverse().map((invoice: Vendor) => (
                 <TableRow key={invoice.id}>
                   <TableCell className="font-medium">
-                    <p className="text-xs">{invoice.vendorTitle}</p>
-                    {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
-                  </TableCell>
-                  <TableCell
-                    className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                  >
-                    <img
-                      src={invoice.img}
-                      className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
-                    />
-                  </TableCell>
-                  <TableCell>
                     <a
                       href={`store/${invoice.vendorID}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      View store
+                      <p className="text-xs font-light">
+                        {invoice.vendorTitle}
+                      </p>
                     </a>
                   </TableCell>
-                  <TableCell className="text-right text-md text-red-500 font-bold">
+                  <TableCell
+                    className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                  >
+                    <a
+                      href={`store/${invoice.vendorID}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={invoice.img}
+                        className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
+                      />
+                    </a>
+                  </TableCell>
+                  <TableCell className="text-right text-md text-red-500 font-light">
                     <div className="w-60 h-20">
                       <LocalChart />
                     </div>
@@ -288,15 +340,11 @@ export default function TableDemo() {
                   <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
                     <Switch
-                      onCheckedChange={(e) => didStatusUpdate(e, invoice.id)}
+                      onCheckedChange={(e) =>
+                        didStatusUpdate(e, invoice.vendorID)
+                      }
                       checked={invoice.status}
                     />
-                    {/* <Popover>
-    <PopoverTrigger>Open</PopoverTrigger>
-    <PopoverContent>
-    Status :
-    </PopoverContent>
-  </Popover> */}
                   </TableCell>
                 </TableRow>
               ))}
@@ -309,13 +357,13 @@ export default function TableDemo() {
           className={status ? `opacity-20` : `opacity-100`}
         >
           <Table className="">
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
+            <TableCaption>{products.length} vendors found</TableCaption>
+            <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Warehouse state</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="w-[200px] ">Vendor </TableHead>
+                <TableHead>Logo</TableHead>
+                <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -324,31 +372,45 @@ export default function TableDemo() {
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
-                      {" "}
-                      <RequestSheet
-                        void={(details: Vendor) => displayAlert()}
-                        details={invoice}
-                      />
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <p className="text-xs font-light">
+                          {invoice.vendorTitle}
+                        </p>
+                      </a>
                     </TableCell>
-                    {/* {invoice.invoice}  */}
                     <TableCell
-                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                      className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
-                      {invoice.paymentStatus}
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={invoice.img}
+                          className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
+                        />
+                      </a>
                     </TableCell>
-                    <TableCell>
-                      <Progress
-                        value={Number(invoice.stocks)}
-                        className="w-[60%]"
+                    <TableCell className="text-right text-md text-red-500 font-light">
+                      <div className="w-60 h-20">
+                        <LocalChart />
+                      </div>
+                      {invoice.vendorDescription}
+                      <Badge className="bg-red-500 ml-4">Out of stock</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {/* {invoice.totalAmount} */}
+                      <Switch
+                        onCheckedChange={(e) =>
+                          didStatusUpdate(e, invoice.vendorID)
+                        }
+                        checked={invoice.status}
                       />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {invoice.totalAmount}{" "}
-                      <Badge className="bg-red-500 ml-2">Out of stock</Badge>
-                    </TableCell>
-
-                    <TableCell className="text-right">
-                      <Switch />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -357,13 +419,13 @@ export default function TableDemo() {
         </TabsContent>
         <TabsContent value="inActive">
           <Table className="">
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
+            <TableCaption>{products.length} vendors found</TableCaption>
+            <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="w-[200px] ">Vendor </TableHead>
+                <TableHead>Logo</TableHead>
+                <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -372,26 +434,45 @@ export default function TableDemo() {
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
-                      <RequestSheet
-                        void={(details: Vendor) => displayAlert()}
-                        details={invoice}
-                      />
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <p className="text-xs font-light">
+                          {invoice.vendorTitle}
+                        </p>
+                      </a>
                     </TableCell>
-                    {/* {invoice.invoice}  */}
                     <TableCell
-                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                      className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
-                      {invoice.paymentStatus}
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={invoice.img}
+                          className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
+                        />
+                      </a>
                     </TableCell>
-                    <TableCell>
-                      <Progress
-                        value={Number(invoice.stocks)}
-                        className="w-[60%]"
-                      />
+                    <TableCell className="text-right text-md text-red-500 font-light">
+                      <div className="w-60 h-20">
+                        <LocalChart />
+                      </div>
+                      {invoice.vendorDescription}
+                      <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      {invoice.totalAmount}
-                      <Badge className="bg-red-500 ml-2">Out of stock</Badge>
+                      {/* {invoice.totalAmount} */}
+                      <Switch
+                        onCheckedChange={(e) =>
+                          didStatusUpdate(e, invoice.vendorID)
+                        }
+                        checked={invoice.status}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -442,6 +523,7 @@ export default function TableDemo() {
       {/* <div className=" ml-20 " mainStyle={"w-1/2  h-full "}>
         <Map coordinates={(e) => setStoreCoordinates(e)} />
       </div> */}
+      <Toaster />
     </div>
   );
 }

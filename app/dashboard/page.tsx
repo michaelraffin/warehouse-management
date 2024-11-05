@@ -236,7 +236,7 @@ export default function TableDemo() {
       <div className="ml-20 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ">
         <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
           {/* //LEFT */}
-          <MainChart chartTitle={"Lai Warehouse Monthly Sales"} />
+          <MainChart data={null} chartTitle={"Lai Warehouse Monthly Sales"} />
           {/* <ChartContainer
             config={chartConfig}
             className="min-h-[200px] w-full h-1/8"
@@ -674,7 +674,10 @@ export default function TableDemo() {
                       />
                     </TableCell>
                     <TableCell>
-                      {vendors.transactionLogs.length} transaction
+                      {vendors.transactionLogs === undefined
+                        ? 0
+                        : vendors.transactionLogs?.length}{" "}
+                      transaction
                     </TableCell>
                     <TableCell className="text-right">
                       {numberFormat(vendors.totalSpent)}

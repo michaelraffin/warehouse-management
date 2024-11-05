@@ -136,7 +136,7 @@ type MainChartProps = {
 };
 
 export function MainChart({ chartTitle, data }: MainChartProps) {
-  const updateData = (data, chartData) => {
+  const updateData = (data: any, chartData: any) => {
     try {
       return data.map((product) => ({
         date: product.title,
