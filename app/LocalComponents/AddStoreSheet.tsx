@@ -96,7 +96,7 @@ export default function Add(props: any) {
 
             {/* <Map coordinates={(e)=>console.log(e)}/> */}
 
-            <DropdownBranches />
+            <DropdownBranches didSelect={(e: string) => props.didSelect(e)} />
             {displayLogo()}
 
             <Label htmlFor="picture" className="mt-10">

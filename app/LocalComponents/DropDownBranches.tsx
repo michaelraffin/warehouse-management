@@ -1,5 +1,6 @@
-import * as React from "react";
+"use client";
 
+import React, { useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -10,23 +11,78 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+export interface SubBranch {
+  branchID: number;
+  branchDisplayName: string;
+  status: boolean;
+}
+
+export interface Branch {
+  branchID: number;
+  city: string;
+  subBranches: SubBranch[];
+}
+export interface LeeaseBranches {
+  _id: string;
+  branches: Branch[];
+}
+import { axiosV2Local, url, axiosV2, axios } from "../../Utils/axios";
 export function DropdownBranches(props: any) {
+  const [branches, setBranches] = useState<Branch[]>([]);
+
+  React.useEffect(() => {
+    fetchBranches();
+  }, []);
+
+  const fetchBranches = async () => {
+    try {
+      let data = {
+        local_id: "e",
+        queryType: "all",
+        storeOwner: "storeOwner",
+        isAPI: true,
+        referenceOrder: "e",
+        number: 20,
+        showLimit: true,
+        // queryData: { status: "orderStatus", userReference: "e" },
+      };
+      let productList = await axiosV2("dsadsa").post(
+        `${url}/store/LesseConfig`,
+      );
+      setBranches(productList.data.results[0].branches);
+      // setProductsReference(productList.data.results);
+      // setStatus(false);
+    } catch (error) {
+      alert("opss");
+      console.log("error Product", error);
+    }
+  };
+  const didSelect = (e: string) => {
+    console.log(e);
+    props.didSelect(e);
+  };
+
   return (
-    <Select onChange={(e) => console.log("eee", e)}>
+    <Select onValueChange={(e) => didSelect(e)}>
       <SelectTrigger className="w-full mt-2">
         <SelectValue placeholder="Select a Branch" />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Pagadian</SelectLabel>
-          <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-          <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-          <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-          <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-          <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-          <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
+        {branches.map((group: Branch, index) => (
+          <SelectGroup key={index}>
+            <SelectLabel key={group.branchID}>{group.city}</SelectLabel>
+            {group.subBranches.map((option: SubBranch, index) => (
+              <SelectItem
+                onChange={() => alert("s")}
+                key={option.branchID}
+                value={`${group.city}-${option.branchDisplayName}`}
+              >
+                {option.branchDisplayName}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        ))}
+        {/* <SelectGroup>
           <SelectLabel>Tubod</SelectLabel>
           <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
           <SelectItem value="cet">Central European Time (CET)</SelectItem>
@@ -68,7 +124,7 @@ export function DropdownBranches(props: any) {
           <SelectItem value="bot">Bolivia Time (BOT)</SelectItem>
           <SelectItem value="brt">Brasilia Time (BRT)</SelectItem>
           <SelectItem value="clt">Chile Standard Time (CLT)</SelectItem>
-        </SelectGroup>
+        </SelectGroup> */}
       </SelectContent>
     </Select>
   );
