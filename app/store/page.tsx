@@ -37,6 +37,35 @@ import { UserProfile } from "../../Utils/userProfile";
 import { axiosV2Local, url, axiosV2, axios } from "../../Utils/axios";
 import Link from "next/link";
 import LocalChart from "../LocalComponents/Charts";
+import {
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from "recharts";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+const chartConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  safari: {
+    label: "Safari",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
+
+const chartData = [
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+];
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
@@ -292,13 +321,14 @@ export default function TableDemo() {
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
-          <Table className="">
+          <Table className="mb-20">
             <TableCaption>{products.length} vendors found</TableCaption>
             <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
                 <TableHead className="w-[200px] ">Vendor </TableHead>
                 <TableHead>Logo</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-center">Total</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
@@ -330,15 +360,31 @@ export default function TableDemo() {
                       />
                     </a>
                   </TableCell>
+
                   <TableCell className="text-right text-md text-red-500 font-light">
                     <div className="w-60 h-20">
                       <LocalChart />
                     </div>
-                    {invoice.vendorDescription}
+                    {/* {invoice.vendorDescription} */}
+                    {/* {invoice.stocks} cases left */}
                     <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                   </TableCell>
                   <TableCell className="text-right">
+                    <p className="font-bold text-gray-600">
+                      {invoice.totalSpent != undefined
+                        ? invoice.totalSpent.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })
+                        : Number(0).toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                    </p>
+                  </TableCell>
+                  <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
+
                     <Switch
                       onCheckedChange={(e) =>
                         didStatusUpdate(e, invoice.vendorID)
@@ -356,13 +402,17 @@ export default function TableDemo() {
           value="Active"
           className={status ? `opacity-20` : `opacity-100`}
         >
-          <Table className="">
-            <TableCaption>{products.length} vendors found</TableCaption>
+          <Table className="mb-20">
+            <TableCaption>
+              {products.filter((item) => item.status === true).length} vendors
+              found
+            </TableCaption>
             <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
                 <TableHead className="w-[200px] ">Vendor </TableHead>
                 <TableHead>Logo</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-center">Total</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
@@ -404,6 +454,19 @@ export default function TableDemo() {
                       <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                     </TableCell>
                     <TableCell className="text-right">
+                      <p className="font-bold text-gray-600">
+                        {invoice.totalSpent != undefined
+                          ? invoice.totalSpent.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })
+                          : Number(0).toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                      </p>
+                    </TableCell>
+                    <TableCell className="text-right">
                       {/* {invoice.totalAmount} */}
                       <Switch
                         onCheckedChange={(e) =>
@@ -418,13 +481,17 @@ export default function TableDemo() {
           </Table>
         </TabsContent>
         <TabsContent value="inActive">
-          <Table className="">
-            <TableCaption>{products.length} vendors found</TableCaption>
+          <Table className="mb-20">
+            <TableCaption>
+              {products.filter((item) => item.status === false).length} vendors
+              found
+            </TableCaption>
             <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
                 <TableHead className="w-[200px] ">Vendor </TableHead>
                 <TableHead>Logo</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-center">Total</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
@@ -464,6 +531,19 @@ export default function TableDemo() {
                       </div>
                       {invoice.vendorDescription}
                       <Badge className="bg-red-500 ml-4">Out of stock</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <p className="font-bold text-gray-600">
+                        {invoice.totalSpent != undefined
+                          ? invoice.totalSpent.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })
+                          : Number(0).toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                      </p>
                     </TableCell>
                     <TableCell className="text-right">
                       {/* {invoice.totalAmount} */}
