@@ -43,24 +43,120 @@ import {
   StackedBarChart,
   LineChart,
   SimpleBarChart,
+  BubbleChartOptions,
 } from "@carbon/charts-react";
 import "@carbon/charts-react/styles.css";
 import barOptions from "../baroptions";
 import lineOptions from "../lineOptions";
+import barOptionsV2 from "../Options";
 import { PieChart } from "@carbon/charts-react";
 let tableWidth = "w-[70%]";
+// interface ExtendedBubbleDoubleLinearOptions extends BubbleDoubleLinearOptions {
+//   data?: {
+//     loading: boolean;
+//   };
+// }
+
+// const BubbleDoubleLinearOptions: ExtendedBubbleDoubleLinearOptions = {
+//   title: "Annual Sales Report",
+//   data: {
+//     loading: true,
+//   },
+//   axes: {
+//     bottom: {
+//       title: "2019 Annual Sales Figures",
+//       mapsTo: "key",
+//       scaleType: "categorical",
+//     },
+//     left: {
+//       title: "Conversion rate",
+//       mapsTo: "value",
+//       scaleType: "linear",
+//     },
+//   },
+//   height: 400,
+//   width: 1200,
+// };
+// interface BubbleDoubleLinearOptions {
+//   title: string;
+//   axes: {
+//     bottom: {
+//       title: string;
+//       mapsTo: string;
+//       includeZero?: boolean;
+//       scaleType: string;
+//     };
+//     left: {
+//       title: string;
+//       mapsTo: string;
+//       includeZero?: boolean;
+//       scaleType: string;
+//     };
+//   };
+//   bubble: {
+//     radiusMapsTo: string;
+//   };
+//   height: number;
+//   width: number;
+// }
+interface ProductDetails {
+  id?: String;
+  status?: any;
+  title?: string;
+  img: string;
+  stocks: any;
+  paymentStatus: any;
+  price: number;
+  totalAmount: number;
+}
+
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
+interface GroupedData {
+  group: string; // e.g., "June, 2024"
+  key: string; // e.g., "June 22, 2024"
+  value: number; // e.g., 75148.1117461014
+}
 export default function TableDemo({ params }: { params: { type: string } }) {
   const { toast } = useToast();
+  // const BarOptions: BubbleDoubleLinearOptions = {
+  //   title: "Annual Sales Report",
+  //   data: {
+  //     loading: true,
+  //   },
+  //   axes: {
+  //     bottom: {
+  //       title: "2019 Annual Sales Figures",
+  //       mapsTo: "key",
+  //       scaleType: "categorical", // Use a valid scale type
+  //     },
+  //     left: {
+  //       title: "Conversion rate",
+  //       mapsTo: "value",
+  //       scaleType: "linear",
+  //     },
+  //   },
+  //   height: 400, // or "400px" if required by the library
+  //   width: 1200, // or "1200px" if required by the library
+  // };
+
   const [request, setRequest] = useState(invoices);
   const [reRequest, setRefRequest] = useState(invoices);
-  const [userProfile, setUser] = useState(null);
-  const [requestedType, setRequestedType] = useState(null);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
+  const [requestedType, setRequestedType] = useState(String);
   const [dailySales, setDailySales] = useState([]);
   const [annualSales, setAnnualsales] = useState([]);
   const [weekySales, setWeeklySales] = useState([]);
   const [stackedBarOptions, setBarOptions] = useState(barOptions);
   const [lineBarOptions, setLineOptions] = useState(lineOptions);
-  const [todaysTransaction, setTodaysTransaction] = useState(null);
+  const [todaysTransaction, setTodaysTransaction] = useState<
+    [GroupedData] | []
+  >([]);
 
   UserProfile().then((profile) => {
     setUser(profile);
@@ -91,9 +187,10 @@ export default function TableDemo({ params }: { params: { type: string } }) {
   useEffect(() => {
     console.log("am irender?");
     console.log("USER type", params.type);
+    let type: String = params.type;
     barOptions.title = `Weekly  Sales Report`;
     // lineOptions.title = `${params.type.toUpperCase()} Sales Report`;
-    setRequestedType(params.type.toUpperCase());
+    setRequestedType(type.toUpperCase());
 
     //Annual
     fetchTopSales().then((items) => {
@@ -154,7 +251,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
             };
           },
         );
-        console.log("setTodaysTransaction");
+        console.log("setTodaysTransaction", todaysListoftransaction);
         setTodaysTransaction(todaysListoftransaction);
 
         const dailySales = items.map((item: any) => {
@@ -175,7 +272,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     });
   }, []);
 
-  const didUpdate = (e, id) => {
+  const didUpdate = (e: any, id: any) => {
     try {
       let list = request.map((item) => {
         if (item.id == id) {
@@ -190,7 +287,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
       alert("Oppss");
     }
   };
-  const displayAlert = (item) => {
+  const displayAlert = (item: any) => {
     console.log(item);
     didUpdate("Denied", item.id);
     //     fetchProduct().then((response)=>{
@@ -220,9 +317,77 @@ export default function TableDemo({ params }: { params: { type: string } }) {
     try {
       return (
         <div className="w-full">
-          <LineChart data={annualSales} options={lineBarOptions}></LineChart>
+          <LineChart
+            data={annualSales}
+            options={{
+              title: "Vertical simple bar (discrete)",
+              axes: {
+                left: {
+                  mapsTo: "value",
+                },
+                bottom: {
+                  mapsTo: "group",
+                },
+              },
+              height: "400px",
+            }}
+          ></LineChart>
           <div className="mt-40" />
-          <StackedBarChart data={weekySales} options={stackedBarOptions} />
+          <StackedBarChart
+            data={weekySales}
+            options={{
+              title: "Weekly Sales Report ",
+              data: {
+                loading: true,
+              },
+              axes: {
+                left: {
+                  mapsTo: "value",
+                  stacked: true,
+                },
+                bottom: {
+                  mapsTo: "date",
+                  // scaleType: "time",
+                },
+              },
+              toolbar: {
+                enabled: true,
+                numberOfIcons: 3,
+                controls: [
+                  {
+                    type: "Zoom in",
+                  },
+                  {
+                    type: "Zoom out",
+                  },
+                  {
+                    type: "Reset zoom",
+                  },
+                  {
+                    type: "Custom",
+                    text: "Custom button",
+                    shouldBeDisabled: () => !1,
+                    clickFunction: () => {
+                      console.log(
+                        "Custom click function executed. Event `toolbar-button-click` has also been dispatched.",
+                      );
+                    },
+                    iconSVG: {
+                      content: `<path d="M23,13H18v2h5v2H19a2,2,0,0,0-2,2v2a2,2,0,0,0,2,2h6V15A2,2,0,0,0,23,13Zm0,8H19V19h4Z"/>
+				<path d="M13,9H9a2,2,0,0,0-2,2V23H9V18h4v5h2V11A2,2,0,0,0,13,9ZM9,16V11h4v5Z"/><rect data-name="&lt;Transparent Rectangle&gt;" width="32" height="32" style="fill: none"/>`,
+                    },
+                  },
+                ],
+              },
+              zoomBar: {
+                top: {
+                  enabled: true,
+                },
+              },
+              height: "400px",
+              width: "1200px",
+            }}
+          />
           <div className="mt-40" />
           <SimpleBarChart
             data={dailySales}
@@ -234,7 +399,6 @@ export default function TableDemo({ params }: { params: { type: string } }) {
                 },
                 bottom: {
                   mapsTo: "group",
-                  scaleType: "labels",
                 },
               },
               height: "400px",
@@ -248,7 +412,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
       return null;
     }
   };
-  const searchRequest = (e) => {
+  const searchRequest = (e: any) => {
     try {
       let searchedValue = e.target.value.toLowerCase();
       let personStaff = invoices;
@@ -263,7 +427,7 @@ export default function TableDemo({ params }: { params: { type: string } }) {
       <SideNavigation />
 
       <HeaderPage
-        title={`${requestedType} Report👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`${requestedType} Report👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
       <Breadcrumb>
@@ -358,12 +522,13 @@ export default function TableDemo({ params }: { params: { type: string } }) {
         </div>
       </div> */}
       <div className="mb-20 ml-20 h-full w-[100%]">
-        <LocalChart
+        {/* //TOBE  FIX */}
+        {/* <LocalChart
           sourceAmount={"amount"}
           xLabel={"title"}
           bottomTitle="title"
           data={todaysTransaction}
-        />
+        /> */}
         {/* {weekySales === null ? (
           "Loading..."
         ) : ( */}

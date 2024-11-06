@@ -25,7 +25,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { UploadImageService } from "../../Utils/image_uploader";
-
+import { BarChartVertical } from "../LocalComponents/Charts/BarcharVertical";
+import { MainChart } from "../LocalComponents/Charts/MainChart";
 import {
   Popover,
   PopoverContent,
@@ -34,10 +35,41 @@ import {
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
 import { axiosV2Local, axiosV2, url } from "../../Utils/axios";
+
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
+interface UpdateStatus {
+  id?: String;
+  status?: any;
+}
+interface PaymentStatus {
+  id: String;
+  status?: any;
+  paymentStatus?: string;
+  img: string;
+  stocks: any;
+}
+interface ProductDetails {
+  id?: String;
+  status?: any;
+  title?: string;
+  img: string;
+  stocks: any;
+  paymentStatus: any;
+  price: number;
+  totalAmount: number;
+}
+
 export default function TableDemo() {
   const { toast } = useToast();
-  const [products, setProducts] = useState([]);
-  const [userProfile, setUser] = useState(null);
+  const [products, setProducts] = useState<[ProductDetails] | []>([]);
+
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState(null);
   const [productQuantity, setProducQuantity] = useState(null);
@@ -75,8 +107,8 @@ export default function TableDemo() {
       console.log("error Product", error);
     }
   };
-  const didStatusUpdate = (e, id) => {
-    let list = products.map((item) => {
+  const didStatusUpdate = (e: any, id: any) => {
+    let list: any = products.map((item: ProductDetails) => {
       if (item.id == id) {
         item.status = e;
         return item;
@@ -149,7 +181,7 @@ export default function TableDemo() {
       <SideNavigation />
 
       <HeaderPage
-        title={`Your Products ! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`Your Products ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
 
@@ -173,27 +205,35 @@ export default function TableDemo() {
           <TabsTrigger className="rounded-full" value="Active">
             Active{" "}
             <span className="ml-2 font-bold text-red-500">
-              {products.filter((item) => item.status).length}
+              {products.filter((item: UpdateStatus) => item.status).length}
             </span>
           </TabsTrigger>
           <TabsTrigger className="rounded-full" value="inActive">
             In-Active{" "}
             <span className="ml-2 font-bold text-red-500">
-              {products.filter((item) => item.status === false).length}
+              {
+                products.filter((item: UpdateStatus) => item.status === false)
+                  .length
+              }
             </span>
           </TabsTrigger>
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
+
         <BottomDrawerSheet />
+
         <AddProduct
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
-          image_file={(e) => setImageLink(e)}
-          title={(e) => setProducTitle(e)}
-          quantity={(e) => setProducQuantity(e)}
-          didSubmit={(e) => submitProduct()}
+          image_file={(e: any) => setImageLink(e)}
+          title={(e: any) => setProducTitle(e)}
+          quantity={(e: any) => setProducQuantity(e)}
+          didSubmit={(e: any) => submitProduct()}
         />
+        <div className="mt-20  h-full w-[98%] mr-20">
+          <MainChart data={products} chartTitle={"Your Products score board"} />
+        </div>
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
@@ -210,8 +250,8 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((invoice) => (
-                <TableRow key={invoice.id}>
+              {products.map((invoice: ProductDetails) => (
+                <TableRow key={invoice?.stocks ?? ""}>
                   <TableCell className="font-medium">
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}
@@ -268,13 +308,13 @@ export default function TableDemo() {
             </TableHeader>
             <TableBody>
               {products
-                .filter((item) => item.status)
+                .filter((item) => item?.status)
                 .map((invoice) => (
-                  <TableRow key={invoice.id}>
+                  <TableRow key={invoice.price}>
                     <TableCell className="font-medium">
                       {" "}
                       <RequestSheet
-                        void={(details) => displayAlert()}
+                        void={(details: ProductDetails) => displayAlert()}
                         details={invoice}
                       />
                     </TableCell>
@@ -315,10 +355,10 @@ export default function TableDemo() {
               {products
                 .filter((item) => item.status === false)
                 .map((invoice) => (
-                  <TableRow key={invoice.id}>
+                  <TableRow key={invoice.price}>
                     <TableCell className="font-medium">
                       <RequestSheet
-                        void={(details) => displayAlert()}
+                        void={(details: ProductDetails) => displayAlert()}
                         details={invoice}
                       />
                     </TableCell>
@@ -372,10 +412,7 @@ export default function TableDemo() {
               <span className="mb-2 mr-2 inline-block rounded-full bg-white px-3 text-xs font-light text-gray-400">
                 {moment(new Date()).format("LLLL")}
               </span>
-              <p
-                className="right-4 top-2 ml-3 inline-block text-xs font-light text-gray-100  transition duration-100 ease-in-out group-hover:font-bold group-hover:text-black"
-                stye="fontSize:20"
-              >
+              <p className="right-4 top-2 ml-3 inline-block text-xs font-light text-gray-100  transition duration-100 ease-in-out group-hover:font-bold group-hover:text-black">
                 Tap to view full detail of order
               </p>
             </div>

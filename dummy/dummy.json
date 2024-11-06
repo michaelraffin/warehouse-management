@@ -1,0 +1,455 @@
+{
+  "results": [
+    {
+      "_id": "667306124af7c900504487ae",
+      "agent": {
+        "transactionState": "pending",
+        "agentOwner": null
+      },
+      "payment_method": {
+        "type": "cash",
+        "checknumber": ""
+      },
+      "promoCode": {
+        "type": "PromoCode",
+        "valid": "VDAYREADY2023",
+        "dateFrom": "2020-02-13",
+        "dateTo": "2020-02-14",
+        "acquiredCustomer": 0,
+        "maxLimit": 50,
+        "discountedItems": {
+          "isPercentage": true,
+          "requiredCategory": [
+            "Exclusive-FB",
+            "VDAYREADY2023",
+            "Flux-Bouquet",
+            "Lux-Arrangements",
+            "park"
+          ],
+          "requiredAmount": 0,
+          "discountedPrice": 10,
+          "message": "Sorry, your promo code does not apply"
+        }
+      },
+      "transactionID": "pGWhtC",
+      "transaction": {
+        "vendor": {
+          "_id": "65c0e3f4ce422300466e9dd9",
+          "vendorID": "5D8ILYUO",
+          "vendorTitle": "You & Me",
+          "paymentMethod": "Credit Card",
+          "stocks": "40",
+          "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707139795683-ce5699233cbc0f142250b520d967dff7.jpg",
+          "status": true,
+          "totalSpent": 20000,
+          "transactionLogs": [
+            {
+              "transactionID": "X123Ab"
+            }
+          ]
+        },
+        "payment_method": {
+          "type": "cash",
+          "checknumber": ""
+        },
+        "promoCode": {
+          "type": "PromoCode",
+          "valid": "VDAYREADY2023",
+          "dateFrom": "2020-02-13",
+          "dateTo": "2020-02-14",
+          "acquiredCustomer": 0,
+          "maxLimit": 50,
+          "discountedItems": {
+            "isPercentage": true,
+            "requiredCategory": [
+              "Exclusive-FB",
+              "VDAYREADY2023",
+              "Flux-Bouquet",
+              "Lux-Arrangements",
+              "park"
+            ],
+            "requiredAmount": 0,
+            "discountedPrice": 10,
+            "message": "Sorry, your promo code does not apply"
+          }
+        },
+        "date_created": "June 20, 2024",
+        "grandTotal": 33.64077417949311,
+        "data_state": "online",
+        "cart": [
+          {
+            "_id": "65be01e95acb740045785233",
+            "productID": "C3s6cg10",
+            "local_id": "red horse 222x",
+            "paymentStatus": "Unpaid",
+            "title": "red horse 222x",
+            "totalAmount": "$300.00",
+            "paymentMethod": "Credit Card",
+            "stocks": "31",
+            "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1706951114805-download.jpeg",
+            "status": false,
+            "totalSold": 3200,
+            "transactionLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "restockLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "price": 10.537906643931146,
+            "case_quantity": 1
+          },
+          {
+            "_id": "65584bf12db000477c231f6a",
+            "local_id": "INV007",
+            "paymentStatus": "Unpaid",
+            "totalAmount": "$300.00",
+            "title": "TLight",
+            "stocks": "16",
+            "img": "https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+            "status": false,
+            "quantity": {
+              "byCase": 1,
+              "byPiece": 1
+            },
+            "totalSold": 3200,
+            "transactionLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "restockLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "price": 12.357349483574943,
+            "case_quantity": 1
+          },
+          {
+            "_id": "65c0dd64ce422300466e9dd8",
+            "productID": "jKVkGhwO",
+            "local_id": "Tanduay",
+            "paymentStatus": "Unpaid",
+            "title": "Tanduay",
+            "totalAmount": "$300.00",
+            "paymentMethod": "Credit Card",
+            "stocks": "24",
+            "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707138385676-images.jpeg",
+            "status": false,
+            "totalSold": 3200,
+            "transactionLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "restockLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "price": 10.745518051987021,
+            "case_quantity": 1
+          }
+        ]
+      },
+      "vendor": {
+        "_id": "65c0e3f4ce422300466e9dd9",
+        "vendorID": "5D8ILYUO",
+        "vendorTitle": "You & Me",
+        "paymentMethod": "Credit Card",
+        "stocks": "40",
+        "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707139795683-ce5699233cbc0f142250b520d967dff7.jpg",
+        "status": true,
+        "totalSpent": 20000,
+        "transactionLogs": [
+          {
+            "transactionID": "X123Ab"
+          }
+        ]
+      },
+      "grandTotal": 33.64077417949311,
+      "data_state": "online"
+    },
+    {
+      "_id": "6676934a8b25d10050ac6414",
+      "agent": {
+        "transactionState": "pending",
+        "agentOwner": null
+      },
+      "payment_method": {
+        "type": "cash",
+        "checknumber": ""
+      },
+      "promoCode": {
+        "type": "PromoCode",
+        "valid": "NOVEMBER22",
+        "dateFrom": "2022-11-22",
+        "dateTo": "2022-11-23",
+        "acquiredCustomer": 0,
+        "maxLimit": 100,
+        "discountedItems": {
+          "isPercentage": true,
+          "requiredCategory": [
+            "Flux-Bouquet",
+            "YouAreMySunshine",
+            "MyBigLove",
+            "Boq-Premium"
+          ],
+          "requiredAmount": "100",
+          "discountedPrice": "10",
+          "message": "Your promo is not valid"
+        }
+      },
+      "transactionID": "TYWwaT",
+      "attachedFile": [],
+      "transaction": {
+        "vendor": {
+          "_id": "65c195c72221000045ff2187",
+          "vendorID": "ohIGLePq",
+          "vendorTitle": "SM Pagadian",
+          "paymentMethod": "Credit Card",
+          "stocks": "23",
+          "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707185556512-SM_Supermalls_Logo.png",
+          "status": true,
+          "totalSpent": 40000,
+          "transactionLogs": [
+            {
+              "transactionID": "X123Ab"
+            }
+          ],
+          "coordinates": {
+            "lng": 121.16081956469054,
+            "lat": 14.613636033564376
+          }
+        },
+        "payment_method": {
+          "type": "cash",
+          "checknumber": ""
+        },
+        "promoCode": {
+          "type": "PromoCode",
+          "valid": "NOVEMBER22",
+          "dateFrom": "2022-11-22",
+          "dateTo": "2022-11-23",
+          "acquiredCustomer": 0,
+          "maxLimit": 100,
+          "discountedItems": {
+            "isPercentage": true,
+            "requiredCategory": [
+              "Flux-Bouquet",
+              "YouAreMySunshine",
+              "MyBigLove",
+              "Boq-Premium"
+            ],
+            "requiredAmount": "100",
+            "discountedPrice": "10",
+            "message": "Your promo is not valid"
+          }
+        },
+        "date_created": "June 22, 2024",
+        "grandTotal": 47.744265886487796,
+        "data_state": "online",
+        "cart": [
+          {
+            "_id": "65584c312db000477c231f6c",
+            "local_id": "INV007",
+            "paymentStatus": "Unpaid",
+            "totalAmount": "$300.00",
+            "title": "San Miguel - 100ML z z z z",
+            "stocks": "107",
+            "img": "https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+            "status": false,
+            "totalSold": 3200,
+            "transactionLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "restockLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "price": 13.946880410596716,
+            "case_quantity": 1
+          },
+          {
+            "_id": "656c6346f1aa5d1a208bbebd",
+            "local_id": "INV007",
+            "title": "TLight",
+            "stocks": 40,
+            "paymentStatus": "Unpaid",
+            "totalAmount": "$300.00",
+            "paymentMethod": "Credit Card",
+            "img": "https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+            "status": false,
+            "totalSold": 3200,
+            "transactionLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "restockLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "price": 14.10789783161956,
+            "case_quantity": 1
+          },
+          {
+            "_id": "66657a38e2ecdd112084b570",
+            "local_id": "INV007",
+            "title": "TLight",
+            "stocks": 40,
+            "paymentStatus": "Unpaid",
+            "totalAmount": "$300.00",
+            "paymentMethod": "Credit Card",
+            "img": "https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+            "status": false,
+            "price": 19.689487644271516,
+            "case_quantity": 1
+          }
+        ]
+      },
+      "vendor": {
+        "_id": "65c195c72221000045ff2187",
+        "vendorID": "ohIGLePq",
+        "vendorTitle": "SM Pagadian",
+        "paymentMethod": "Credit Card",
+        "stocks": "23",
+        "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707185556512-SM_Supermalls_Logo.png",
+        "status": true,
+        "totalSpent": 40000,
+        "transactionLogs": [
+          {
+            "transactionID": "X123Ab"
+          }
+        ],
+        "coordinates": {
+          "lng": 121.16081956469054,
+          "lat": 14.613636033564376
+        }
+      },
+      "grandTotal": 47.744265886487796,
+      "data_state": "online"
+    },
+    {
+      "_id": "667695638b25d10050ac6415",
+      "agent": {
+        "transactionState": "pending",
+        "agentOwner": null
+      },
+      "payment_method": {
+        "type": "cash",
+        "checknumber": ""
+      },
+      "promoCode": null,
+      "transactionID": "maUg8j",
+      "attachedFile": [],
+      "transaction": {
+        "vendor": {
+          "_id": "65c0e55cce422300466e9dda",
+          "vendorID": "WDQ6uPun",
+          "vendorTitle": "Robinson (Pagadian)",
+          "paymentMethod": "Credit Card",
+          "stocks": "23",
+          "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707140411444-images.png",
+          "status": false,
+          "totalSpent": 120000,
+          "transactionLogs": [
+            {
+              "transactionID": "X123Ab"
+            }
+          ],
+          "coordinates": {
+            "lng": 125.44300200756334,
+            "lat": 5.900645671575205
+          }
+        },
+        "payment_method": {
+          "type": "cash",
+          "checknumber": ""
+        },
+        "promoCode": null,
+        "date_created": "June 22, 2024",
+        "grandTotal": 31.967825873316723,
+        "data_state": "online",
+        "cart": [
+          {
+            "_id": "66228d7a4ef59c00541ee9b3",
+            "local_id": "INV003",
+            "paymentStatus": "Unpaid",
+            "totalAmount": "$350.00",
+            "stocks": "250",
+            "title": "MICHAEzzzL",
+            "img": "https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
+            "quantity": {
+              "byCase": "12941",
+              "byPiece": "3"
+            },
+            "status": true,
+            "totalSold": 3200,
+            "price": 16.213802027593424,
+            "case_quantity": 1
+          },
+          {
+            "_id": "65584bf12db000477c231f6a",
+            "local_id": "INV007",
+            "paymentStatus": "Unpaid",
+            "totalAmount": "$300.00",
+            "title": "TLight",
+            "stocks": "16",
+            "img": "https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
+            "status": false,
+            "quantity": {
+              "byCase": 1,
+              "byPiece": 1
+            },
+            "totalSold": 3200,
+            "transactionLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "restockLogs": [
+              {
+                "transactionID": "X123Ab"
+              }
+            ],
+            "price": 15.7540238457233,
+            "case_quantity": 1
+          }
+        ]
+      },
+      "vendor": {
+        "_id": "65c0e55cce422300466e9dda",
+        "vendorID": "WDQ6uPun",
+        "vendorTitle": "Robinson (Pagadian)",
+        "paymentMethod": "Credit Card",
+        "stocks": "23",
+        "img": "https://localflowershop.sgp1.digitaloceanspaces.com/product/1707140411444-images.png",
+        "status": false,
+        "totalSpent": 120000,
+        "transactionLogs": [
+          {
+            "transactionID": "X123Ab"
+          }
+        ],
+        "coordinates": {
+          "lng": 125.44300200756334,
+          "lat": 5.900645671575205
+        }
+      },
+      "grandTotal": 31.967825873316723,
+      "data_state": "online"
+    }
+  ],
+  "status": true,
+  "count": 3,
+  "source": "API"
+}

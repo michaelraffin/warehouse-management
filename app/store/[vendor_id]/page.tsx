@@ -59,7 +59,39 @@ import Map, {
 } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+interface TransactionLog {
+  transactionID: string; // Assuming transactionID is a string
+}
+interface VendorCoordinates {
+  lat: number;
+  lng: number;
+}
+interface VendorAirport {
+  airport: {
+    country: string;
+    code: string;
+    url: string;
+    lon: number;
+    lat: number; // Latitude of the airport
+    lng: number; // Longitude of the airport (if needed)
+    name?: string; // Optional property for the airport name, if needed
+  };
+}
 
+interface Vendor {
+  _id: string; // The unique identifier for the product
+  vendorID: string; // The unique identifier for the vendor
+  vendorTitle: string; // The title of the vendor
+  paymentMethod: string; // The payment method used
+  stocks: string; // The number of stocks available
+  img: string; // The image URL for the product
+  status: boolean; // The availability status of the product
+  totalSpent: number; // The total amount spent
+  transactionLogs: TransactionLog[]; // An array of transaction logs
+  coordinates: { lat: number; lng: number };
+  lat: number;
+  lng: number;
+}
 export default function VendorDetails({
   params,
 }: {
@@ -72,115 +104,23 @@ export default function VendorDetails({
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState(null);
   const [productQuantity, setProducQuantity] = useState(null);
-  const [storeCoordinates, setStoreCoordinates] = useState(null);
+  const [storeCoordinates, setStoreCoordinates] =
+    useState<VendorCoordinates | null>(null);
   const [imageLink, setImageLink] = useState(null);
   const [transactions, setVendorTransaction] = useState([]);
-
-  const [vendorDetails, setVendorDetails] = useState({
-    vendorID: "",
-    img: "",
-    vendorTitle: "",
-    coordinates: undefined,
-  });
+  const [vendorDetails, setVendorDetails] = useState<Vendor | null>(null);
 
   const mapboxToken =
     "pk.eyJ1IjoibWFtbmlkeiIsImEiOiJjanZsNnhhZ24wdDE1NDlwYmRvczJzNDk2In0.Bl06Qp0TgR-KfisAsKbciQ";
-  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState<VendorAirport | null>(
+    null,
+  );
   const mapRef = useRef(null);
   const [location, setLocation] = useState([{ lng: 123.841, lat: 8.1822 }]);
   const [initialLocation, setInitialLocation] = useState({
     lng: 123.841,
     lat: 8.1822,
   });
-
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "300.00",
-      paymentMethod: "Credit Card",
-    },
-  ];
-  const data = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
 
   let parentClass = "LesseeVendor";
 
@@ -191,7 +131,7 @@ export default function VendorDetails({
   useEffect(() => {
     console.log("vendorDetails,", vendorDetails);
   }, [vendorDetails]);
-  const updateLocation = (e) => {
+  const updateLocation = (e: any) => {
     console.log(e);
     setStoreCoordinates(e);
   };
@@ -199,12 +139,21 @@ export default function VendorDetails({
     setStatus(true);
     let service = async () => {
       let payload = vendorDetails;
-      payload.coordinates = storeCoordinates;
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/updateItem/${parentClass}`,
-        payload,
-      );
-      return productList;
+
+      // if (vendorDetails) {
+      //   const updatedVendorDetails = {
+      //     ...vendorDetails, // Spread the existing vendor details
+      //     coordinates: storeCoordinates, // Update the coordinates
+      //   };
+
+      //   setVendorDetails(storeCoordinates); // Set the new state
+      // }
+
+      // let productList = await axiosV2("dsadsa").post(
+      //   `${url}/updateItem/${parentClass}`,
+      //   payload,
+      // );
+      // return productList;
     };
     service().then((item) => {
       console.log(item);
@@ -295,18 +244,7 @@ export default function VendorDetails({
       console.log("error Product", error);
     }
   };
-  const didStatusUpdate = (e, id) => {
-    let list = products.map((item) => {
-      if (item.id == id) {
-        item.status = e;
-        return item;
-      } else {
-        return item;
-      }
-    });
 
-    setProducts(list);
-  };
   const generateRandomString = () => {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -352,7 +290,7 @@ export default function VendorDetails({
     });
   };
 
-  const addItem = (item) => {
+  const addItem = (item: any) => {
     console.log(item);
     setStoreCoordinates({ lng: item.lng, lat: item.lat });
     // setLocation([...location, { lng: item.lng, lat: item.lat }]);
@@ -379,7 +317,7 @@ export default function VendorDetails({
       return (
         <>
           <p className="font-bold text-xs">
-            {vendorDetails.vendorTitle} Transactions
+            {vendorDetails?.vendorTitle} Transactions
           </p>
 
           <Table className="w-full" title="">
@@ -440,11 +378,11 @@ export default function VendorDetails({
           // latitude={initialLocation.lat}
           // longitude={initialLocation.lng}
           initialViewState={
-            vendorDetails.coordinates === undefined
+            vendorDetails?.coordinates === undefined
               ? { longitude: 123.841, latitude: 8.1822 }
               : {
-                  latitude: vendorDetails.lat,
-                  longitude: vendorDetails.lng,
+                  latitude: vendorDetails?.lat,
+                  longitude: vendorDetails?.lng,
                   zoom: 4,
                 }
           }
@@ -474,25 +412,22 @@ export default function VendorDetails({
               }}
               closeButton={false}
             >
-              <h3 className={classes.popupTitle}>
-                {selectedMarker.airport.name}
-              </h3>
-              <div className={classes.popupInfo}>
-                <label className={classes.popupLabel}>Code: </label>
+              <h3>{selectedMarker.airport.name}</h3>
+              <div>
+                <label>Code: </label>
                 <span>{selectedMarker.airport.code}</span>
                 <br />
-                <label className={classes.popupLabel}>Country: </label>
+                <label>Country: </label>
                 <span>{selectedMarker.airport.country}</span>
                 <br />
-                <label className={classes.popupLabel}>Website: </label>
+                <label>Website: </label>
                 <Link
                   href={
                     selectedMarker.airport.url === ""
                       ? "#"
                       : selectedMarker.airport.url
                   }
-                  target={selectedMarker.airport.url === "" ? null : "_blank"}
-                  className={classes.popupWebUrl}
+                  target={selectedMarker.airport.url === "" ? "" : "_blank"}
                 >
                   {selectedMarker.airport.url === ""
                     ? "Nil"
@@ -609,7 +544,7 @@ export default function VendorDetails({
               </div>
               <div className="flex justify-center">
                 <img
-                  src={vendorDetails.img}
+                  src={vendorDetails?.img}
                   className="mt-10 w-40 h-40 object-cover  hover:shadow-lg rounded-full "
                 />
               </div>
@@ -619,10 +554,7 @@ export default function VendorDetails({
               <span className="inline-block bg-white rounded-full px-3 font-light text-xs text-gray-400 mr-2 mb-2">
                 {moment(new Date()).format("LLLL")}
               </span>
-              <p
-                className="text-xs font-light text-gray-100 ml-3 transition duration-100 ease-in-out  group-hover:font-bold group-hover:text-black inline-block top-2 right-4"
-                stye="fontSize:20"
-              >
+              <p className="text-xs font-light text-gray-100 ml-3 transition duration-100 ease-in-out  group-hover:font-bold group-hover:text-black inline-block top-2 right-4">
                 {/* Tap to view full detail of order */}
               </p>
             </div>
@@ -630,8 +562,7 @@ export default function VendorDetails({
           {/* <p>{vendorDetails.coordinates === undefined ? 'none'  :vendorDetails.coordinates.lat}</p> */}
           <div className="mt-10 ">
             <main className={LocalClass.vendorMainStyle}>
-              {console.log(vendorDetails.coordinates)}
-              {vendorDetails.coordinates === undefined
+              {vendorDetails?.coordinates === undefined
                 ? null
                 : displayMerchantMap()}
             </main>

@@ -18,15 +18,19 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+interface UserProfile {
+  name?: string; // Optional if it might not be defined
+  // Add other properties as needed
+}
 export default function Auth() {
   const { href: currentUrl, pathname } = useUrl() ?? {};
   const router = useRouter();
   const [status, setStatus] = useState(false);
-  const [firstName, setFirstname] = useState(null);
+  const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState(null);
   const [warehouse, setWarehouse] = useState(null);
   const [userTpe, setUserType] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [userID, setUserID] = useState(null);
   useEffect(() => {
     getSession().then((e) => {
@@ -36,7 +40,7 @@ export default function Auth() {
       setUserProfile(e.data.user.user_metadata);
     });
   }, []);
-  const updateName = (newName) => {
+  const updateName = (newName: any) => {
     // Use setUserProfile to update the state
     setUserProfile((prevProfile) => ({
       ...prevProfile,
@@ -66,16 +70,23 @@ export default function Auth() {
       console.log(error);
     }
   };
-
+  const getNam = () => {
+    try {
+      let profile: any = userProfile?.name;
+    } catch (error) {
+      return "";
+    }
+  };
   return (
     <>
       <div className="text-lg col-auto ml-4 ">
         <div className="mt-20 ml-20">
           <span className="text-[24px]">
-            {" "}
-            <span className="font-bold">
-              {userProfile != null ? userProfile.name : null}
-            </span>{" "}
+            {userProfile?.name == null ? (
+              <span className="font-bold">{userProfile?.name ?? ""}</span>
+            ) : (
+              ""
+            )}
             Welcome!
           </span>
         </div>
@@ -118,7 +129,7 @@ export default function Auth() {
             </div>
             <input
               disabled={status}
-              onChange={(e) => setLastname(e.target.value)}
+              onChange={(e: any) => setLastname(e.target.value)}
               type="text"
               id="email-address-icon"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full lg:w-1/4 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:black dark:focus:border-black"
@@ -138,7 +149,7 @@ export default function Auth() {
             </div>
             <input
               disabled={status}
-              onChange={(e) => setWarehouse(e.target.value)}
+              onChange={(e: any) => setWarehouse(e.target.value)}
               type="text"
               id="set warehouse name"
               className="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full lg:w-1/4 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:black dark:focus:border-black"
@@ -148,7 +159,7 @@ export default function Auth() {
           <div className="mt-10 mb-10">
             <RadioGroup
               disabled={status}
-              onValueChange={(e) => setUserType(e)}
+              onValueChange={(e: any) => setUserType(e)}
               defaultValue="option-one"
             >
               <div className="flex items-center space-x-2">

@@ -9,11 +9,22 @@ import Map, {
 
 import Link from "next/link";
 import LocalClass from "../LocalComponents/mapComponents/page.module.css";
-const MapComponent = () => {
+interface Airport {
+  lon: number;
+  lat: number;
+  name: string;
+  url: string;
+  country: string;
+  code: string;
+  // other properties
+}
+const MapComponent = (props: any) => {
   // const mapboxToken = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Replace with your Mapbox access token
   const mapboxToken =
     "pk.eyJ1IjoibWFtbmlkeiIsImEiOiJjanZsNnhhZ24wdDE1NDlwYmRvczJzNDk2In0.Bl06Qp0TgR-KfisAsKbciQ";
-  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState<{
+    airport: Airport | null;
+  }>({ airport: null });
   const mapRef = useRef(null);
   const [location, setLocation] = useState([{ lng: 123.841, lat: 8.1822 }]);
   const [initialLocation, setInitialLocation] = useState([
@@ -26,7 +37,7 @@ const MapComponent = () => {
     longitude: 123.841,
     zoom: 12,
   });
-  const addItem = (item) => {
+  const addItem = (item: any) => {
     console.log(item);
     // setLocation([...location, { lng: item.lng, lat: item.lat }]);
     setLocation([{ lng: item.lng, lat: item.lat }]);
@@ -36,10 +47,10 @@ const MapComponent = () => {
       <Map
         mapboxAccessToken={mapboxToken}
         mapStyle="mapbox://styles/mapbox/light-v11"
-        style={LocalClass.mapStyle}
+        // styles={LocalClass.mapStyle}
         initialViewState={{
-          latitude: initialLocation.lat,
-          longitude: initialLocation.lng,
+          latitude: initialLocation[0].lat,
+          longitude: initialLocation[0].lng,
           zoom: 12,
         }}
         // maxZoom={120}
@@ -60,36 +71,32 @@ const MapComponent = () => {
         {selectedMarker ? (
           <Popup
             offset={25}
-            latitude={selectedMarker.airport.lat}
-            longitude={selectedMarker.airport.lon}
+            latitude={selectedMarker.airport?.lat ?? 0}
+            longitude={selectedMarker.airport?.lon ?? 0}
             onClose={() => {
-              setSelectedMarker(null);
+              setSelectedMarker({ airport: null });
             }}
             closeButton={false}
           >
-            <h3 className={classes.popupTitle}>
-              {selectedMarker.airport.name}
+            <h3 className={props.classes.popupTitle}>
+              {selectedMarker.airport?.name}
             </h3>
-            <div className={classes.popupInfo}>
-              <label className={classes.popupLabel}>Code: </label>
-              <span>{selectedMarker.airport.code}</span>
+            <div className={props.classes.popupInfo}>
+              <label className={props.classes.popupLabel}>Code: </label>
+              <span>{selectedMarker.airport?.code}</span>
               <br />
-              <label className={classes.popupLabel}>Country: </label>
-              <span>{selectedMarker.airport.country}</span>
+              <label className={props.classes.popupLabel}>Country: </label>
+              <span>{selectedMarker.airport?.country}</span>
               <br />
-              <label className={classes.popupLabel}>Website: </label>
+              <label className={props.classes.popupLabel}>Website: </label>
               <Link
-                href={
-                  selectedMarker.airport.url === ""
-                    ? "#"
-                    : selectedMarker.airport.url
-                }
-                target={selectedMarker.airport.url === "" ? null : "_blank"}
-                className={classes.popupWebUrl}
+                href={selectedMarker.airport?.url ?? ""}
+                target={selectedMarker.airport?.url === "" ? "null" : "_blank"}
+                className={props.classes.popupWebUrl}
               >
-                {selectedMarker.airport.url === ""
+                {selectedMarker.airport?.url === ""
                   ? "Nil"
-                  : selectedMarker.airport.url}
+                  : selectedMarker.airport?.url}
               </Link>
             </div>
           </Popup>

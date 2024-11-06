@@ -14,13 +14,14 @@ import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import moment from "moment";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
-import AddProduct from "@/app/LocalComponents/AddProductSheet";
+import AddStore from "@/app/LocalComponents/AddStoreSheet";
 import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-import { useToast } from "@/components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
 import { Switch } from "@/components/ui/switch";
+import { Toaster, toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -33,19 +34,78 @@ import {
 } from "@/components/ui/popover";
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
-import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
+import { axiosV2Local, url, axiosV2, axios } from "../../Utils/axios";
 import Link from "next/link";
 import LocalChart from "../LocalComponents/Charts";
+import {
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from "recharts";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+const chartConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  safari: {
+    label: "Safari",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
+
+const chartData = [
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+];
+interface TransactionLog {
+  transactionID: string; // Assuming transactionID is a string
+}
+
+interface UserDetails {
+  firstName?: String;
+  status?: any;
+}
+interface UserProfile {
+  user_details?: UserDetails;
+}
+interface Vendor {
+  id: string;
+  vendorDescription: string;
+  _id: string; // The unique identifier for the product
+  vendorID: string; // The unique identifier for the vendor
+  vendorTitle: string; // The title of the vendor
+  paymentMethod: string; // The payment method used
+  stocks: string; // The number of stocks available
+  img: string; // The image URL for the product
+  status: boolean; // The availability status of the product
+  totalSpent: number; // The total amount spent
+  transactionLogs: TransactionLog[]; // An array of transaction logs
+  coordinates: { lat: number; lng: number };
+  lat: number;
+  lng: number;
+  paymentStatus: string;
+  totalAmount: number;
+}
 export default function TableDemo() {
-  const { toast } = useToast();
-  const [products, setProducts] = useState([]);
-  const [userProfile, setUser] = useState(null);
+  // const { toast } = useToast();
+  const [products, setProducts] = useState<Vendor[]>([]);
+  const [vendorReference, setProductsReference] = useState<Vendor[]>([]);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
-  const [productTitle, setProducTitle] = useState(null);
+  const [productTitle, setProducTitle] = useState<String | null>(null);
   const [productQuantity, setProducQuantity] = useState(null);
+  const [contactNumber, setContactNumber] = useState<String | null>(null);
   const [storeCoordinates, setStoreCoordinates] = useState(null);
-  const [imageLink, setImageLink] = useState(null);
+  const [imageLink, setImageLink] = useState<String | null>(null);
 
   let parentClass = "LesseeVendor";
   useEffect(() => {
@@ -98,22 +158,63 @@ export default function TableDemo() {
         `${url}/store/${parentClass}`,
       );
       setProducts(productList.data.results);
+      setProductsReference(productList.data.results);
       setStatus(false);
     } catch (error) {
       console.log("error Product", error);
     }
   };
-  const didStatusUpdate = (e, id) => {
-    let list = products.map((item) => {
-      if (item.id == id) {
-        item.status = e;
-        return item;
-      } else {
-        return item;
+  const updateVendorService = async (data: Vendor) => {
+    try {
+      if (data === null) {
+        toast.error("No vendor data provided.");
+        return;
       }
-    });
+      data.status = !data.status;
+      let agentResponse = await axios.post(`/updateItem/${parentClass}`, data);
 
-    setProducts(list);
+      return agentResponse.data.results;
+    } catch (error) {
+      toast.error("Something went wrong...");
+    }
+  };
+  const didStatusUpdate = (e: any, id: any) => {
+    console.log(id);
+    let updatedList = products.map((item: Vendor) => {
+      if (item.vendorID === id) {
+        return { ...item, status: e };
+      }
+      return item;
+    });
+    setProducts(updatedList);
+    setProductsReference(updatedList);
+    let updateThis = products.find((item: Vendor) => item.vendorID === id);
+    if (updateVendorService.length != 0) {
+      toast.promise(updateVendorService(updateThis!), {
+        loading: "Loading...",
+        success: (data) => {
+          // setTransactionDetails(data);
+          setStatus(false);
+          console.log("data updated response", data);
+          return `${id} Item has been updated`;
+        },
+        error: "Error",
+      });
+    }
+  };
+  const didSearchedStore = (e: any, keyword: any) => {
+    if (keyword.length >= 2) {
+      const updatedList = products.filter(
+        (item) =>
+          item.vendorTitle.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.vendorID.toLowerCase().includes(keyword.toLowerCase()),
+        // item.vendorDescription.toLowerCase().includes(keyword.toLowerCase()
+        // ),
+      );
+      setProducts(updatedList);
+    } else {
+      setProducts(vendorReference);
+    }
   };
   const generateRandomString = () => {
     const characters =
@@ -134,13 +235,15 @@ export default function TableDemo() {
     });
   };
 
-  const submitProduct = () => {
+  const addVendor = () => {
     const asyncService = async () => {
       try {
         let payload = {
           vendorID: generateRandomString(),
           vendorTitle: productTitle,
-          paymentMethod: "Credit Card",
+          vendorDescription: productQuantity,
+          vendorContactNumber: contactNumber,
+          paymentMethod: "N/A",
           stocks: productQuantity,
           img: imageLink,
           status: false,
@@ -163,7 +266,7 @@ export default function TableDemo() {
     <div className="">
       <SideNavigation />
       <HeaderPage
-        title={`Your customers ! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
+        title={`Your Vendors ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
         subtitle=""
       />
       {/* <Map initialLocation={{ lat: 124.238151, lng: 8.226861 }} /> */}
@@ -173,7 +276,12 @@ export default function TableDemo() {
       >
         <TabsList className="rounded-full mb-20">
           <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
-            <Input type="email" placeholder="Search" className="rounded-full" />
+            <Input
+              type="text"
+              placeholder="Search"
+              className="rounded-full"
+              onChange={(e) => didSearchedStore(e.target.value, e.target.value)}
+            />
 
             {/* <Button type="submit" className='text-xs'>Search</Button> */}
           </div>
@@ -199,73 +307,90 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-        <BottomDrawerSheet />
-        <AddProduct
+        {/* <BottomDrawerSheet /> */}
+        <AddStore
           buttonTitle={"Add Vendor"}
           upload_here={UploadImageService}
-          image_file={(e) => setImageLink(e)}
-          title={(e) => setProducTitle(e)}
-          quantity={(e) => setProducQuantity(e)}
-          didSubmit={(e) => submitProduct()}
+          image_file={(e: any) => setImageLink(e)}
+          title={(e: any) => setProducTitle(e)}
+          quantity={(e: any) => setProducQuantity(e)}
+          didSubmit={(e: any) => addVendor()}
+          contactNumber={(e: any) => setContactNumber(e)}
         />
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
-          <Table className="">
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
+          <Table className="mb-20">
+            <TableCaption>{products.length} vendors found</TableCaption>
+            <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
-                <TableHead className="w-[100px]">Name</TableHead>
+                <TableHead className="w-[200px] ">Vendor </TableHead>
                 <TableHead>Logo</TableHead>
-                <TableHead>View details</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-center">Total</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((invoice) => (
+              {products.reverse().map((invoice: Vendor) => (
                 <TableRow key={invoice.id}>
                   <TableCell className="font-medium">
-                    <p className="text-xs">{invoice.vendorTitle}</p>
-                    {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
-                  </TableCell>
-                  <TableCell
-                    className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                  >
-                    <img
-                      src={invoice.img}
-                      className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
-                    />
-                  </TableCell>
-                  <TableCell>
                     <a
                       href={`store/${invoice.vendorID}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      View store
+                      <p className="text-xs font-light">
+                        {invoice.vendorTitle}
+                      </p>
                     </a>
                   </TableCell>
-                  <TableCell className="text-right text-md text-red-500 font-bold">
+                  <TableCell
+                    className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                  >
+                    <a
+                      href={`store/${invoice.vendorID}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={invoice.img}
+                        className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
+                      />
+                    </a>
+                  </TableCell>
+
+                  <TableCell className="text-right text-md text-red-500 font-light">
                     <div className="w-60 h-20">
                       <LocalChart />
                     </div>
-                    {invoice.stocks}/20
+                    {/* {invoice.vendorDescription} */}
+                    {/* {invoice.stocks} cases left */}
                     <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                   </TableCell>
                   <TableCell className="text-right">
+                    <p className="font-bold text-gray-600">
+                      {invoice.totalSpent != undefined
+                        ? invoice.totalSpent.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })
+                        : Number(0).toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                    </p>
+                  </TableCell>
+                  <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
+
                     <Switch
-                      onCheckedChange={(e) => didStatusUpdate(e, invoice.id)}
+                      onCheckedChange={(e) =>
+                        didStatusUpdate(e, invoice.vendorID)
+                      }
                       checked={invoice.status}
                     />
-                    {/* <Popover>
-    <PopoverTrigger>Open</PopoverTrigger>
-    <PopoverContent>
-    Status :
-    </PopoverContent>
-  </Popover> */}
                   </TableCell>
                 </TableRow>
               ))}
@@ -277,44 +402,78 @@ export default function TableDemo() {
           value="Active"
           className={status ? `opacity-20` : `opacity-100`}
         >
-          <Table className="">
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
+          <Table className="mb-20">
+            <TableCaption>
+              {products.filter((item) => item.status === true).length} vendors
+              found
+            </TableCaption>
+            <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Warehouse state</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="w-[200px] ">Vendor </TableHead>
+                <TableHead>Logo</TableHead>
+                <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-center">Total</TableHead>
+                <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {products
-                .filter((item) => item.status)
+                .filter((item: Vendor) => item.status)
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
-                      {" "}
-                      <RequestSheet
-                        void={(details) => displayAlert()}
-                        details={invoice}
-                      />
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <p className="text-xs font-light">
+                          {invoice.vendorTitle}
+                        </p>
+                      </a>
                     </TableCell>
-                    {/* {invoice.invoice}  */}
                     <TableCell
-                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                      className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
-                      {invoice.paymentStatus}
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={invoice.img}
+                          className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
+                        />
+                      </a>
                     </TableCell>
-                    <TableCell>
-                      <Progress value={invoice.stocks} className="w-[60%]" />
+                    <TableCell className="text-right text-md text-red-500 font-light">
+                      <div className="w-60 h-20">
+                        <LocalChart />
+                      </div>
+                      {invoice.vendorDescription}
+                      <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      {invoice.totalAmount}{" "}
-                      <Badge className="bg-red-500 ml-2">Out of stock</Badge>
+                      <p className="font-bold text-gray-600">
+                        {invoice.totalSpent != undefined
+                          ? invoice.totalSpent.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })
+                          : Number(0).toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                      </p>
                     </TableCell>
-
                     <TableCell className="text-right">
-                      <Switch />
+                      {/* {invoice.totalAmount} */}
+                      <Switch
+                        onCheckedChange={(e) =>
+                          didStatusUpdate(e, invoice.vendorID)
+                        }
+                        checked={invoice.status}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -322,14 +481,18 @@ export default function TableDemo() {
           </Table>
         </TabsContent>
         <TabsContent value="inActive">
-          <Table className="">
-            <TableCaption>A list of request.</TableCaption>
-            <TableHeader>
+          <Table className="mb-20">
+            <TableCaption>
+              {products.filter((item) => item.status === false).length} vendors
+              found
+            </TableCaption>
+            <TableHeader className="bg-gray-100 rounded-tl-md">
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="w-[200px] ">Vendor </TableHead>
+                <TableHead>Logo</TableHead>
+                <TableHead className="text-right">Stocks</TableHead>
+                <TableHead className="text-center">Total</TableHead>
+                <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -338,23 +501,58 @@ export default function TableDemo() {
                 .map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
-                      <RequestSheet
-                        void={(details) => displayAlert()}
-                        details={invoice}
-                      />
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <p className="text-xs font-light">
+                          {invoice.vendorTitle}
+                        </p>
+                      </a>
                     </TableCell>
-                    {/* {invoice.invoice}  */}
                     <TableCell
-                      className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                      className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
-                      {invoice.paymentStatus}
+                      <a
+                        href={`store/${invoice.vendorID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={invoice.img}
+                          className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
+                        />
+                      </a>
                     </TableCell>
-                    <TableCell>
-                      <Progress value={invoice.stocks} className="w-[60%]" />
+                    <TableCell className="text-right text-md text-red-500 font-light">
+                      <div className="w-60 h-20">
+                        <LocalChart />
+                      </div>
+                      {invoice.vendorDescription}
+                      <Badge className="bg-red-500 ml-4">Out of stock</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      {invoice.totalAmount}
-                      <Badge className="bg-red-500 ml-2">Out of stock</Badge>
+                      <p className="font-bold text-gray-600">
+                        {invoice.totalSpent != undefined
+                          ? invoice.totalSpent.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })
+                          : Number(0).toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                      </p>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {/* {invoice.totalAmount} */}
+                      <Switch
+                        onCheckedChange={(e) =>
+                          didStatusUpdate(e, invoice.vendorID)
+                        }
+                        checked={invoice.status}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -365,8 +563,9 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      // on:click={() => setProduct(order)}
+
       {/* <div className="w-1/2 ml-20 mt-20">
+        // on:click={() => setProduct(order)}
         <div>
           <div className="max-w-sm group static rounded overflow-hidden hover:border-black hover:border-l-4  hover:shadow-lg bg-white transition duration-100 ease-in-out  {order.receiptImageLink === undefined ? 'border-red-500 border ' : ''} ">
             <div className="px-6 py-4">
@@ -404,6 +603,7 @@ export default function TableDemo() {
       {/* <div className=" ml-20 " mainStyle={"w-1/2  h-full "}>
         <Map coordinates={(e) => setStoreCoordinates(e)} />
       </div> */}
+      <Toaster />
     </div>
   );
 }

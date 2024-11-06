@@ -22,11 +22,21 @@ import Map, {
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import LocalClass from "../LocalComponents/mapComponents/page.module.css";
-
-export default function Home(props) {
+interface Airport {
+  lon: number;
+  lat: number;
+  name: string;
+  url: string;
+  country: string;
+  code: string;
+  // other properties
+}
+export default function Home(props: any) {
   const mapboxToken =
     "pk.eyJ1IjoibWFtbmlkeiIsImEiOiJjanZsNnhhZ24wdDE1NDlwYmRvczJzNDk2In0.Bl06Qp0TgR-KfisAsKbciQ";
-  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState<{
+    airport: Airport | null;
+  }>({ airport: null });
   const mapRef = useRef(null);
   const [location, setLocation] = useState([{ lng: 123.841, lat: 8.1822 }]);
   const [initialLocation, setInitialLocation] = useState([
@@ -39,13 +49,18 @@ export default function Home(props) {
     longitude: 123.841,
     zoom: 12,
   });
-
-  const zoomToSelectedLoc = (e, airport, index) => {
-    // stop event bubble-up which triggers unnecessary events
-    e.stopPropagation();
-    setSelectedMarker({ airport, index });
-    mapRef.current.flyTo({ center: [airport.lon, airport.lat], zoom: 10 });
-  };
+  interface MapLocation {
+    e?: any;
+    index?: any;
+    airport?: any;
+    // add other properties here
+  }
+  // const zoomToSelectedLoc = ({ e, airport, index }: MapLocation) => {
+  //   // stop event bubble-up which triggers unnecessary events
+  //   e.stopPropagation();
+  //   setSelectedMarker({ e, airport, index });
+  //   mapRef.current.flyTo({ center: [airport.lon, airport.lat], zoom: 10 });
+  // };
 
   useEffect(() => {
     setInitialLocation([{ lng: 123.841, lat: 8.1822 }]);
@@ -61,7 +76,7 @@ export default function Home(props) {
       console.log("error setInitialLocation", error);
     }
   }, []);
-  const addItem = (item) => {
+  const addItem = (item: any) => {
     console.log(item);
     // setLocation([...location, { lng: item.lng, lat: item.lat }]);
     setLocation([{ lng: item.lng, lat: item.lat }]);
@@ -125,8 +140,8 @@ export default function Home(props) {
             // style={LocalClass.mapStyle}
             {...viewport}
             initialViewState={{
-              latitude: initialLocation.lat,
-              longitude: initialLocation.lng,
+              latitude: initialLocation[0].lat,
+              longitude: initialLocation[0].lng,
               zoom: 12,
             }}
             maxZoom={20}
@@ -144,35 +159,35 @@ export default function Home(props) {
                 />
               );
             })}
-            {selectedMarker ? (
+            {selectedMarker.airport ? (
               <Popup
                 offset={25}
                 latitude={selectedMarker.airport.lat}
                 longitude={selectedMarker.airport.lon}
                 onClose={() => {
-                  setSelectedMarker(null);
+                  setSelectedMarker({ airport: null });
                 }}
                 closeButton={false}
               >
-                <h3 className={classes.popupTitle}>
+                <h3 className={props.classes.popupTitle}>
                   {selectedMarker.airport.name}
                 </h3>
-                <div className={classes.popupInfo}>
-                  <label className={classes.popupLabel}>Code: </label>
+                <div className={props.classes.popupInfo}>
+                  <label className={props.classes.popupLabel}>Code: </label>
                   <span>{selectedMarker.airport.code}</span>
                   <br />
-                  <label className={classes.popupLabel}>Country: </label>
+                  <label className={props.classes.popupLabel}>Country: </label>
                   <span>{selectedMarker.airport.country}</span>
                   <br />
-                  <label className={classes.popupLabel}>Website: </label>
+                  <label className={props.classes.popupLabel}>Website: </label>
                   <Link
                     href={
                       selectedMarker.airport.url === ""
                         ? "#"
                         : selectedMarker.airport.url
                     }
-                    target={selectedMarker.airport.url === "" ? null : "_blank"}
-                    className={classes.popupWebUrl}
+                    target={selectedMarker.airport.url === "" ? "_blank" : ""}
+                    className={props.classes.popupWebUrl}
                   >
                     {selectedMarker.airport.url === ""
                       ? "Nil"

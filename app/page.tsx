@@ -1,26 +1,115 @@
-"use client" 
-
-import React, { useEffect } from 'react';
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import Sheet from "@/app/local/sheet"
-import {signinAuth} from '../Utils/serviceLogin'
-import { Mail } from "lucide-react"
-let uuid = localStorage.getItem('uuid')
+"use client";
+import React, { useEffect } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Sheet from "@/app/local/sheet";
+import { signinAuth } from "../Utils/serviceLogin";
+import { Mail } from "lucide-react";
+let uuid = "23232"; //localStorage.getItem("uuid");
 export default function Home() {
-
-  const  signinAccount =()=>{
-    signinAuth().then(response=>{
-      console.log(response)
-          })
-  }
+  const signinAccount = () => {
+    signinAuth().then((response) => {
+      console.log(response);
+    });
+  };
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      {/* START */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid gap-4">
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1432462770865-65b70566d673?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1950&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center "
+              src="https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=927&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2940&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4">
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=687&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1540553016722-983e48a2cd10?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center "
+              src="https://docs.material-tailwind.com/img/team-3.jpg"
+              alt="gallery-photo"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4">
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2940&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center "
+              src="https://docs.material-tailwind.com/img/team-3.jpg"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=687&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4">
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=687&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+          <div>
+            <img
+              className="h-auto max-w-full rounded-lg object-cover object-center"
+              src="https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=927&amp;q=80"
+              alt="gallery-photo"
+            />
+          </div>
+        </div>
+      </div>
+      {/* //END */}
+
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
           <code className="font-mono font-bold">app/page.tsx</code>
-        </p>{uuid}
+        </p>
+        {uuid}
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
           <a
             className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
@@ -28,8 +117,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-          
-            By{' '}
+            By{" "}
             <Image
               src="/vercel.svg"
               alt="Vercel Logo"
@@ -46,16 +134,22 @@ export default function Home() {
           className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
           src="/appIcon.png"
           alt="Next.js Logo"
-          width={180*2}
-          height={37*2}
+          width={180 * 2}
+          height={37 * 2}
           priority
         />
       </div>
-      <Button className='bg-white text-black hover:border  hover:border-blue-500 hover:bg-gray-100'  onClick={signinAccount}>
-        <img src="https://static-00.iconduck.com/assets.00/google-icon-2048x2048-czn3g8x8.png" className="mr-2 h-4 w-4" />
-      {/* <Mail className="mr-2 h-4 w-4" />  */}
-      Sign in with Google
-            </Button>
+      <Button
+        className="bg-white text-black hover:border  hover:border-blue-500 hover:bg-gray-100"
+        onClick={signinAccount}
+      >
+        <img
+          src="https://static-00.iconduck.com/assets.00/google-icon-2048x2048-czn3g8x8.png"
+          className="mr-2 h-4 w-4"
+        />
+        {/* <Mail className="mr-2 h-4 w-4" />  */}
+        Sign in with Google
+      </Button>
       {/* <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
           href="/dashboard"
@@ -126,5 +220,5 @@ export default function Home() {
         </a>
       </div> */}
     </main>
-  )
+  );
 }
