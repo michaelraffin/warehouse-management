@@ -77,6 +77,23 @@ interface UserDetails {
 interface UserProfile {
   user_details?: UserDetails;
 }
+
+export interface SubBranch {
+  branchID: number;
+  branchDisplayName: string;
+  status: boolean;
+}
+
+export interface Branch {
+  branchID: number;
+  city: string;
+  subBranches: SubBranch[];
+}
+export interface LeeaseBranches {
+  _id: string;
+  branches: Branch[];
+}
+
 interface Vendor {
   id: string;
   vendorDescription: string;
@@ -97,6 +114,7 @@ interface Vendor {
 }
 export default function TableDemo() {
   // const { toast } = useToast();
+  const [branches, setBranches] = useState<LeeaseBranches[]>([]);
   const [products, setProducts] = useState<Vendor[]>([]);
   const [vendorReference, setProductsReference] = useState<Vendor[]>([]);
   const [userProfile, setUser] = useState<UserProfile | null>(null);
@@ -106,6 +124,7 @@ export default function TableDemo() {
   const [contactNumber, setContactNumber] = useState<String | null>(null);
   const [storeCoordinates, setStoreCoordinates] = useState(null);
   const [imageLink, setImageLink] = useState<String | null>(null);
+  const [vendorBranch, setVendorBranch] = useState<String | null>(null);
 
   let parentClass = "LesseeVendor";
   useEffect(() => {
@@ -120,6 +139,7 @@ export default function TableDemo() {
     });
 
     fetchStores();
+    // fetchBranches();
   }, []);
 
   const fetchVendors = async () => {
@@ -160,6 +180,28 @@ export default function TableDemo() {
       setProducts(productList.data.results);
       setProductsReference(productList.data.results);
       setStatus(false);
+    } catch (error) {
+      console.log("error Product", error);
+    }
+  };
+  const fetchBranches = async () => {
+    try {
+      let data = {
+        local_id: "e",
+        queryType: "all",
+        storeOwner: "storeOwner",
+        isAPI: true,
+        referenceOrder: "e",
+        number: 20,
+        showLimit: true,
+        // queryData: { status: "orderStatus", userReference: "e" },
+      };
+      let productList = await axiosV2("dsadsa").post(
+        `${url}/store/LesseConfig`,
+      );
+      setBranches(productList.data.results);
+      // setProductsReference(productList.data.results);
+      // setStatus(false);
     } catch (error) {
       console.log("error Product", error);
     }
@@ -244,7 +286,8 @@ export default function TableDemo() {
           vendorDescription: productQuantity,
           vendorContactNumber: contactNumber,
           paymentMethod: "N/A",
-          stocks: productQuantity,
+          branch: vendorBranch,
+          stocks: 0,
           img: imageLink,
           status: false,
           coordinates: storeCoordinates,
@@ -309,6 +352,7 @@ export default function TableDemo() {
         </TabsList>
         {/* <BottomDrawerSheet /> */}
         <AddStore
+          didSelect={(e: string) => setVendorBranch(e)}
           buttonTitle={"Add Vendor"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
