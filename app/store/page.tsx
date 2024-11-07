@@ -379,7 +379,7 @@ export default function TableDemo() {
             <TableBody>
               {products.reverse().map((invoice: Vendor) => (
                 <TableRow key={invoice.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium ">
                     <a
                       href={`store/${invoice.vendorID}`}
                       target="_blank"
@@ -388,6 +388,7 @@ export default function TableDemo() {
                       <p className="text-xs font-light">
                         {invoice.vendorTitle}
                       </p>
+                      <p className="text-gray-400 text-xs"> {invoice.branch}</p>
                     </a>
                   </TableCell>
                   <TableCell
