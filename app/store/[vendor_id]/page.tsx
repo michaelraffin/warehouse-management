@@ -139,21 +139,24 @@ export default function VendorDetails({
     setStatus(true);
     let service = async () => {
       let payload = vendorDetails;
-
+      if (payload.coordinates === undefined) {
+        payload.coordinates = storeCoordinates;
+      }
+      console.log(payload.coordinates);
       // if (vendorDetails) {
       //   const updatedVendorDetails = {
       //     ...vendorDetails, // Spread the existing vendor details
       //     coordinates: storeCoordinates, // Update the coordinates
       //   };
-
-      //   setVendorDetails(storeCoordinates); // Set the new state
+      //   // payload.vendorDetails.coordinates = storeCoordinates;
+      //   setVendorDetails(updatedVendorDetails); // Set the new state
       // }
 
-      // let productList = await axiosV2("dsadsa").post(
-      //   `${url}/updateItem/${parentClass}`,
-      //   payload,
-      // );
-      // return productList;
+      let productList = await axiosV2("dsadsa").post(
+        `${url}/updateItem/${parentClass}`,
+        payload,
+      );
+      return productList;
     };
     service().then((item) => {
       console.log(item);
@@ -188,7 +191,9 @@ export default function VendorDetails({
         : [{ lng: 123.841, lat: 8.1822 }],
     );
     // if (coordinates.coordinates != null) {
+    console.log("initial load for vendor", vendorsList.data.results[0]);
     setVendorDetails(vendorsList.data.results[0]);
+    setVendorTransaction(vendorsList.data.results[0].transactionLogs ?? []);
     setStatus(false);
     // }
   };
@@ -198,7 +203,7 @@ export default function VendorDetails({
     });
 
     fetchStores();
-    fetchStoreTransaction();
+    // fetchStoreTransaction();
   }, []);
   const fetchStoreTransaction = () => {
     const service = async () => {
@@ -317,46 +322,53 @@ export default function VendorDetails({
       return (
         <>
           <p className="font-bold text-xs">
-            {vendorDetails?.vendorTitle} Transactions
+            {vendorDetails?.vendorTitle} List of Transactions
           </p>
 
           <Table className="w-full" title="">
             <TableHeader>
               <TableRow>
                 <TableHead className="">#id</TableHead>
-                <TableHead className="">Date Transacted</TableHead>
-                <TableHead>Status</TableHead>
+                {/* <TableHead className="">Date Transacted</TableHead> */}
+                {/* <TableHead>Status</TableHead>
                 <TableHead>Items</TableHead>
-                <TableHead>MOP</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>MOP</TableHead> */}
+                {/* <TableHead className="text-right">Amount</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.map((vendors: any) => (
                 <TableRow key={vendors._id}>
-                  <TableCell className="font-medium">
-                    {vendors._id.substr(-5)}
-                  </TableCell>
+                  {/* <TableCell className="font-medium">
+
+                  </TableCell> */}
                   <TableCell className="font-medium">
                     <p className="text-xs text-gray-500">Date Created:</p>
                     <p className="text-md font-bold text-[#0652DD]">
-                      {vendors.date_created}
+                      {vendors.transactionID}
                     </p>
                   </TableCell>
-                  <TableCell>{vendors.transactionState}</TableCell>
-                  <TableCell>
-                    {/* <Badge> */}
+                  {/* <TableCell>{vendors.transactionID}</TableCell> */}
+                  {/* <TableCell>
+
                     <Button variant={"link"} className="text-xs">
-                      {vendors.transaction.cart.length} Orders
+                      {vendors.transactionID} Orders
                     </Button>
-                    {/* </Badge> */}
+
                   </TableCell>
 
                   <TableCell className="uppercase">
-                    {vendors.payment_method.type}
-                  </TableCell>
+
+                  </TableCell> */}
                   <TableCell className="text-right">
-                    {numberFormat(Number(vendors.grandTotal))}
+                    <Badge className="bg-[#0652DD]">
+                      <a
+                        href={`/transactions/${vendors.transactionID} `}
+                        target="_blank"
+                      >
+                        {vendors.transactionID}
+                      </a>
+                    </Badge>
                   </TableCell>
                 </TableRow>
               ))}
@@ -365,6 +377,7 @@ export default function VendorDetails({
         </>
       );
     } catch (error) {
+      console.log("error rendering table", error);
       return <div className="w-2 h-2 bg-red-200" />;
     }
   };
@@ -381,8 +394,8 @@ export default function VendorDetails({
             vendorDetails?.coordinates === undefined
               ? { longitude: 123.841, latitude: 8.1822 }
               : {
-                  latitude: vendorDetails?.lat,
-                  longitude: vendorDetails?.lng,
+                  latitude: vendorDetails.coordinates?.lat,
+                  longitude: vendorDetails.coordinates?.lng,
                   zoom: 4,
                 }
           }
