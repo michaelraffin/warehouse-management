@@ -138,11 +138,12 @@ export default function VendorDetails({
   const updateSettings = () => {
     setStatus(true);
     let service = async () => {
-      let payload = vendorDetails;
-      if (payload.coordinates === undefined) {
-        payload.coordinates = storeCoordinates;
-      }
-      console.log(payload.coordinates);
+      // let payload: Vendor = { ...vendorDetails };
+      // if (!payload.coordinates ) {
+      //   payload.coordinates = storeCoordinates;
+      // }
+      // console.log(payload.coordinates);
+
       // if (vendorDetails) {
       //   const updatedVendorDetails = {
       //     ...vendorDetails, // Spread the existing vendor details
@@ -152,11 +153,11 @@ export default function VendorDetails({
       //   setVendorDetails(updatedVendorDetails); // Set the new state
       // }
 
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/updateItem/${parentClass}`,
-        payload,
-      );
-      return productList;
+      // let productList = await axiosV2("dsadsa").post(
+      //   `${url}/updateItem/${parentClass}`,
+      //   payload,
+      // );
+      return null;
     };
     service().then((item) => {
       console.log(item);

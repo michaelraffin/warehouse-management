@@ -135,10 +135,20 @@ type MainChartProps = {
   data: any;
 };
 
+interface ProductDetails {
+  id?: String;
+  status?: any;
+  title?: string;
+  img: string;
+  stocks: any;
+  paymentStatus: any;
+  price: number;
+  totalAmount: number;
+}
 export function MainChart({ chartTitle, data }: MainChartProps) {
   const updateData = (data: any, chartData: any) => {
     try {
-      return data.map((product) => ({
+      return data.map((product: ProductDetails) => ({
         date: product.title,
         desktop: Number(product.stocks),
         mobile: Number(product.stocks),

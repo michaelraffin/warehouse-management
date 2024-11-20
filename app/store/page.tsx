@@ -69,7 +69,10 @@ const chartData = [
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
-
+interface ToastData {
+  title: string;
+  description: string; // Assuming transactionID is a string
+}
 interface UserDetails {
   firstName?: String;
   status?: any;
@@ -96,6 +99,7 @@ export interface LeeaseBranches {
 
 interface Vendor {
   id: string;
+  branch: string;
   vendorDescription: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
@@ -271,10 +275,27 @@ export default function TableDemo() {
     return result;
   };
   const displayAlert = () => {
-    toast({
+    var toastData: ToastData = {
       title: "Scheduled: Catch up",
       description: "Friday, February 10, 2023 at 5:57 PM",
-    });
+    };
+    // toast({message:"Scheduled: Catch up"})
+    // toast({
+    //   position: "bottom", // Example position; can also be "top", "top-right", etc.
+    //   render: () => (
+    //     <div
+    //       style={{
+    //         padding: "1em",
+    //         backgroundColor: "#3182ce",
+    //         color: "white",
+    //         borderRadius: "8px",
+    //       }}
+    //     >
+    //       <strong>Scheduled: Catch up</strong>
+    //       <p>Friday, February 10, 2023 at 5:57 PM</p>
+    //     </div>
+    //   ),
+    // });
   };
 
   const addVendor = () => {
