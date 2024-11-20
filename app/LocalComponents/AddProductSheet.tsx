@@ -80,6 +80,11 @@ export default function Add(props: any) {
             className="h-10 p-2 border border-gray-400 rounded-md"
           />
           <input
+            onChange={(e: any) => props.price(e.nativeEvent.target.value)}
+            placeholder="Add Price"
+            className="h-10 p-2 border border-gray-400 rounded-md"
+          />
+          <input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Quantity"
             className="h-10 p-2 border border-gray-400 rounded-md"

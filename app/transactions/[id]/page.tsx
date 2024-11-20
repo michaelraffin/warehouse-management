@@ -677,7 +677,7 @@ export default function TableDemo() {
             <span className="p-2">
               {renderOnHoldButton()}
 
-              <Button
+              {/* <Button
                 disabled={status}
                 onClick={() => didApprove()}
                 className={
@@ -687,7 +687,7 @@ export default function TableDemo() {
                 }
               >
                 Rejected
-              </Button>
+              </Button> */}
               <Button
                 disabled={status}
                 onClick={() => didApprove()}
@@ -727,7 +727,7 @@ export default function TableDemo() {
         return (
           <div className="ml-20">
             {renderOnHoldButton()}
-            <Button
+            {/* <Button
               disabled={status}
               onClick={() => didApprove()}
               className={
@@ -737,7 +737,7 @@ export default function TableDemo() {
               }
             >
               Rejected
-            </Button>
+            </Button> */}
 
             <Button
               disabled={status}

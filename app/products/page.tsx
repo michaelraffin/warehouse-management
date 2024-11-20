@@ -72,6 +72,7 @@ export default function TableDemo() {
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState(null);
+  const [price, setProductPrice] = useState(0);
   const [productQuantity, setProducQuantity] = useState(null);
   const [imageLink, setImageLink] = useState(null);
   useEffect(() => {
@@ -147,6 +148,7 @@ export default function TableDemo() {
           paymentStatus: "Unpaid",
           title: productTitle,
           totalAmount: "$300.00",
+          price: price,
           paymentMethod: "Credit Card",
           stocks: productQuantity,
           img: imageLink,
@@ -224,6 +226,7 @@ export default function TableDemo() {
         <BottomDrawerSheet />
 
         <AddProduct
+          price={(e: any) => setProducTitle(e)}
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
@@ -231,8 +234,8 @@ export default function TableDemo() {
           quantity={(e: any) => setProducQuantity(e)}
           didSubmit={(e: any) => submitProduct()}
         />
-        <div className="mt-20  h-full w-[98%] mr-20">
-          <MainChart data={products} chartTitle={"Your Products score board"} />
+        <div className="mt-20  h-full w-[58%] mr-20">
+          <MainChart data={products} chartTitle={"Your products stocks"} />
         </div>
         <TabsContent
           value="AllProducts"
@@ -252,9 +255,10 @@ export default function TableDemo() {
             <TableBody>
               {products.map((invoice: ProductDetails) => (
                 <TableRow key={invoice?.stocks ?? ""}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-light text-xs">
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}
+                    {invoice.title}
                   </TableCell>
                   <TableCell
                     className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
@@ -269,7 +273,7 @@ export default function TableDemo() {
 
                     {/* {invoice.paymentMethod} */}
                   </TableCell>
-                  <TableCell className="text-md text-right font-bold text-red-500">
+                  <TableCell className="text-xs text-right font-light text-red-500">
                     {invoice.stocks}/20
                     <Badge className="ml-4 bg-red-500">Out of stock</Badge>
                   </TableCell>
@@ -341,7 +345,7 @@ export default function TableDemo() {
           </Table>
         </TabsContent>
         <TabsContent value="inActive">
-          <Table className="">
+          <Table className="mb-20">
             <TableCaption>A list of request.</TableCaption>
             <TableHeader>
               <TableRow>
@@ -362,7 +366,7 @@ export default function TableDemo() {
                         details={invoice}
                       />
                     </TableCell>
-                    {/* {invoice.invoice}  */}
+                    {invoice.title}
                     <TableCell
                       className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
@@ -384,11 +388,8 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      <div className="ml-20 mt-20 w-1/2">
-        <div
-        // on:click={()=>setProduct(order)}
-        >
-          {/* <Badge variant="outline " className="bg-[#6ab04c] mb-2 text-xs">{convertToPesos(order.totalPrice * 0.05)}</Badge> */}
+      {/* <div className="ml-20 mt-20 w-1/2">
+        <div>
           <div className="{order.receiptImageLink === undefined ? 'border-red-500 ' :  ''} group static max-w-sm overflow-hidden  rounded border bg-white transition duration-100 ease-in-out hover:border-l-4 hover:border-black hover:shadow-lg ">
             <div className="px-6 py-4">
               <div className="mb-2  font-bold">
@@ -418,7 +419,7 @@ export default function TableDemo() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

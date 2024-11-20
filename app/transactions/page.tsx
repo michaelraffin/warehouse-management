@@ -382,7 +382,7 @@ export default function TableDemo() {
             <TableCaption>A list of request.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead className="w-[150px]">Invoice</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>MOP</TableHead>
                 <TableHead className="text-center">Vendor</TableHead>
@@ -393,14 +393,13 @@ export default function TableDemo() {
               {requestItems.map((invoice: Order) => (
                 <TableRow key={invoice._id}>
                   <TableCell className="font-medium">
-                    <Link href={`/transactions/${invoice.transactionID}`}>
-                      <RequestSheet
-                        // void={(details) => console.log(details)}
-                        // update={(details) => console.log(details)}
-                        details={invoice}
-                        titleButton={`View Details ${invoice?.transactionID != undefined ? invoice?.transactionID : "..."}`}
-                      />
-                    </Link>
+                    <a
+                      target="_blank"
+                      className="text-xs font-light text-blue-500"
+                      href={`/transactions/${invoice?.transactionID}`}
+                    >
+                      {`View  ${invoice?.transactionID != undefined ? invoice?.transactionID : "..."}`}
+                    </a>
                   </TableCell>
                   {/* {invoice.invoice}  */}
                   <TableCell
@@ -494,7 +493,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-        Approved_by_Office Hold_by_Office
         <TabsContent value="Pending">
           <Table className={`${tableWidth}`}>
             <TableCaption>A list of request.</TableCaption>
