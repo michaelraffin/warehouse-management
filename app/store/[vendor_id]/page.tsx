@@ -20,13 +20,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
 import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { UploadImageService } from "../../../Utils/image_uploader";
 import { axios, url } from "@/Utils/axios";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 // import Map from '../../LocalComponents/MapPickerV2'
 import {
   BarChart,
@@ -39,6 +50,8 @@ import {
 } from "recharts";
 import { LineChart, Line } from "recharts";
 import LocalChart from "../../LocalComponents/Charts";
+
+import { useRouter } from "next/router";
 import {
   Popover,
   PopoverContent,
@@ -60,6 +73,15 @@ import Map, {
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Nut } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Loader2 } from "lucide-react";
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
@@ -80,6 +102,7 @@ interface VendorAirport {
 }
 
 interface Vendor {
+  className: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
   vendorTitle: string; // The title of the vendor
@@ -99,7 +122,6 @@ export default function VendorDetails({
   params: { vendor_id: string };
 }) {
   let vendorID = params.vendor_id;
-  const { toast } = useToast();
   const [products, setProducts] = useState([]);
   const [userProfile, setUser] = useState(null);
   const [status, setStatus] = useState(true);
@@ -135,6 +157,28 @@ export default function VendorDetails({
   const updateLocation = (e: any) => {
     console.log(e);
     setStoreCoordinates(e);
+  };
+
+  const deleteThisVendor = () => {
+    setStatus(true);
+    const service = async () => {
+      let payload: Vendor = { ...vendorDetails };
+      // payload.className = "LesseeVendor";
+      let result = await axiosV2("dsadsa").post(
+        `${url}/deleteProduct/LesseeVendor`,
+        payload,
+      );
+      setStatus(false);
+      return payload;
+    };
+
+    toast.promise(service, {
+      loading: "Deleting...",
+      success: (data) => {
+        return `${data.results.vendorTitle} toast has been added`;
+      },
+      error: "Error",
+    });
   };
   const updateSettings = () => {
     setStatus(true);
@@ -374,11 +418,8 @@ export default function VendorDetails({
               Hang tight! Tell your agent to double their time!
             </p>
             <div className="flex mt-6 space-x-4">
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-                Configure
-              </button>
               <button className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
-                How this works
+                Okay, ill wait
               </button>
             </div>
           </div>
@@ -396,7 +437,7 @@ export default function VendorDetails({
             {vendorDetails?.vendorTitle} List of Transactions
           </p>
 
-          <Table className="w-full" title="">
+          <Table className="w-[80%]" title="">
             <TableHeader>
               <TableRow>
                 <TableHead className="">#id</TableHead>
@@ -537,6 +578,27 @@ export default function VendorDetails({
         title={`${vendorDetails != null ? vendorDetails.vendorTitle : ""} !  ${userProfile != null ? "" : ""}`}
         subtitle=""
       />
+      <Breadcrumb className="ml-24 mb-20  text-xs">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink className="text-xs" href="/">
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink className="text-xs" href="/store">
+              Vendors
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage className="text-gray-400 text-xs">
+              {vendorDetails?.vendorID}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mr-10 ml-20">
         <div className="h-32 rounded-lg  lg:col-span-2">
           {/* RIGHT */}
@@ -665,7 +727,7 @@ export default function VendorDetails({
             /> */}
             <Button
               variant="secondary"
-              className="mb-20 mt-4  w-[90%]  rounded-md hover:border border-gray-600 ease-out duration-300   "
+              className="mb-20 mt-4  w-[90%]  rounded-full hover:border border-gray-600 ease-out duration-300   "
               // hover:bg-gray-600 bg-blue-600
               onClick={() => updateSettings()}
             >
@@ -673,6 +735,33 @@ export default function VendorDetails({
                 {status ? "Updating..." : "Set vendor location"}
               </div>
             </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="mb-20 rounded-full mt-4  w-[90%] hover:border ease-out duration-300   "
+                  // hover:bg-gray-600 bg-blue-600
+                >
+                  {status ? <Loader2 className="animate-spin" /> : null}
+                  <div className="m-2  text-xs ">Delete this vendor</div>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Deleting this means, removing vendors details only.
+                    Transaction will stay remain.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteThisVendor()}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>

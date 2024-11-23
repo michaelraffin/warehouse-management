@@ -400,7 +400,7 @@ export default function TableDemo() {
             <TableBody>
               {products.reverse().map((invoice: Vendor) => (
                 <TableRow key={invoice.id}>
-                  <TableCell className="font-medium ">
+                  <TableCell className="font-medium text-blue-500">
                     <a
                       href={`store/${invoice.vendorID}`}
                       target="_blank"
