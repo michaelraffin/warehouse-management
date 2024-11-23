@@ -571,10 +571,10 @@ export default function TableDemo() {
       <div>{/* <MapV2 /> */}</div>
 
       <Suspense fallback={loadinggg()}>
-        <Table className="ml-20">
+        <Table className="ml-20 w-[90%]">
           <TableCaption>
             <a
-              className="text-blue-500 "
+              className="text-blue-500 text-xs"
               href={`/transactions`}
               target="_blank"
             >

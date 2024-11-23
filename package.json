@@ -46,6 +46,7 @@
     "react-map-gl": "^7.1.7",
     "recharts": "^2.13.0",
     "shadcn": "^2.1.2",
+    "skeleton": "^0.1.2",
     "sonner": "^1.5.0",
     "styled-components": "^6.1.8",
     "tailwind-merge": "^2.3.0",

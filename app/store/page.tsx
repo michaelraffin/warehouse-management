@@ -427,13 +427,15 @@ export default function TableDemo() {
                     </a>
                   </TableCell>
 
-                  <TableCell className="text-right text-md text-red-500 font-light">
+                  <TableCell className="text-right text-xs text-red-500 font-light">
                     <div className="w-60 h-20">
                       <LocalChart />
                     </div>
                     {/* {invoice.vendorDescription} */}
                     {/* {invoice.stocks} cases left */}
-                    <Badge className="bg-red-500 ml-4">Out of stock</Badge>
+                    <Badge className="bg-red-500 ml-4 text-xs">
+                      Out of stocks
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <p className="font-bold text-gray-600">

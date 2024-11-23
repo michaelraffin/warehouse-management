@@ -48,7 +48,7 @@ import { getSession } from "../../../Utils/serviceLogin";
 import { UserProfile } from "../../../Utils/userProfile";
 import { axiosV2Local, axiosV2 } from "../../../Utils/axios";
 import Link from "next/link";
-
+import { Skeleton } from "@/components/ui/skeleton";
 import LocalClass from "../../LocalComponents/mapComponents/page.module.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map, {
@@ -59,6 +59,7 @@ import Map, {
 } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+import { Nut } from "lucide-react";
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
@@ -317,7 +318,76 @@ export default function VendorDetails({
       style: "currency",
       currency: "PHP",
     }).format(value);
+  const renderEmptyTransaction = () => {
+    try {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 relative">
+          {/* Background */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-full h-full max-w-4xl mx-auto">
+              {[...Array(4)].map((_, index) => (
+                <div
+                  key={index}
+                  className="absolute w-12 h-12 bg-gray-200 rounded-full overflow-hidden shadow-lg"
+                  style={{
+                    top: `${Math.random() * 90}%`,
+                    left: `${Math.random() * 90}%`,
+                    transform: `translate(-50%, -50%)`,
+                  }}
+                >
+                  <img
+                    src={`https://via.placeholder.com/48`} // Replace with actual avatar URL
+                    alt="User"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
+          {/* Main Content */}
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+              <div className="h-20   rounded-lg mb-4">
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[25px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              </div>
+              <div className="h-20  rounded-lg">
+                {" "}
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[25px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-gray-600">
+              <strong>Recent transaction will show here</strong>
+              <br />
+              Hang tight! Tell your agent to double their time!
+            </p>
+            <div className="flex mt-6 space-x-4">
+              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                Configure
+              </button>
+              <button className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
+                How this works
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    } catch (error) {
+      return null;
+    }
+  };
   const renderTableComponent = () => {
     try {
       return (
@@ -470,7 +540,7 @@ export default function VendorDetails({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mr-10 ml-20">
         <div className="h-32 rounded-lg  lg:col-span-2">
           {/* RIGHT */}
-          <div className=" mb-20">
+          {/* <div className=" mb-20">
             <div className="grid grid-cols-3 gap-4 m-2">
               <article className="rounded-lg border border-gray-300 bg-black p-6 hover:shadow-lg">
                 <div>
@@ -533,10 +603,12 @@ export default function VendorDetails({
                 </div>
               </article>
             </div>
-          </div>
+          </div> */}
 
-          {renderLineChart()}
-          {renderTableComponent()}
+          {/* {renderLineChart()} */}
+          {transactions.length === 0
+            ? renderEmptyTransaction()
+            : renderTableComponent()}
         </div>
 
         <div className="h-auto rounded-lg ">
@@ -614,19 +686,3 @@ export default function VendorDetails({
     </div>
   );
 }
-
-// <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
-// <TabsList className="rounded-full mb-20">
-//   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
-//     <Input type="email" placeholder="Search" className='rounded-full' />
-
-//     {/* <Button type="submit" className='text-xs'>Search</Button> */}
-//   </div>
-
-//   <TabsTrigger className="rounded-full" value="AllProducts">All Vendor <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
-//   <TabsTrigger className="rounded-full" value="Active">Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item => item.status).length}</span></TabsTrigger>
-//   <TabsTrigger className="rounded-full" value="inActive">In-Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item => item.status === false).length}</span></TabsTrigger>
-
-// </TabsList>
-
-// </Tabs>
