@@ -15,9 +15,12 @@ function SideNavigation() {
                   {" "}
                   <span className="grid  h-10 w-10 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
                     <img
-                      src="https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg"
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlev6xzFfPonliTRgafNYt9i9ZEXlH1ynVSw&s"
                       className=" h-6 w-6"
                     />
+                  </span>
+                  <span className="absolute w-32 start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-2 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
+                    Lai Warehouse LTD
                   </span>
                 </a>
               </div>
