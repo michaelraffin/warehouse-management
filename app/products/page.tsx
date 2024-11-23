@@ -19,7 +19,8 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-import { useToast } from "@/components/ui/use-toast";
+
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,7 @@ interface PaymentStatus {
 }
 interface ProductDetails {
   id?: String;
+  className: string;
   status?: any;
   title?: string;
   img: string;
@@ -66,12 +68,12 @@ interface ProductDetails {
 }
 
 export default function TableDemo() {
-  const { toast } = useToast();
   const [products, setProducts] = useState<[ProductDetails] | []>([]);
 
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState(null);
+  const [productLiters, setProductLiters] = useState(null);
   const [price, setProductPrice] = useState(0);
   const [productQuantity, setProducQuantity] = useState(null);
   const [imageLink, setImageLink] = useState(null);
@@ -107,6 +109,30 @@ export default function TableDemo() {
     } catch (error) {
       console.log("error Product", error);
     }
+  };
+
+  const deleteThis = (e: ProductDetails) => {
+    setStatus(true);
+    const service = async () => {
+      if (e != null) {
+        e.className = "LesseeProduct";
+        let result = await axiosV2("dsadsa").post(
+          `${url}/deleteProduct/LesseeProduct`,
+          e,
+        );
+        setStatus(false);
+        return result;
+      }
+    };
+
+    let newProduct: [ProductDetails] = products.filter(
+      (item: ProductDetails) => item.title != e.title,
+    );
+
+    service().then(() => {
+      setProducts(newProduct);
+      toast.info("Successfully deleted");
+    });
   };
   const didStatusUpdate = (e: any, id: any) => {
     let list: any = products.map((item: ProductDetails) => {
@@ -154,6 +180,7 @@ export default function TableDemo() {
           img: imageLink,
           status: false,
           totalSold: 0,
+          size: productLiters,
           transactionLogs: [
             // {
             //   transactionID: "X123Ab",
@@ -223,9 +250,8 @@ export default function TableDemo() {
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
 
-        <BottomDrawerSheet />
-
         <AddProduct
+          selectedLiters={(e: any) => setProductLiters(e)}
           price={(e: any) => setProducTitle(e)}
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
@@ -235,13 +261,13 @@ export default function TableDemo() {
           didSubmit={(e: any) => submitProduct()}
         />
         <div className="mt-20  h-full w-[58%] mr-20">
-          <MainChart data={products} chartTitle={"Your products stocks"} />
+          {/* <MainChart data={products} chartTitle={"Your products stocks"} /> */}
         </div>
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
-          <Table className="">
+          <Table className="w-[90%]">
             <TableCaption>A list of request.</TableCaption>
             <TableHeader>
               <TableRow>
@@ -289,6 +315,31 @@ export default function TableDemo() {
     Status :
     </PopoverContent>
   </Popover> */}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => deleteThis(invoice)}
+                      variant="outline"
+                      size="icon"
+                    >
+                      <svg
+                        className="w-6 h-6 text-gray-800 dark:text-white"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="4"
+                        height="4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                        />
+                      </svg>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

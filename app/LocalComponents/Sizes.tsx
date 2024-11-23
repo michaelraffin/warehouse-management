@@ -1,60 +1,68 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { Stats } from "fs";
 
 const frameworks = [
-    {
-      value: "Regular can - 0.33 liters",
-      label: "Regular can - 0.33 liters",
-    },
-    {
-      value: "Bottle - 0.5 liters",
-      label: "Bottle - 0.5 liters",
-    },
-    {
-      value: "1 L",
-      label: "Bottle - 1 liter",
-    },
-    {
-      value: "1.25 L",
-      label: "Bottle - 1.25 liters",
-    },
-    {
-      value: "1.5 L",
-      label: "Bottle - 1.5 liters",
-    },
-    {
-      value: "2 L",
-      label: "Bottle - 2 liters",
-    },
-    {
-      value: "2.5 L",
-      label: "Bottle - 2.5 liters",
-    },
-    {
-      value: "3 L",
-      label: "Bottle - 3 liters",
-    },
-  ]
+  { value: "Regular can - 0.33 liters", label: "Regular can - 0.33 liters" },
+  { value: "Small can - 0.25 liters", label: "Small can - 0.25 liters" },
+  { value: "Tall can - 0.473 liters", label: "Tall can - 0.473 liters" },
+  { value: "Large can - 0.5 liters", label: "Large can - 0.5 liters" },
+  {
+    value: "Standard bottle - 0.5 liters",
+    label: "Standard bottle - 0.5 liters",
+  },
+  { value: "Small bottle - 0.33 liters", label: "Small bottle - 0.33 liters" },
+  {
+    value: "Medium bottle - 0.75 liters",
+    label: "Medium bottle - 0.75 liters",
+  },
+  { value: "Large bottle - 1.0 liters", label: "Large bottle - 1.0 liters" },
+  {
+    value: "Extra large bottle - 1.5 liters",
+    label: "Extra large bottle - 1.5 liters",
+  },
+  { value: "Family bottle - 2.0 liters", label: "Family bottle - 2.0 liters" },
+  { value: "Jumbo bottle - 3.0 liters", label: "Jumbo bottle - 3.0 liters" },
+  { value: "Small carton - 0.2 liters", label: "Small carton - 0.2 liters" },
+  { value: "Medium carton - 0.5 liters", label: "Medium carton - 0.5 liters" },
+  { value: "Large carton - 1.0 liters", label: "Large carton - 1.0 liters" },
+  { value: "Wine bottle - 0.75 liters", label: "Wine bottle - 0.75 liters" },
+  {
+    value: "Champagne bottle - 0.75 liters",
+    label: "Champagne bottle - 0.75 liters",
+  },
+  { value: "Mini keg - 5.0 liters", label: "Mini keg - 5.0 liters" },
+  { value: "Party keg - 10.0 liters", label: "Party keg - 10.0 liters" },
+  { value: "Small keg - 20.0 liters", label: "Small keg - 20.0 liters" },
+  { value: "Standard keg - 50.0 liters", label: "Standard keg - 50.0 liters" },
+  { value: "Large keg - 100.0 liters", label: "Large keg - 100.0 liters" },
+];
 
-export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
-
+export function ComboboxDemo(props: any) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+  const didSelect = (e: string) => {
+    // selectedItem
+    console.log(e);
+    props.selectedItem(e);
+    setValue(e === value ? "" : e);
+    setOpen(false);
+  };
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -64,11 +72,10 @@ export function ComboboxDemo() {
           aria-expanded={open}
           className="w-full justify-between"
         >
+          {value}
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
-          {/* <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
-          ADD ICON
+            : "Select liters..."}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
@@ -81,23 +88,15 @@ export function ComboboxDemo() {
                 key={framework.value}
                 value={framework.value}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue)
-                  setOpen(false)
+                  didSelect(currentValue);
                 }}
               >
                 {framework.label}
-                
-                {/* <CheckIcon
-                  className={cn(
-                    "ml-auto h-4 w-4",
-                    value === framework.value ? "opacity-100" : "opacity-0"
-                  )}
-                /> */}
               </CommandItem>
             ))}
           </CommandGroup>
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

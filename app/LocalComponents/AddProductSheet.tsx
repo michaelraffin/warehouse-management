@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ComboboxDemo } from "../LocalComponents/Sizes";
+import { DropdownLiters } from "../LocalComponents/DropDownLiters";
 
 import Map from "../LocalComponents/MapPickerV2";
 // import {useForm} from 'react-hook-form'
@@ -73,7 +74,7 @@ export default function Add(props: any) {
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px] lg:w-[400px]">
         <SheetHeader>
-          <SheetTitle>Add Product</SheetTitle>
+          <SheetTitle className="text-xs">Add Product</SheetTitle>
           <input
             onChange={(e: any) => props.title(e.nativeEvent.target.value)}
             placeholder="Give your title"
@@ -93,8 +94,10 @@ export default function Add(props: any) {
             {/* image_file */}
 
             {/* <Map coordinates={(e)=>console.log(e)}/> */}
-
-            <ComboboxDemo />
+            <ComboboxDemo
+              selectedItem={(e: string) => props.selectedLiters(e)}
+            />
+            {/* <DropdownLiters /> */}
             {displayLogo()}
 
             <Label htmlFor="picture" className="mt-10">
@@ -130,10 +133,10 @@ export default function Add(props: any) {
           </SheetDescription>
         </SheetHeader>
         <SheetTrigger
-          className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-md"
+          className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-full"
           onClick={() => submitItem()}
         >
-          <div className="m-2 text-white">Submit</div>
+          <div className="m-2 text-white text-xs rouded-full">Submit</div>
         </SheetTrigger>
       </SheetContent>
     </Sheet>

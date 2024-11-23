@@ -374,7 +374,7 @@ export default function TableDemo() {
         {/* <BottomDrawerSheet /> */}
         <AddStore
           didSelect={(e: string) => setVendorBranch(e)}
-          buttonTitle={"Add Vendor"}
+          buttonTitle={"Add Store"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
           title={(e: any) => setProducTitle(e)}

@@ -127,8 +127,7 @@ export default function Add(props: any) {
     </div> */}
 
           <SheetDescription className="text-xs">
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Add store logo here.
           </SheetDescription>
         </SheetHeader>
         <SheetTrigger

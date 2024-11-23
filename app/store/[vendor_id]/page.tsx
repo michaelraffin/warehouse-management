@@ -89,6 +89,9 @@ interface VendorCoordinates {
   lat: number;
   lng: number;
 }
+interface VendorResult {
+  result: Vendor;
+}
 interface VendorAirport {
   airport: {
     country: string;
@@ -102,6 +105,7 @@ interface VendorAirport {
 }
 
 interface Vendor {
+  title: string;
   className: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
@@ -161,47 +165,63 @@ export default function VendorDetails({
 
   const deleteThisVendor = () => {
     setStatus(true);
-    const service = async () => {
-      let payload: Vendor = { ...vendorDetails };
-      // payload.className = "LesseeVendor";
-      let result = await axiosV2("dsadsa").post(
-        `${url}/deleteProduct/LesseeVendor`,
-        payload,
-      );
-      setStatus(false);
-      return payload;
+    const service = async (): Promise<VendorResult | undefined> => {
+      if (vendorDetails != null) {
+        vendorDetails.className = "LesseeVendor";
+        let result = await axiosV2("dsadsa").post(
+          `${url}/deleteProduct/LesseeVendor`,
+          vendorDetails,
+        );
+        setStatus(false);
+        return { result: vendorDetails };
+      }
     };
 
-    toast.promise(service, {
-      loading: "Deleting...",
-      success: (data) => {
-        return `${data.results.vendorTitle} toast has been added`;
-      },
-      error: "Error",
-    });
+    // toast.promise(service, {
+    //   loading: "Deleting...",
+    //   success: (data?: { results?: { vendorTitle?: string } }) => {
+    //     return `${data?.results?.vendorTitle} toast has been added`;
+    //   },
+    //   error: "Error",
+    // });
+    // toast.promise(
+    //   service().then((vendor: VendorResult) => {
+    //     if (vendor) {
+    //       return { results: { vendorTitle: "vendor.title " } };
+    //     }
+    //     return undefined;
+    //   }),
+    //   {
+    //     loading: "Deleting...",
+    //     success: (data?: VendorResult) => {
+    //       return `${data?.result.vendorTitle || "Default vendor title"} toast has been added`;
+    //     },
+    //     error: "Error",
+    //   },
+    // );
   };
   const updateSettings = () => {
     setStatus(true);
     let service = async () => {
       // let payload: Vendor = { ...vendorDetails };
-      // if (!payload.coordinates ) {
-      //   payload.coordinates = storeCoordinates;
-      // }
-      // console.log(payload.coordinates);
+      if (vendorDetails != null) {
+        vendorDetails.coordinates = storeCoordinates;
+      }
+      console.log(vendorDetails.coordinates);
 
-      // if (vendorDetails) {
-      //   const updatedVendorDetails = {
-      //     ...vendorDetails, // Spread the existing vendor details
-      //     coordinates: storeCoordinates, // Update the coordinates
-      //   };
-      //   // payload.vendorDetails.coordinates = storeCoordinates;
-      //   setVendorDetails(updatedVendorDetails); // Set the new state
-      // }
+      if (vendorDetails) {
+        const updatedVendorDetails = {
+          ...vendorDetails,
+          coordinates: storeCoordinates,
+        };
+        // payload.vendorDetails.coordinates = storeCoordinates;
+        setVendorDetails(updatedVendorDetails);
+      }
 
-      // let productList = await axiosV2("dsadsa").post(
-      //   `${url}/updateItem/${parentClass}`,
-      //   payload,
-      // );
+      let productList = await axiosV2("dsadsa").post(
+        `${url}/updateItem/${parentClass}`,
+        payload,
+      );
       return null;
     };
     service().then((item) => {
@@ -575,7 +595,7 @@ export default function VendorDetails({
       </Head>
       <SideNavigation />
       <HeaderPage
-        title={`${vendorDetails != null ? vendorDetails.vendorTitle : ""} !  ${userProfile != null ? "" : ""}`}
+        title={`${vendorDetails != null ? vendorDetails.vendorTitle : ""}!  ${userProfile != null ? "" : ""}`}
         subtitle=""
       />
       <Breadcrumb className="ml-24 mb-20  text-xs">
@@ -588,7 +608,7 @@ export default function VendorDetails({
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink className="text-xs" href="/store">
-              Vendors
+              Stores
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -743,7 +763,7 @@ export default function VendorDetails({
                   // hover:bg-gray-600 bg-blue-600
                 >
                   {status ? <Loader2 className="animate-spin" /> : null}
-                  <div className="m-2  text-xs ">Delete this vendor</div>
+                  <div className="m-2  text-xs ">Delete this store</div>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
