@@ -19,7 +19,7 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-import { useToast } from "@/components/ui/use-toast";
+
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -202,36 +202,36 @@ export default function VendorDetails({
   };
   const updateSettings = () => {
     setStatus(true);
-    let service = async () => {
-      // let payload: Vendor = { ...vendorDetails };
-      if (vendorDetails != null) {
-        vendorDetails.coordinates = storeCoordinates;
-      }
-      console.log(vendorDetails.coordinates);
+    // let service = async () => {
+    //   // let payload: Vendor = { ...vendorDetails };
+    //   if (vendorDetails != null) {
+    //     vendorDetails.coordinates = storeCoordinates;
+    //   }
+    //   console.log(vendorDetails.coordinates);
 
-      if (vendorDetails) {
-        const updatedVendorDetails = {
-          ...vendorDetails,
-          coordinates: storeCoordinates,
-        };
-        // payload.vendorDetails.coordinates = storeCoordinates;
-        setVendorDetails(updatedVendorDetails);
-      }
+    //   if (vendorDetails) {
+    //     const updatedVendorDetails = {
+    //       ...vendorDetails,
+    //       coordinates: storeCoordinates,
+    //     };
+    //     // payload.vendorDetails.coordinates = storeCoordinates;
+    //     setVendorDetails(updatedVendorDetails);
+    //   }
 
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/updateItem/${parentClass}`,
-        payload,
-      );
-      return null;
-    };
-    service().then((item) => {
-      console.log(item);
-      toast({
-        title: "Successfully Updated",
-        description: "Store has been updated with it settings...",
-      });
-      setStatus(false);
-    });
+    //   let productList = await axiosV2("dsadsa").post(
+    //     `${url}/updateItem/${parentClass}`,
+    //     payload,
+    //   );
+    //   return null;
+    // };
+    // service().then((item) => {
+    //   console.log(item);
+    //   toast({
+    //     title: "Successfully Updated",
+    //     description: "Store has been updated with it settings...",
+    //   });
+    //   setStatus(false);
+    // });
   };
   const getDetails = async () => {
     let payload = {
@@ -328,12 +328,7 @@ export default function VendorDetails({
 
     return result;
   };
-  const displayAlert = () => {
-    toast({
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
-    });
-  };
+  const displayAlert = () => {};
 
   const submitProduct = () => {
     const asyncService = async () => {

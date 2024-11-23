@@ -68,7 +68,7 @@ interface ProductDetails {
 }
 
 export default function TableDemo() {
-  const [products, setProducts] = useState<[ProductDetails] | []>([]);
+  const [products, setProducts] = useState<ProductDetails[] | []>([]);
 
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
@@ -125,7 +125,7 @@ export default function TableDemo() {
       }
     };
 
-    let newProduct: [ProductDetails] = products.filter(
+    let newProduct: ProductDetails[] = products.filter(
       (item: ProductDetails) => item.title != e.title,
     );
 
@@ -159,10 +159,7 @@ export default function TableDemo() {
     return result;
   };
   const displayAlert = () => {
-    toast({
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
-    });
+    toast.warning("Please try again");
   };
 
   const submitProduct = () => {
