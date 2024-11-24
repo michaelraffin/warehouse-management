@@ -57,15 +57,24 @@ interface PaymentStatus {
 }
 interface ProductDetails {
   id?: String;
+  dateAdded: string;
   className: string;
   productID: string;
+  local_id: string;
+  totalSold: number;
   status?: any;
   title?: string;
+  size: string;
   img: string;
   stocks: any;
   paymentStatus: any;
   price: number;
-  totalAmount: number;
+  totalAmount: string;
+  transactionLogs?: [transactionLogsItem] | null;
+  restockLogs?: [transactionLogsItem] | null;
+}
+interface transactionLogsItem {
+  transactionID: string;
 }
 
 export default function TableDemo() {
@@ -73,11 +82,11 @@ export default function TableDemo() {
 
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
-  const [productTitle, setProducTitle] = useState(null);
-  const [productLiters, setProductLiters] = useState(null);
+  const [productTitle, setProducTitle] = useState<string>("");
+  const [productLiters, setProductLiters] = useState<string>("");
   const [price, setProductPrice] = useState(0);
   const [productQuantity, setProducQuantity] = useState(null);
-  const [imageLink, setImageLink] = useState(null);
+  const [imageLink, setImageLink] = useState<string>("");
   useEffect(() => {
     UserProfile().then((profile) => {
       setUser(profile);
@@ -167,41 +176,41 @@ export default function TableDemo() {
     const asyncService = async () => {
       try {
         let payload = {
+          //TOBE FIX ProductDetails
           productID: generateRandomString(),
           local_id: productTitle,
           paymentStatus: "Unpaid",
           title: productTitle,
           totalAmount: "$300.00",
           price: price,
-          paymentMethod: "Credit Card",
           stocks: productQuantity,
           img: imageLink,
           status: false,
           totalSold: 0,
           size: productLiters,
-          dateAdded: new Date(),
-          transactionLogs: [
-            // {
-            //   transactionID: "X123Ab",
-            // },
-          ],
-          restockLogs: [
-            // {
-            //   transactionID: "X123Ab",
-            // },
-          ],
+          dateAdded: moment(new Date()).toString(),
+          transactionLogs: null,
+          restockLogs: null,
         };
         let productList = await axiosV2("dsadsa").post(`${url}/Loogy/add`, {
           details: payload,
           className: "LesseeProduct",
         });
-        console.log("productList", productList);
+
+        fetchProduct();
         return productList;
       } catch (error) {}
     };
-    asyncService().then((item) => {
-      console.log(item);
-      fetchProduct();
+    // asyncService().then((item) => {
+    //   fetchProduct();
+    // });
+
+    toast.promise(asyncService, {
+      loading: "Loading...",
+      success: () => {
+        return `${productTitle} toast has been added`;
+      },
+      error: "Error",
     });
   };
   return (
@@ -230,13 +239,13 @@ export default function TableDemo() {
               {products.length}
             </span>
           </TabsTrigger>
-          <TabsTrigger className="rounded-full" value="Active">
+          <TabsTrigger className="rounded-full" disabled value="Active">
             Active{" "}
             <span className="ml-2 font-bold text-red-500">
               {products.filter((item: UpdateStatus) => item.status).length}
             </span>
           </TabsTrigger>
-          <TabsTrigger className="rounded-full" value="inActive">
+          <TabsTrigger className="rounded-full" disabled value="inActive">
             In-Active{" "}
             <span className="ml-2 font-bold text-red-500">
               {
@@ -266,8 +275,8 @@ export default function TableDemo() {
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
-          <Table className="w-[90%]">
-            <TableCaption>A list of request.</TableCaption>
+          <Table className="w-[90%] mb-20">
+            <TableCaption>List of products</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
@@ -296,7 +305,9 @@ export default function TableDemo() {
                   </TableCell>
                   <TableCell>
                     <Progress value={invoice.stocks} className="w-[60%]" />
-
+                    <span className="text-xs text-gray-400">
+                      {moment(invoice.dateAdded).format("MM-DD-YYYY hh:mm A")}
+                    </span>
                     {/* {invoice.paymentMethod} */}
                   </TableCell>
                   <TableCell className="text-xs text-right font-light text-red-500">
