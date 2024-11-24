@@ -58,6 +58,7 @@ interface PaymentStatus {
 interface ProductDetails {
   id?: String;
   className: string;
+  productID: string;
   status?: any;
   title?: string;
   img: string;
@@ -113,6 +114,7 @@ export default function TableDemo() {
 
   const deleteThis = (e: ProductDetails) => {
     setStatus(true);
+    console.log(e);
     const service = async () => {
       if (e != null) {
         e.className = "LesseeProduct";
@@ -126,9 +128,8 @@ export default function TableDemo() {
     };
 
     let newProduct: ProductDetails[] = products.filter(
-      (item: ProductDetails) => item.title != e.title,
+      (item: ProductDetails) => item.productID != e.productID,
     );
-
     service().then(() => {
       setProducts(newProduct);
       toast.info("Successfully deleted");
@@ -178,6 +179,7 @@ export default function TableDemo() {
           status: false,
           totalSold: 0,
           size: productLiters,
+          dateAdded: new Date(),
           transactionLogs: [
             // {
             //   transactionID: "X123Ab",
@@ -282,6 +284,7 @@ export default function TableDemo() {
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}
                     {invoice.title}
+                    {invoice.price}
                   </TableCell>
                   <TableCell
                     className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
@@ -321,7 +324,7 @@ export default function TableDemo() {
                       size="icon"
                     >
                       <svg
-                        className="w-6 h-6  dark:text-white"
+                        className="w-4 h-4  dark:text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="4"
