@@ -87,7 +87,7 @@ export default function Add(props: any) {
           />
           <input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
-            placeholder="Quantity"
+            placeholder="Default quantity"
             className="h-10 p-2 border border-gray-400 rounded-md"
           />
           <div className="grid w-full max-w-sm items-center gap-1.5">

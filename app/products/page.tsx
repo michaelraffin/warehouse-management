@@ -251,7 +251,7 @@ export default function TableDemo() {
 
         <AddProduct
           selectedLiters={(e: any) => setProductLiters(e)}
-          price={(e: any) => setProducTitle(e)}
+          price={(e: any) => setProductPrice(e)}
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
