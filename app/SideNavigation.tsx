@@ -61,7 +61,7 @@ function SideNavigation() {
                   <ul className="space-y-1 border-t border-gray-100 pt-4">
                     <li>
                       <a
-                        href=""
+                        href="/dashboard"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <svg
@@ -97,7 +97,7 @@ function SideNavigation() {
                     </li>
                     <li>
                       <a
-                        href="/request"
+                        href="/dashboard"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <svg
@@ -163,7 +163,7 @@ function SideNavigation() {
                     </li>
                     <li>
                       <a
-                        href="/staff"
+                        href="/dashboard"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <svg
@@ -188,7 +188,7 @@ function SideNavigation() {
                     </li>
                     <li>
                       <a
-                        href="/orders"
+                        href="/dashboard"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
