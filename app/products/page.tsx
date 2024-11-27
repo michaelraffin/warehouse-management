@@ -19,7 +19,7 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-
+import EditProductSheet from "@/app/LocalComponents/EditProductSheet";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -257,7 +257,6 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-
         <AddProduct
           selectedLiters={(e: any) => setProductLiters(e)}
           price={(e: any) => setProductPrice(e)}
@@ -306,8 +305,9 @@ export default function TableDemo() {
                   <TableCell>
                     <Progress value={invoice.stocks} className="w-[60%]" />
                     <span className="text-xs text-gray-400">
+                      dsadsa
                       {moment(invoice.dateAdded).format("MM-DD-YYYY hh:mm A")}
-                    </span>
+                    </span>{" "}
                     {/* {invoice.paymentMethod} */}
                   </TableCell>
                   <TableCell className="text-xs text-right font-light text-red-500">
@@ -316,6 +316,7 @@ export default function TableDemo() {
                   </TableCell>
                   <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
+                    <EditProductSheet details={invoice} />
                     <Switch
                       onCheckedChange={(e) => didStatusUpdate(e, invoice.id)}
                       checked={invoice.status}
@@ -358,7 +359,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent
           value="Active"
           className={status ? `opacity-20` : `opacity-100`}
@@ -447,7 +447,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
