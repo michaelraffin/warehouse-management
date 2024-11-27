@@ -69,7 +69,10 @@ const chartData = [
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
-
+interface ToastData {
+  title: string;
+  description: string; // Assuming transactionID is a string
+}
 interface UserDetails {
   firstName?: String;
   status?: any;
@@ -96,6 +99,7 @@ export interface LeeaseBranches {
 
 interface Vendor {
   id: string;
+  branch: string;
   vendorDescription: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
@@ -271,10 +275,27 @@ export default function TableDemo() {
     return result;
   };
   const displayAlert = () => {
-    toast({
+    var toastData: ToastData = {
       title: "Scheduled: Catch up",
       description: "Friday, February 10, 2023 at 5:57 PM",
-    });
+    };
+    // toast({message:"Scheduled: Catch up"})
+    // toast({
+    //   position: "bottom", // Example position; can also be "top", "top-right", etc.
+    //   render: () => (
+    //     <div
+    //       style={{
+    //         padding: "1em",
+    //         backgroundColor: "#3182ce",
+    //         color: "white",
+    //         borderRadius: "8px",
+    //       }}
+    //     >
+    //       <strong>Scheduled: Catch up</strong>
+    //       <p>Friday, February 10, 2023 at 5:57 PM</p>
+    //     </div>
+    //   ),
+    // });
   };
 
   const addVendor = () => {
@@ -353,7 +374,7 @@ export default function TableDemo() {
         {/* <BottomDrawerSheet /> */}
         <AddStore
           didSelect={(e: string) => setVendorBranch(e)}
-          buttonTitle={"Add Vendor"}
+          buttonTitle={"Add Store"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
           title={(e: any) => setProducTitle(e)}
@@ -379,7 +400,7 @@ export default function TableDemo() {
             <TableBody>
               {products.reverse().map((invoice: Vendor) => (
                 <TableRow key={invoice.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium text-blue-500">
                     <a
                       href={`store/${invoice.vendorID}`}
                       target="_blank"
@@ -388,6 +409,7 @@ export default function TableDemo() {
                       <p className="text-xs font-light">
                         {invoice.vendorTitle}
                       </p>
+                      <p className="text-gray-400 text-xs"> {invoice.branch}</p>
                     </a>
                   </TableCell>
                   <TableCell
@@ -405,13 +427,15 @@ export default function TableDemo() {
                     </a>
                   </TableCell>
 
-                  <TableCell className="text-right text-md text-red-500 font-light">
+                  <TableCell className="text-right text-xs text-red-500 font-light">
                     <div className="w-60 h-20">
                       <LocalChart />
                     </div>
                     {/* {invoice.vendorDescription} */}
                     {/* {invoice.stocks} cases left */}
-                    <Badge className="bg-red-500 ml-4">Out of stock</Badge>
+                    <Badge className="bg-red-500 ml-4 text-xs">
+                      Out of stocks
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <p className="font-bold text-gray-600">

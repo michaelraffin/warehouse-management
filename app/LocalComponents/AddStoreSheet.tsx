@@ -68,7 +68,7 @@ export default function Add(props: any) {
     <Sheet>
       <SheetTrigger className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300 h-9 m-2 rounded-md">
         {/* <Button className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300"> */}
-        <span className="m-4 text-white ">+ {props.buttonTitle}</span>
+        <span className="m-4 text-white  text-sm">+ {props.buttonTitle}</span>
         {/* </Button> */}
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px] lg:w-[400px]">
@@ -127,8 +127,7 @@ export default function Add(props: any) {
     </div> */}
 
           <SheetDescription className="text-xs">
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Add store logo here.
           </SheetDescription>
         </SheetHeader>
         <SheetTrigger

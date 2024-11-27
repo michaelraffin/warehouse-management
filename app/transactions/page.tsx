@@ -17,6 +17,7 @@ import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/TransactionSheet";
+import TransactionDetailedSheet from "@/app/LocalComponents/TransactionDetailedSheet";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { axios, url, axiosV2 } from "@/Utils/axios";
@@ -382,7 +383,7 @@ export default function TableDemo() {
             <TableCaption>A list of request.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead className="w-[150px]">Invoice</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>MOP</TableHead>
                 <TableHead className="text-center">Vendor</TableHead>
@@ -390,30 +391,33 @@ export default function TableDemo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestItems.map((invoice: Order) => (
-                <TableRow key={invoice._id}>
+              {requestItems.map((transactionDetailedReport: Order) => (
+                <TableRow key={transactionDetailedReport._id}>
                   <TableCell className="font-medium">
-                    <Link href={`/transactions/${invoice.transactionID}`}>
-                      <RequestSheet
-                        // void={(details) => console.log(details)}
-                        // update={(details) => console.log(details)}
-                        details={invoice}
-                        titleButton={`View Details ${invoice?.transactionID != undefined ? invoice?.transactionID : "..."}`}
-                      />
-                    </Link>
+                    <a
+                      target="_blank"
+                      className="text-xs font-light text-blue-500"
+                      href={`/transactions/${transactionDetailedReport?.transactionID}`}
+                    >
+                      {`View  ${transactionDetailedReport?.transactionID != undefined ? transactionDetailedReport?.transactionID : "..."}`}
+                    </a>
                   </TableCell>
-                  {/* {invoice.invoice}  */}
+                  {/* {transactionDetailedReport.transactionDetailedReport}  */}
                   <TableCell
-                    className={`text-xs ${invoice.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
+                    className={`text-xs ${transactionDetailedReport.status === "Approved" ? "text-blue-600" : "text-red-500"}`}
                   >
                     <p>Pending</p>
                   </TableCell>
-                  <TableCell>{getPaymentType(invoice)}</TableCell>
+                  <TableCell>
+                    {getPaymentType(transactionDetailedReport)}
+                  </TableCell>
                   <TableCell className="text-center">
-                    <p className="text-xs">{getVendorTitle(invoice)}</p>
+                    <p className="text-xs">
+                      {getVendorTitle(transactionDetailedReport)}
+                    </p>
                     <img
                       alt="image vendor"
-                      src={getVendorImage(invoice)}
+                      src={getVendorImage(transactionDetailedReport)}
                       className="mr-2 h-10 w-10 rounded-full hover:shadow-lg"
                     />
                     {/* <Button variant="secondary">
@@ -435,10 +439,12 @@ export default function TableDemo() {
                       <p className="text-xs ml-4">View Attached photo</p>
                     </Button> */}
                   </TableCell>
-                  <TableCell>{formatter.format(invoice.grandTotal)}</TableCell>
                   <TableCell>
-                    <a
-                      href={`/transactions/${invoice.transactionID}`}
+                    {formatter.format(transactionDetailedReport.grandTotal)}
+                  </TableCell>
+                  <TableCell>
+                    {/* <a
+                      href={`/transactions/${transactionDetailedReport.transactionID}`}
                       target="_blank"
                     >
                       <Image
@@ -448,7 +454,10 @@ export default function TableDemo() {
                         height={2}
                         src="/arrow-right.png"
                       />
-                    </a>
+                    </a> */}
+                    <TransactionDetailedSheet
+                      orderDetails={transactionDetailedReport}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
@@ -494,7 +503,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-        Approved_by_Office Hold_by_Office
         <TabsContent value="Pending">
           <Table className={`${tableWidth}`}>
             <TableCaption>A list of request.</TableCaption>

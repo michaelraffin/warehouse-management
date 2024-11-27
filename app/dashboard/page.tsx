@@ -571,13 +571,21 @@ export default function TableDemo() {
       <div>{/* <MapV2 /> */}</div>
 
       <Suspense fallback={loadinggg()}>
-        <Table className="ml-20">
-          <TableCaption>A list of recent transaction.</TableCaption>
+        <Table className="ml-20 w-[90%]">
+          <TableCaption>
+            <a
+              className="text-blue-500 text-xs"
+              href={`/transactions`}
+              target="_blank"
+            >
+              View all
+            </a>
+          </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[90px]">Vendor</TableHead>
+              <TableHead className="w-[120px]">Vendor</TableHead>
               <TableHead></TableHead>
-              <TableHead>Payment Type</TableHead>
+              <TableHead>Date Transacted</TableHead>
               <TableHead>Cart</TableHead>
               <TableHead className="text-right">Total Purchased</TableHead>
               <TableHead></TableHead>
@@ -587,7 +595,15 @@ export default function TableDemo() {
             {topTransaction.map((vendors: any) => (
               <TableRow key={vendors._id}>
                 <TableCell className="text-xs">
-                  {vendors.transactionID}
+                  {/* <Button className="text-xs bg-blue-500"> */}
+                  <a
+                    className="text-blue-500"
+                    href={`/transactions/${vendors.transactionID} `}
+                    target="_blank"
+                  >
+                    View {vendors?.transactionID}
+                  </a>
+                  {/* </Button> */}
                 </TableCell>
                 <TableCell>
                   <img
@@ -595,10 +611,11 @@ export default function TableDemo() {
                     className=" h-10 w-10 rounded-full  object-cover hover:shadow-lg "
                   />
                 </TableCell>{" "}
-                <TableCell className="text-xs">
-                  {vendors.payment_method != undefined
+                <TableCell className="text-xs font-light">
+                  {/* {vendors.payment_method != undefined
                     ? vendors.payment_method.type.toUpperCase()
-                    : ""}
+                    : ""} */}
+                  {vendors?.transaction.date_created}
                 </TableCell>
                 <TableCell className="text-xs">
                   {vendors.transaction != undefined
@@ -606,10 +623,10 @@ export default function TableDemo() {
                     : 0}{" "}
                   Orders
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right text-xs">
                   {numberFormat(vendors.grandTotal)}
                 </TableCell>
-                <TableCell className="">
+                <TableCell className="text-xs font-light">
                   <a
                     href={`/transactions/${vendors.transactionID} `}
                     target="_blank"
@@ -650,8 +667,16 @@ export default function TableDemo() {
               width={90}
             />
           ) : (
-            <Table className="">
-              <TableCaption>Your top vendors.</TableCaption>
+            <Table className="mb-20">
+              <TableCaption>
+                <a
+                  className="text-blue-500 text-xs "
+                  href={`/store`}
+                  target="_blank"
+                >
+                  View all
+                </a>
+              </TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Vendor</TableHead>

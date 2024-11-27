@@ -19,14 +19,25 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-import { useToast } from "@/components/ui/use-toast";
+
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { UploadImageService } from "../../../Utils/image_uploader";
 import { axios, url } from "@/Utils/axios";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 // import Map from '../../LocalComponents/MapPickerV2'
 import {
   BarChart,
@@ -39,6 +50,8 @@ import {
 } from "recharts";
 import { LineChart, Line } from "recharts";
 import LocalChart from "../../LocalComponents/Charts";
+
+import { useRouter } from "next/router";
 import {
   Popover,
   PopoverContent,
@@ -48,7 +61,7 @@ import { getSession } from "../../../Utils/serviceLogin";
 import { UserProfile } from "../../../Utils/userProfile";
 import { axiosV2Local, axiosV2 } from "../../../Utils/axios";
 import Link from "next/link";
-
+import { Skeleton } from "@/components/ui/skeleton";
 import LocalClass from "../../LocalComponents/mapComponents/page.module.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map, {
@@ -59,12 +72,25 @@ import Map, {
 } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+import { Nut } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Loader2 } from "lucide-react";
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
 interface VendorCoordinates {
   lat: number;
   lng: number;
+}
+interface VendorResult {
+  result: Vendor;
 }
 interface VendorAirport {
   airport: {
@@ -79,6 +105,8 @@ interface VendorAirport {
 }
 
 interface Vendor {
+  title: string;
+  className: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
   vendorTitle: string; // The title of the vendor
@@ -98,7 +126,6 @@ export default function VendorDetails({
   params: { vendor_id: string };
 }) {
   let vendorID = params.vendor_id;
-  const { toast } = useToast();
   const [products, setProducts] = useState([]);
   const [userProfile, setUser] = useState(null);
   const [status, setStatus] = useState(true);
@@ -135,34 +162,76 @@ export default function VendorDetails({
     console.log(e);
     setStoreCoordinates(e);
   };
+
+  const deleteThisVendor = () => {
+    setStatus(true);
+    const service = async (): Promise<VendorResult | undefined> => {
+      if (vendorDetails != null) {
+        vendorDetails.className = "LesseeVendor";
+        let result = await axiosV2("dsadsa").post(
+          `${url}/deleteProduct/LesseeVendor`,
+          vendorDetails,
+        );
+        setStatus(false);
+        return { result: vendorDetails };
+      }
+    };
+
+    // toast.promise(service, {
+    //   loading: "Deleting...",
+    //   success: (data?: { results?: { vendorTitle?: string } }) => {
+    //     return `${data?.results?.vendorTitle} toast has been added`;
+    //   },
+    //   error: "Error",
+    // });
+    // toast.promise(
+    //   service().then((vendor: VendorResult) => {
+    //     if (vendor) {
+    //       return { results: { vendorTitle: "vendor.title " } };
+    //     }
+    //     return undefined;
+    //   }),
+    //   {
+    //     loading: "Deleting...",
+    //     success: (data?: VendorResult) => {
+    //       return `${data?.result.vendorTitle || "Default vendor title"} toast has been added`;
+    //     },
+    //     error: "Error",
+    //   },
+    // );
+  };
   const updateSettings = () => {
     setStatus(true);
-    let service = async () => {
-      let payload = vendorDetails;
+    // let service = async () => {
+    //   // let payload: Vendor = { ...vendorDetails };
+    //   if (vendorDetails != null) {
+    //     vendorDetails.coordinates = storeCoordinates;
+    //   }
+    //   console.log(vendorDetails.coordinates);
 
-      // if (vendorDetails) {
-      //   const updatedVendorDetails = {
-      //     ...vendorDetails, // Spread the existing vendor details
-      //     coordinates: storeCoordinates, // Update the coordinates
-      //   };
+    //   if (vendorDetails) {
+    //     const updatedVendorDetails = {
+    //       ...vendorDetails,
+    //       coordinates: storeCoordinates,
+    //     };
+    //     // payload.vendorDetails.coordinates = storeCoordinates;
+    //     setVendorDetails(updatedVendorDetails);
+    //   }
 
-      //   setVendorDetails(storeCoordinates); // Set the new state
-      // }
-
-      // let productList = await axiosV2("dsadsa").post(
-      //   `${url}/updateItem/${parentClass}`,
-      //   payload,
-      // );
-      // return productList;
-    };
-    service().then((item) => {
-      console.log(item);
-      toast({
-        title: "Successfully Updated",
-        description: "Store has been updated with it settings...",
-      });
-      setStatus(false);
-    });
+    //   let productList = await axiosV2("dsadsa").post(
+    //     `${url}/updateItem/${parentClass}`,
+    //     payload,
+    //   );
+    //   return null;
+    // };
+    // service().then((item) => {
+    //   console.log(item);
+    //   toast({
+    //     title: "Successfully Updated",
+    //     description: "Store has been updated with it settings...",
+    //   });
+    //   setStatus(false);
+    // });
   };
   const getDetails = async () => {
     let payload = {
@@ -188,7 +257,9 @@ export default function VendorDetails({
         : [{ lng: 123.841, lat: 8.1822 }],
     );
     // if (coordinates.coordinates != null) {
+    console.log("initial load for vendor", vendorsList.data.results[0]);
     setVendorDetails(vendorsList.data.results[0]);
+    setVendorTransaction(vendorsList.data.results[0].transactionLogs ?? []);
     setStatus(false);
     // }
   };
@@ -198,7 +269,7 @@ export default function VendorDetails({
     });
 
     fetchStores();
-    fetchStoreTransaction();
+    // fetchStoreTransaction();
   }, []);
   const fetchStoreTransaction = () => {
     const service = async () => {
@@ -257,12 +328,7 @@ export default function VendorDetails({
 
     return result;
   };
-  const displayAlert = () => {
-    toast({
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
-    });
-  };
+  const displayAlert = () => {};
 
   const submitProduct = () => {
     const asyncService = async () => {
@@ -311,52 +377,125 @@ export default function VendorDetails({
       style: "currency",
       currency: "PHP",
     }).format(value);
+  const renderEmptyTransaction = () => {
+    try {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 relative">
+          {/* Background */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-full h-full max-w-4xl mx-auto">
+              {[...Array(4)].map((_, index) => (
+                <div
+                  key={index}
+                  className="absolute w-12 h-12 bg-gray-200 rounded-full overflow-hidden shadow-lg"
+                  style={{
+                    top: `${Math.random() * 90}%`,
+                    left: `${Math.random() * 90}%`,
+                    transform: `translate(-50%, -50%)`,
+                  }}
+                >
+                  <img
+                    src={`https://via.placeholder.com/48`} // Replace with actual avatar URL
+                    alt="User"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
+          {/* Main Content */}
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+              <div className="h-20   rounded-lg mb-4">
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[25px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              </div>
+              <div className="h-20  rounded-lg">
+                {" "}
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[25px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-gray-600">
+              <strong>Recent transaction will show here</strong>
+              <br />
+              Hang tight! Tell your agent to double their time!
+            </p>
+            <div className="flex mt-6 space-x-4">
+              <button className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800">
+                Okay, ill wait
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    } catch (error) {
+      return null;
+    }
+  };
   const renderTableComponent = () => {
     try {
       return (
         <>
           <p className="font-bold text-xs">
-            {vendorDetails?.vendorTitle} Transactions
+            {vendorDetails?.vendorTitle} List of Transactions
           </p>
 
-          <Table className="w-full" title="">
+          <Table className="w-[80%]" title="">
             <TableHeader>
               <TableRow>
                 <TableHead className="">#id</TableHead>
-                <TableHead className="">Date Transacted</TableHead>
-                <TableHead>Status</TableHead>
+                {/* <TableHead className="">Date Transacted</TableHead> */}
+                {/* <TableHead>Status</TableHead>
                 <TableHead>Items</TableHead>
-                <TableHead>MOP</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>MOP</TableHead> */}
+                {/* <TableHead className="text-right">Amount</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.map((vendors: any) => (
                 <TableRow key={vendors._id}>
-                  <TableCell className="font-medium">
-                    {vendors._id.substr(-5)}
-                  </TableCell>
+                  {/* <TableCell className="font-medium">
+
+                  </TableCell> */}
                   <TableCell className="font-medium">
                     <p className="text-xs text-gray-500">Date Created:</p>
                     <p className="text-md font-bold text-[#0652DD]">
-                      {vendors.date_created}
+                      {vendors.transactionID}
                     </p>
                   </TableCell>
-                  <TableCell>{vendors.transactionState}</TableCell>
-                  <TableCell>
-                    {/* <Badge> */}
+                  {/* <TableCell>{vendors.transactionID}</TableCell> */}
+                  {/* <TableCell>
+
                     <Button variant={"link"} className="text-xs">
-                      {vendors.transaction.cart.length} Orders
+                      {vendors.transactionID} Orders
                     </Button>
-                    {/* </Badge> */}
+
                   </TableCell>
 
                   <TableCell className="uppercase">
-                    {vendors.payment_method.type}
-                  </TableCell>
+
+                  </TableCell> */}
                   <TableCell className="text-right">
-                    {numberFormat(Number(vendors.grandTotal))}
+                    <Badge className="bg-[#0652DD]">
+                      <a
+                        href={`/transactions/${vendors.transactionID} `}
+                        target="_blank"
+                      >
+                        {vendors.transactionID}
+                      </a>
+                    </Badge>
                   </TableCell>
                 </TableRow>
               ))}
@@ -365,6 +504,7 @@ export default function VendorDetails({
         </>
       );
     } catch (error) {
+      console.log("error rendering table", error);
       return <div className="w-2 h-2 bg-red-200" />;
     }
   };
@@ -381,8 +521,8 @@ export default function VendorDetails({
             vendorDetails?.coordinates === undefined
               ? { longitude: 123.841, latitude: 8.1822 }
               : {
-                  latitude: vendorDetails?.lat,
-                  longitude: vendorDetails?.lng,
+                  latitude: vendorDetails.coordinates?.lat,
+                  longitude: vendorDetails.coordinates?.lng,
                   zoom: 4,
                 }
           }
@@ -450,13 +590,34 @@ export default function VendorDetails({
       </Head>
       <SideNavigation />
       <HeaderPage
-        title={`${vendorDetails != null ? vendorDetails.vendorTitle : ""} !  ${userProfile != null ? "" : ""}`}
+        title={`${vendorDetails != null ? vendorDetails.vendorTitle : ""}!  ${userProfile != null ? "" : ""}`}
         subtitle=""
       />
+      <Breadcrumb className="ml-24 mb-20  text-xs">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink className="text-xs" href="/">
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink className="text-xs" href="/store">
+              Stores
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage className="text-gray-400 text-xs">
+              {vendorDetails?.vendorID}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mr-10 ml-20">
         <div className="h-32 rounded-lg  lg:col-span-2">
           {/* RIGHT */}
-          <div className=" mb-20">
+          {/* <div className=" mb-20">
             <div className="grid grid-cols-3 gap-4 m-2">
               <article className="rounded-lg border border-gray-300 bg-black p-6 hover:shadow-lg">
                 <div>
@@ -519,10 +680,12 @@ export default function VendorDetails({
                 </div>
               </article>
             </div>
-          </div>
+          </div> */}
 
-          {renderLineChart()}
-          {renderTableComponent()}
+          {/* {renderLineChart()} */}
+          {transactions.length === 0
+            ? renderEmptyTransaction()
+            : renderTableComponent()}
         </div>
 
         <div className="h-auto rounded-lg ">
@@ -579,7 +742,7 @@ export default function VendorDetails({
             /> */}
             <Button
               variant="secondary"
-              className="mb-20 mt-4  w-[90%]  rounded-md hover:border border-gray-600 ease-out duration-300   "
+              className="mb-20 mt-4  w-[90%]  rounded-full hover:border border-gray-600 ease-out duration-300   "
               // hover:bg-gray-600 bg-blue-600
               onClick={() => updateSettings()}
             >
@@ -587,6 +750,33 @@ export default function VendorDetails({
                 {status ? "Updating..." : "Set vendor location"}
               </div>
             </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="mb-20 rounded-full mt-4  w-[90%] hover:border ease-out duration-300   "
+                  // hover:bg-gray-600 bg-blue-600
+                >
+                  {status ? <Loader2 className="animate-spin" /> : null}
+                  <div className="m-2  text-xs ">Delete this store</div>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Deleting this means, removing vendors details only.
+                    Transaction will stay remain.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteThisVendor()}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
@@ -600,19 +790,3 @@ export default function VendorDetails({
     </div>
   );
 }
-
-// <Tabs defaultValue="AllProducts" className="w-[90] ml-24 bt-60 bg-white rounded-lg ">
-// <TabsList className="rounded-full mb-20">
-//   <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
-//     <Input type="email" placeholder="Search" className='rounded-full' />
-
-//     {/* <Button type="submit" className='text-xs'>Search</Button> */}
-//   </div>
-
-//   <TabsTrigger className="rounded-full" value="AllProducts">All Vendor <span className='text-red-500 ml-2 font-bold'>{products.length}</span></TabsTrigger>
-//   <TabsTrigger className="rounded-full" value="Active">Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item => item.status).length}</span></TabsTrigger>
-//   <TabsTrigger className="rounded-full" value="inActive">In-Active  <span className='text-red-500 ml-2 font-bold'>{products.filter(item => item.status === false).length}</span></TabsTrigger>
-
-// </TabsList>
-
-// </Tabs>

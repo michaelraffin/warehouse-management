@@ -19,7 +19,8 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-import { useToast } from "@/components/ui/use-toast";
+
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -56,24 +57,36 @@ interface PaymentStatus {
 }
 interface ProductDetails {
   id?: String;
+  dateAdded: string;
+  className: string;
+  productID: string;
+  local_id: string;
+  totalSold: number;
   status?: any;
   title?: string;
+  size: string;
   img: string;
   stocks: any;
   paymentStatus: any;
   price: number;
-  totalAmount: number;
+  totalAmount: string;
+  transactionLogs?: [transactionLogsItem] | null;
+  restockLogs?: [transactionLogsItem] | null;
+}
+interface transactionLogsItem {
+  transactionID: string;
 }
 
 export default function TableDemo() {
-  const { toast } = useToast();
-  const [products, setProducts] = useState<[ProductDetails] | []>([]);
+  const [products, setProducts] = useState<ProductDetails[] | []>([]);
 
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
-  const [productTitle, setProducTitle] = useState(null);
+  const [productTitle, setProducTitle] = useState<string>("");
+  const [productLiters, setProductLiters] = useState<string>("");
+  const [price, setProductPrice] = useState(0);
   const [productQuantity, setProducQuantity] = useState(null);
-  const [imageLink, setImageLink] = useState(null);
+  const [imageLink, setImageLink] = useState<string>("");
   useEffect(() => {
     UserProfile().then((profile) => {
       setUser(profile);
@@ -107,6 +120,30 @@ export default function TableDemo() {
       console.log("error Product", error);
     }
   };
+
+  const deleteThis = (e: ProductDetails) => {
+    setStatus(true);
+    console.log(e);
+    const service = async () => {
+      if (e != null) {
+        e.className = "LesseeProduct";
+        let result = await axiosV2("dsadsa").post(
+          `${url}/deleteProduct/LesseeProduct`,
+          e,
+        );
+        setStatus(false);
+        return result;
+      }
+    };
+
+    let newProduct: ProductDetails[] = products.filter(
+      (item: ProductDetails) => item.productID != e.productID,
+    );
+    service().then(() => {
+      setProducts(newProduct);
+      toast.info("Successfully deleted");
+    });
+  };
   const didStatusUpdate = (e: any, id: any) => {
     let list: any = products.map((item: ProductDetails) => {
       if (item.id == id) {
@@ -132,48 +169,48 @@ export default function TableDemo() {
     return result;
   };
   const displayAlert = () => {
-    toast({
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
-    });
+    toast.warning("Please try again");
   };
 
   const submitProduct = () => {
     const asyncService = async () => {
       try {
         let payload = {
+          //TOBE FIX ProductDetails
           productID: generateRandomString(),
           local_id: productTitle,
           paymentStatus: "Unpaid",
           title: productTitle,
           totalAmount: "$300.00",
-          paymentMethod: "Credit Card",
+          price: price,
           stocks: productQuantity,
           img: imageLink,
           status: false,
           totalSold: 0,
-          transactionLogs: [
-            // {
-            //   transactionID: "X123Ab",
-            // },
-          ],
-          restockLogs: [
-            // {
-            //   transactionID: "X123Ab",
-            // },
-          ],
+          size: productLiters,
+          dateAdded: moment(new Date()).toString(),
+          transactionLogs: null,
+          restockLogs: null,
         };
         let productList = await axiosV2("dsadsa").post(`${url}/Loogy/add`, {
           details: payload,
           className: "LesseeProduct",
         });
-        console.log("productList", productList);
+
+        fetchProduct();
         return productList;
       } catch (error) {}
     };
-    asyncService().then((item) => {
-      console.log(item);
-      fetchProduct();
+    // asyncService().then((item) => {
+    //   fetchProduct();
+    // });
+
+    toast.promise(asyncService, {
+      loading: "Loading...",
+      success: () => {
+        return `${productTitle} toast has been added`;
+      },
+      error: "Error",
     });
   };
   return (
@@ -202,13 +239,13 @@ export default function TableDemo() {
               {products.length}
             </span>
           </TabsTrigger>
-          <TabsTrigger className="rounded-full" value="Active">
+          <TabsTrigger className="rounded-full" disabled value="Active">
             Active{" "}
             <span className="ml-2 font-bold text-red-500">
               {products.filter((item: UpdateStatus) => item.status).length}
             </span>
           </TabsTrigger>
-          <TabsTrigger className="rounded-full" value="inActive">
+          <TabsTrigger className="rounded-full" disabled value="inActive">
             In-Active{" "}
             <span className="ml-2 font-bold text-red-500">
               {
@@ -221,9 +258,9 @@ export default function TableDemo() {
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
 
-        <BottomDrawerSheet />
-
         <AddProduct
+          selectedLiters={(e: any) => setProductLiters(e)}
+          price={(e: any) => setProductPrice(e)}
           buttonTitle={"Add Product"}
           upload_here={UploadImageService}
           image_file={(e: any) => setImageLink(e)}
@@ -231,15 +268,15 @@ export default function TableDemo() {
           quantity={(e: any) => setProducQuantity(e)}
           didSubmit={(e: any) => submitProduct()}
         />
-        <div className="mt-20  h-full w-[98%] mr-20">
-          <MainChart data={products} chartTitle={"Your Products score board"} />
+        <div className="mt-20  h-full w-[58%] mr-20">
+          {/* <MainChart data={products} chartTitle={"Your products stocks"} /> */}
         </div>
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
-          <Table className="">
-            <TableCaption>A list of request.</TableCaption>
+          <Table className="w-[90%] mb-20">
+            <TableCaption>List of products</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
@@ -252,9 +289,11 @@ export default function TableDemo() {
             <TableBody>
               {products.map((invoice: ProductDetails) => (
                 <TableRow key={invoice?.stocks ?? ""}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-light text-xs">
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}
+                    {invoice.title}
+                    {invoice.price}
                   </TableCell>
                   <TableCell
                     className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
@@ -266,10 +305,12 @@ export default function TableDemo() {
                   </TableCell>
                   <TableCell>
                     <Progress value={invoice.stocks} className="w-[60%]" />
-
+                    <span className="text-xs text-gray-400">
+                      {moment(invoice.dateAdded).format("MM-DD-YYYY hh:mm A")}
+                    </span>
                     {/* {invoice.paymentMethod} */}
                   </TableCell>
-                  <TableCell className="text-md text-right font-bold text-red-500">
+                  <TableCell className="text-xs text-right font-light text-red-500">
                     {invoice.stocks}/20
                     <Badge className="ml-4 bg-red-500">Out of stock</Badge>
                   </TableCell>
@@ -285,6 +326,32 @@ export default function TableDemo() {
     Status :
     </PopoverContent>
   </Popover> */}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => deleteThis(invoice)}
+                      variant="outline"
+                      className="bg-white border-white"
+                      size="icon"
+                    >
+                      <svg
+                        className="w-4 h-4  dark:text-white"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="4"
+                        height="4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                        />
+                      </svg>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -341,7 +408,7 @@ export default function TableDemo() {
           </Table>
         </TabsContent>
         <TabsContent value="inActive">
-          <Table className="">
+          <Table className="mb-20">
             <TableCaption>A list of request.</TableCaption>
             <TableHeader>
               <TableRow>
@@ -362,7 +429,7 @@ export default function TableDemo() {
                         details={invoice}
                       />
                     </TableCell>
-                    {/* {invoice.invoice}  */}
+                    {invoice.title}
                     <TableCell
                       className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
                     >
@@ -384,11 +451,8 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      <div className="ml-20 mt-20 w-1/2">
-        <div
-        // on:click={()=>setProduct(order)}
-        >
-          {/* <Badge variant="outline " className="bg-[#6ab04c] mb-2 text-xs">{convertToPesos(order.totalPrice * 0.05)}</Badge> */}
+      {/* <div className="ml-20 mt-20 w-1/2">
+        <div>
           <div className="{order.receiptImageLink === undefined ? 'border-red-500 ' :  ''} group static max-w-sm overflow-hidden  rounded border bg-white transition duration-100 ease-in-out hover:border-l-4 hover:border-black hover:shadow-lg ">
             <div className="px-6 py-4">
               <div className="mb-2  font-bold">
@@ -418,7 +482,7 @@ export default function TableDemo() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
