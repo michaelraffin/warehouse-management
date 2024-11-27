@@ -243,10 +243,7 @@ export default function LandingPage() {
           <h1 className="text-3xl md:text-4xl font-bold">
             Streamline Your Storage, Optimize Your Operations
           </h1>
-          <p className="text-lg">
-            Take control of your finances with Paysphere the quickest and
-            simplest way.
-          </p>
+          <p className="text-lg">Efficient Storage, Seamless Operations</p>
         </div>
         <div className="flex justify-center">
           <div className="w-40 h-28 bg-blue-300 rounded-md shadow-md transform rotate-12" />
@@ -258,7 +255,7 @@ export default function LandingPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-4">
           <h2 className="text-2xl font-bold text-gray-900">Log In</h2>
-          <form>
+          <form action="/dashboard">
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm text-gray-700">
