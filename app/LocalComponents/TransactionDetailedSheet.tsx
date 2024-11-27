@@ -158,7 +158,7 @@ export default function DeliveryDetailsSheet(props: any) {
           {/* Priority */}
           <div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Priority</p>
-            <Badge variant="solid" className="bg-red-500 text-white">
+            <Badge variant="default" className="bg-red-500 text-white">
               Urgent
             </Badge>
           </div>
