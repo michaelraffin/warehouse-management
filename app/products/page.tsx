@@ -171,7 +171,21 @@ export default function TableDemo() {
   const displayAlert = () => {
     toast.warning("Please try again");
   };
-
+  const updateProduce = (payload: any) => {
+    const service = async () => {
+      try {
+        let productList = await axiosV2("dsadsa").post(
+          `${url}/updateItem/LesseeProduct`,
+          payload,
+        );
+        return productList;
+      } catch (error) {}
+    };
+    service().then((result) => {
+      fetchProduct();
+      toast("successfully updated");
+    });
+  };
   const submitProduct = () => {
     const asyncService = async () => {
       try {
@@ -281,7 +295,7 @@ export default function TableDemo() {
             <TableCaption>List of products</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead className="w-[100px]">Title</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Warehouse</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
@@ -295,7 +309,7 @@ export default function TableDemo() {
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}
                     {invoice.title}
-                    {invoice.price}
+                    {/* {invoice.price} */}
                   </TableCell>
                   <TableCell
                     className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
@@ -319,11 +333,14 @@ export default function TableDemo() {
                   </TableCell>
                   <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
-                    <EditProductSheet details={invoice} />
-                    <Switch
+                    <EditProductSheet
+                      details={invoice}
+                      updateProduce={(item: any) => updateProduce(item)}
+                    />
+                    {/* <Switch
                       onCheckedChange={(e) => didStatusUpdate(e, invoice.id)}
                       checked={invoice.status}
-                    />
+                    /> */}
                     {/* <Popover>
     <PopoverTrigger>Open</PopoverTrigger>
     <PopoverContent>

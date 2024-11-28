@@ -96,12 +96,9 @@ export default function Add(props: any) {
             {/* image_file */}
 
             {/* <Map coordinates={(e)=>console.log(e)}/> */}
-            <ComboboxDemo
-              selectedItem={(e: string) => props.selectedLiters(e)}
-            />
+
             {/* <DropdownLiters /> */}
             {displayLogo()}
-
             <Label htmlFor="picture" className="mt-10 text-sm">
               {isLoading ? "Loading..." : "Product Picture"}
             </Label>
@@ -110,6 +107,9 @@ export default function Add(props: any) {
               id="picture"
               type="file"
               onChange={(e) => didUpload(e)}
+            />
+            <ComboboxDemo
+              selectedItem={(e: string) => props.selectedLiters(e)}
             />
           </div>
 

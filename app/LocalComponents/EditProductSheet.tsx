@@ -6,6 +6,7 @@ import {
   SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,25 @@ interface ProductDetails {
 interface transactionLogsItem {
   transactionID: string;
 }
-export default function ProductDetailsSheet(props) {
+export default function ProductDetailsSheet(props: any) {
+  let [title, setTitle] = React.useState(props.details.title);
+  let [details, setFinalDetails] = React.useState<ProductDetails>(
+    props.details,
+  );
+  let [update, setDidUpdate] = React.useState(0);
+
+  const validateDetails = () => {
+    setFinalDetails((prevDetails: ProductDetails) => ({
+      ...prevDetails,
+      title: title, // Replace with the desired new title
+    }));
+    setDidUpdate(update + 1);
+  };
+  React.useEffect(() => {
+    if (update != 0) {
+      props.updateProduce(details);
+    }
+  }, [update]);
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -76,11 +95,30 @@ export default function ProductDetailsSheet(props) {
         </SheetHeader>
 
         <div className="space-y-4 mt-6">
+          <div className="flex items-center justify-between">
+            <p className="font-medium text-gray-700">Title</p>
+            <div className="flex space-x-2">
+              <span className="font-light">
+                <input
+                  value={title}
+                  placeholder={props.details.title}
+                  className="border-0 ring-0"
+                  onChange={(e: any) => setTitle(e.nativeEvent.target.value)}
+                />
+              </span>
+            </div>
+          </div>
           {/* Assignees */}
           <div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Liters</p>
             <div className="flex space-x-2">
-              <span className="font-light">{props.details.size}</span>
+              <span className="font-light">
+                <input
+                  value={props.details.size}
+                  className="border-0 ring-0"
+                  onChange={(e: any) => setTitle(e.nativeEvent.target.value)}
+                />
+              </span>
             </div>
           </div>
           {/* Priority */}
@@ -148,12 +186,21 @@ export default function ProductDetailsSheet(props) {
               </div>
             </div>
           </div>
-          <div className="mt-10">
+          <div className="mt-10 mb-20">
             <Label htmlFor="picture" className="mt-10">
               Upload your photo
             </Label>
             <Input id="picture" type="file" />
-          </div>
+          </div>{" "}
+          <SheetTrigger asChild>
+            <Button
+              onClick={() => validateDetails()}
+              variant="secondary"
+              className="w-full rounded-full text-xs font-light mt-10"
+            >
+              Save details
+            </Button>
+          </SheetTrigger>
         </div>
       </SheetContent>
     </Sheet>
