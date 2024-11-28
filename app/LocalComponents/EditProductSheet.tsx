@@ -56,7 +56,7 @@ export default function ProductDetailsSheet(props) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="text-xs font-light">
+        <Button variant="outline" className="text-xs font-light rounded-full">
           View Item
         </Button>
       </SheetTrigger>

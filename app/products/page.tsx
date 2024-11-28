@@ -257,16 +257,7 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-        <AddProduct
-          selectedLiters={(e: any) => setProductLiters(e)}
-          price={(e: any) => setProductPrice(e)}
-          buttonTitle={"Add Product"}
-          upload_here={UploadImageService}
-          image_file={(e: any) => setImageLink(e)}
-          title={(e: any) => setProducTitle(e)}
-          quantity={(e: any) => setProducQuantity(e)}
-          didSubmit={(e: any) => submitProduct()}
-        />
+
         <div className="mt-20  h-full w-[58%] mr-20">
           {/* <MainChart data={products} chartTitle={"Your products stocks"} /> */}
         </div>
@@ -274,6 +265,18 @@ export default function TableDemo() {
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
+          <div className="sticky top-0 right-0 w-full">
+            <AddProduct
+              selectedLiters={(e: any) => setProductLiters(e)}
+              price={(e: any) => setProductPrice(e)}
+              buttonTitle={"Add Product"}
+              upload_here={UploadImageService}
+              image_file={(e: any) => setImageLink(e)}
+              title={(e: any) => setProducTitle(e)}
+              quantity={(e: any) => setProducQuantity(e)}
+              didSubmit={(e: any) => submitProduct()}
+            />
+          </div>
           <Table className="w-[90%] mb-20">
             <TableCaption>List of products</TableCaption>
             <TableHeader>
