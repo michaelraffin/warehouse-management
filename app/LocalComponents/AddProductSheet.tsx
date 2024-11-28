@@ -108,11 +108,9 @@ export default function Add(props: any) {
               type="file"
               onChange={(e) => didUpload(e)}
             />
-            <ComboboxDemo
-              selectedItem={(e: string) => props.selectedLiters(e)}
-            />
           </div>
 
+          <ComboboxDemo selectedItem={(e: string) => props.selectedLiters(e)} />
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 
           {/* <div className="flex items-center mb-4">
@@ -135,7 +133,7 @@ export default function Add(props: any) {
           </SheetDescription>
         </SheetHeader>
         <SheetTrigger
-          className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-full"
+          className="mb-20 mt-20 bg-black w-[90%] hover:bg-gray-600 rounded-full absolute bottom-0 ml"
           onClick={() => submitItem()}
         >
           <div className="m-2 text-white text-xs rouded-full">Submit</div>
