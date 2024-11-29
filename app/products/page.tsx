@@ -272,14 +272,17 @@ export default function TableDemo() {
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
 
-        <div className="mt-20  h-full w-[58%] mr-20">
-          {/* <MainChart data={products} chartTitle={"Your products stocks"} /> */}
+        <div className="mt-20  h-full w-[80%] mr-20">
+          <MainChart
+            data={products}
+            chartTitle={"Your products restock history"}
+          />
         </div>
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
-          <div className="sticky top-0 right-0 w-full">
+          <div className=" top-0 right-0 w-full">
             <AddProduct
               selectedLiters={(e: any) => setProductLiters(e)}
               price={(e: any) => setProductPrice(e)}
