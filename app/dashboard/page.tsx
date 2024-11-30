@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/chart";
 import loadinggg from "./loading";
 import { BarChartVertical } from "../LocalComponents/Charts/BarcharVertical";
-import { MainChart } from "../LocalComponents/Charts/MainChart";
+import { CircleChart } from "../LocalComponents/Charts/Circle";
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -82,6 +82,8 @@ export default function TableDemo() {
   const [myVendors, setVendors] = useState([]);
   const [dailySales, setDailySales] = useState(0);
   const [annualSales, setAnnualsales] = useState(null);
+  const [grandTotalSales, setGrandtotalSales] = useState(null);
+
   const [weekySales, setWeeklySales] = useState(null);
   const [isVendorsReady, setVendorsReady] = useState(false);
   const [todaysTransaction, setTodaysTransaction] = useState(null);
@@ -146,9 +148,11 @@ export default function TableDemo() {
             amount: item.grandTotal,
           };
         });
-        // let months = newObject.map((item) => {
-        //   return generateMonth(item.date.month);
-        // });
+        const totalSum = items.reduce(
+          (acc: number, item: any) => acc + item.grandTotal,
+          0,
+        );
+        setGrandtotalSales(totalSum);
         setAnnualsales(newObject);
         console.log("newObject fetchTopSales", newObject);
       } catch (error) {}
@@ -236,7 +240,9 @@ export default function TableDemo() {
       <div className="ml-20 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ">
         <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
           {/* //LEFT */}
-          <MainChart data={null} chartTitle={"Lai Warehouse Monthly Sales"} />
+          <h1 className="text-md ml-2 font-bold text-black">Top Sales</h1>
+          <CircleChart data={grandTotalSales} />
+          {/* <MainChart data={null} chartTitle={"Lai Warehouse Monthly Sales"} /> */}
           {/* <ChartContainer
             config={chartConfig}
             className="min-h-[200px] w-full h-1/8"
@@ -255,7 +261,7 @@ export default function TableDemo() {
               <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
             </BarChart>
           </ChartContainer> */}
-          <h1 className="text-md ml-2 font-bold text-black">Top Sales</h1>
+
           <div className=" mb-20 hidden">
             <div className="m-2   grid w-full grid-cols-3 gap-4">
               <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
@@ -327,7 +333,7 @@ export default function TableDemo() {
           <div className="mb-20 h-full w-[100%]">
             {/* h-48 */}
 
-            <p className="text-xs">Todays Sales</p>
+            {/* <p className="text-xs">Todays Sales</p> */}
             {todaysTransaction === null ? (
               <img
                 src={

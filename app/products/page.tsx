@@ -19,7 +19,8 @@ import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
-
+import EditProductSheet from "@/app/LocalComponents/EditProductSheet";
+import ViewHistorySheet from "@/app/LocalComponents/ViewhistorySheet";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -123,7 +124,6 @@ export default function TableDemo() {
 
   const deleteThis = (e: ProductDetails) => {
     setStatus(true);
-    console.log(e);
     const service = async () => {
       if (e != null) {
         e.className = "LesseeProduct";
@@ -171,7 +171,21 @@ export default function TableDemo() {
   const displayAlert = () => {
     toast.warning("Please try again");
   };
-
+  const updateProduce = (payload: any) => {
+    const service = async () => {
+      try {
+        let productList = await axiosV2("dsadsa").post(
+          `${url}/updateItem/LesseeProduct`,
+          payload,
+        );
+        return productList;
+      } catch (error) {}
+    };
+    service().then((result) => {
+      fetchProduct();
+      toast("successfully updated");
+    });
+  };
   const submitProduct = () => {
     const asyncService = async () => {
       try {
@@ -257,29 +271,39 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-
-        <AddProduct
-          selectedLiters={(e: any) => setProductLiters(e)}
-          price={(e: any) => setProductPrice(e)}
-          buttonTitle={"Add Product"}
-          upload_here={UploadImageService}
-          image_file={(e: any) => setImageLink(e)}
-          title={(e: any) => setProducTitle(e)}
-          quantity={(e: any) => setProducQuantity(e)}
-          didSubmit={(e: any) => submitProduct()}
-        />
-        <div className="mt-20  h-full w-[58%] mr-20">
-          {/* <MainChart data={products} chartTitle={"Your products stocks"} /> */}
+        <div className="mt-20  h-full w-[40%] mr-20">
+          <MainChart
+            data={products}
+            chartTitle={"Your products stock history"}
+          />
         </div>
+        {/* <div className="mt-20  h-full w-[40%] mr-20">
+          <MainChart
+            data={products}
+            chartTitle={"Your products restock history"}
+          />
+        </div> */}
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
         >
+          <div className=" top-0 right-0 w-full">
+            <AddProduct
+              selectedLiters={(e: any) => setProductLiters(e)}
+              price={(e: any) => setProductPrice(e)}
+              buttonTitle={"Add Product"}
+              upload_here={UploadImageService}
+              image_file={(e: any) => setImageLink(e)}
+              title={(e: any) => setProducTitle(e)}
+              quantity={(e: any) => setProducQuantity(e)}
+              didSubmit={(e: any) => submitProduct()}
+            />
+          </div>
           <Table className="w-[90%] mb-20">
             <TableCaption>List of products</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
+                <TableHead className="w-[100px]">Title</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Warehouse</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
@@ -293,7 +317,7 @@ export default function TableDemo() {
                     {/* <RequestSheet void={(details)=>displayAlert()} details ={invoice}/> */}
                     {invoice.id}
                     {invoice.title}
-                    {invoice.price}
+                    {/* {invoice.price} */}
                   </TableCell>
                   <TableCell
                     className={`text-xs ${invoice.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
@@ -306,8 +330,9 @@ export default function TableDemo() {
                   <TableCell>
                     <Progress value={invoice.stocks} className="w-[60%]" />
                     <span className="text-xs text-gray-400">
+                      dsadsa
                       {moment(invoice.dateAdded).format("MM-DD-YYYY hh:mm A")}
-                    </span>
+                    </span>{" "}
                     {/* {invoice.paymentMethod} */}
                   </TableCell>
                   <TableCell className="text-xs text-right font-light text-red-500">
@@ -316,10 +341,19 @@ export default function TableDemo() {
                   </TableCell>
                   <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
-                    <Switch
+                    <EditProductSheet
+                      details={invoice}
+                      updateProduce={(item: any) => updateProduce(item)}
+                    />
+
+                    <ViewHistorySheet
+                      details={invoice}
+                      updateProduce={(item: any) => updateProduce(item)}
+                    />
+                    {/* <Switch
                       onCheckedChange={(e) => didStatusUpdate(e, invoice.id)}
                       checked={invoice.status}
-                    />
+                    /> */}
                     {/* <Popover>
     <PopoverTrigger>Open</PopoverTrigger>
     <PopoverContent>
@@ -358,7 +392,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent
           value="Active"
           className={status ? `opacity-20` : `opacity-100`}
@@ -447,7 +480,6 @@ export default function TableDemo() {
             </TableBody>
           </Table>
         </TabsContent>
-
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>

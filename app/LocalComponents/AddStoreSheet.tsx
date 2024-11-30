@@ -66,9 +66,11 @@ export default function Add(props: any) {
 
   return (
     <Sheet>
-      <SheetTrigger className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300 h-9 m-2 rounded-md">
+      <SheetTrigger className="ml-20 mb-20 bg-gray-900 hover:bg-gray-600 h-9 m-2 rounded-full">
         {/* <Button className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300"> */}
-        <span className="m-4 text-white  text-sm">+ {props.buttonTitle}</span>
+        <span className="m-4 text-white  text-xs font-light">
+          + {props.buttonTitle}
+        </span>
         {/* </Button> */}
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px] lg:w-[400px]">
@@ -131,10 +133,10 @@ export default function Add(props: any) {
           </SheetDescription>
         </SheetHeader>
         <SheetTrigger
-          className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-md"
+          className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-full"
           onClick={() => submitItem()}
         >
-          <div className="m-2 text-white">Submit</div>
+          <div className="m-2 text-white text-xs">Submit</div>
         </SheetTrigger>
       </SheetContent>
     </Sheet>

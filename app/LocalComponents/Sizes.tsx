@@ -1,21 +1,21 @@
-"use client";
+// "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Stats } from "fs";
+// import * as React from "react";
+// import { cn } from "@/lib/utils";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Command,
+//   CommandEmpty,
+//   CommandGroup,
+//   CommandInput,
+//   CommandItem,
+// } from "@/components/ui/command";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import { Stats } from "fs";
 
 const frameworks = [
   { value: "Regular can - 0.33 liters", label: "Regular can - 0.33 liters" },
@@ -53,50 +53,100 @@ const frameworks = [
   { value: "Large keg - 100.0 liters", label: "Large keg - 100.0 liters" },
 ];
 
+// export function ComboboxDemo(props: any) {
+//   const [open, setOpen] = React.useState(false);
+//   const [value, setValue] = React.useState("");
+//   const didSelect = (e: string) => {
+//     // selectedItem
+//     console.log(e);
+//     props.selectedItem(e);
+//     setValue(e === value ? "" : e);
+//     setOpen(false);
+//   };
+//   return (
+//     <Popover open={open} onOpenChange={setOpen}>
+//       <PopoverTrigger asChild>
+//         <Button
+//           variant="outline"
+//           role="combobox"
+//           aria-expanded={open}
+//           className="w-full justify-between"
+//         >
+//           {value}
+//           {value
+//             ? frameworks.find((framework) => framework.value === value)?.label
+//             : "Select liters..."}
+//         </Button>
+//       </PopoverTrigger>
+//       <PopoverContent className="w-full p-0">
+//         <Command>
+//           <CommandInput placeholder="Search framework..." className="h-9" />
+//           <CommandEmpty>No framework found.</CommandEmpty>
+//           <CommandGroup>
+//             {frameworks.map((framework) => (
+//               <CommandItem
+//                 key={framework.value}
+//                 value={framework.value}
+//                 onSelect={(currentValue) => {
+//                   didSelect(currentValue);
+//                 }}
+//               >
+//                 {framework.label}
+//               </CommandItem>
+//             ))}
+//           </CommandGroup>
+//         </Command>
+//       </PopoverContent>
+//     </Popover>
+//   );
+// }
+import * as React from "react";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export function ComboboxDemo(props: any) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
-  const didSelect = (e: string) => {
-    // selectedItem
-    console.log(e);
-    props.selectedItem(e);
-    setValue(e === value ? "" : e);
-    setOpen(false);
-  };
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-        >
-          {value}
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select liters..."}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." className="h-9" />
-          <CommandEmpty>No framework found.</CommandEmpty>
-          <CommandGroup>
-            {frameworks.map((framework) => (
-              <CommandItem
-                key={framework.value}
-                value={framework.value}
-                onSelect={(currentValue) => {
-                  didSelect(currentValue);
-                }}
-              >
-                {framework.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Select>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Select a Litter" />
+      </SelectTrigger>
+      <SelectContent onChange={(e) => console.log(e)}>
+        <SelectGroup>
+          <SelectLabel>Select Litter</SelectLabel>
+          {frameworks.map((framework) => (
+            // <CommandItem
+            //   key={framework.value}
+            //   value={framework.value}
+            //   onSelect={(currentValue) => {
+            //     didSelect(currentValue);
+            //   }}
+            // >
+            //   {framework.label}
+            // </CommandItem>
+            <SelectItem
+              key={framework.value}
+              onClick={() => props.selectedItem(framework.value)}
+              value={framework.value}
+            >
+              {framework.label}
+            </SelectItem>
+          ))}
+
+          {/* <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem> */}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }

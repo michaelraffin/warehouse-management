@@ -67,9 +67,11 @@ export default function Add(props: any) {
 
   return (
     <Sheet>
-      <SheetTrigger className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300 h-9 m-2 rounded-md">
+      <SheetTrigger className=" mb-20 bg-gray-900 hover:bg-gray-600 h-9 m-2 rounded-full">
         {/* <Button className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300"> */}
-        <span className="m-4 text-white ">+ {props.buttonTitle}</span>
+        <span className="m-4 text-white font-light text-xs">
+          + {props.buttonTitle}
+        </span>
         {/* </Button> */}
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px] lg:w-[400px]">
@@ -78,29 +80,26 @@ export default function Add(props: any) {
           <input
             onChange={(e: any) => props.title(e.nativeEvent.target.value)}
             placeholder="Give your title"
-            className="h-10 p-2 border border-gray-400 rounded-md"
+            className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           <input
             onChange={(e: any) => props.price(e.nativeEvent.target.value)}
             placeholder="Add Price"
-            className="h-10 p-2 border border-gray-400 rounded-md"
+            className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           <input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Default quantity"
-            className="h-10 p-2 border border-gray-400 rounded-md"
+            className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           <div className="grid w-full max-w-sm items-center gap-1.5">
             {/* image_file */}
 
             {/* <Map coordinates={(e)=>console.log(e)}/> */}
-            <ComboboxDemo
-              selectedItem={(e: string) => props.selectedLiters(e)}
-            />
+
             {/* <DropdownLiters /> */}
             {displayLogo()}
-
-            <Label htmlFor="picture" className="mt-10">
+            <Label htmlFor="picture" className="mt-10 text-sm">
               {isLoading ? "Loading..." : "Product Picture"}
             </Label>
             <Input
@@ -111,6 +110,7 @@ export default function Add(props: any) {
             />
           </div>
 
+          <ComboboxDemo selectedItem={(e: string) => props.selectedLiters(e)} />
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 
           {/* <div className="flex items-center mb-4">
@@ -133,7 +133,7 @@ export default function Add(props: any) {
           </SheetDescription>
         </SheetHeader>
         <SheetTrigger
-          className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-full"
+          className="mb-20 mt-20 bg-black w-[90%] hover:bg-gray-600 rounded-full absolute bottom-0 ml"
           onClick={() => submitItem()}
         >
           <div className="m-2 text-white text-xs rouded-full">Submit</div>
