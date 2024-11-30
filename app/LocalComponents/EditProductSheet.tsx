@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
+import { ProductCounter } from "../LocalComponents/Charts/ProductCounter";
+import { ProductHistory } from "../LocalComponents/Charts/ProductHistory";
 import { ComboboxDemo } from "../LocalComponents/Sizes";
 import moment from "moment";
 import { Input } from "@/components/ui/input";

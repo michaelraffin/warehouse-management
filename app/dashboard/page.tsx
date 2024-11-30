@@ -148,14 +148,10 @@ export default function TableDemo() {
             amount: item.grandTotal,
           };
         });
-        // let months = newObject.map((item) => {
-        //   return generateMonth(item.date.month);
-        // });
-        let grd = items.reduce(
-          (prev, curr) => ((curr = prev + curr.grandTotal), 0),
+        const totalSum = items.reduce(
+          (acc: number, item: any) => acc + item.grandTotal,
+          0,
         );
-        const totalSum = items.reduce((acc, item) => acc + item.grandTotal, 0);
-        console.log("GRAND TOTAL", totalSum);
         setGrandtotalSales(totalSum);
         setAnnualsales(newObject);
         console.log("newObject fetchTopSales", newObject);

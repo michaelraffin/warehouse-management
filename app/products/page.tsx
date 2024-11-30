@@ -20,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
 import EditProductSheet from "@/app/LocalComponents/EditProductSheet";
+import ViewHistorySheet from "@/app/LocalComponents/ViewhistorySheet";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -123,7 +124,6 @@ export default function TableDemo() {
 
   const deleteThis = (e: ProductDetails) => {
     setStatus(true);
-    console.log(e);
     const service = async () => {
       if (e != null) {
         e.className = "LesseeProduct";
@@ -271,13 +271,18 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-
-        <div className="mt-20  h-full w-[80%] mr-20">
+        <div className="mt-20  h-full w-[40%] mr-20">
+          <MainChart
+            data={products}
+            chartTitle={"Your products stock history"}
+          />
+        </div>
+        {/* <div className="mt-20  h-full w-[40%] mr-20">
           <MainChart
             data={products}
             chartTitle={"Your products restock history"}
           />
-        </div>
+        </div> */}
         <TabsContent
           value="AllProducts"
           className={` ${status ? "opacity-20" : "opacity-100"}   `}
@@ -337,6 +342,11 @@ export default function TableDemo() {
                   <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
                     <EditProductSheet
+                      details={invoice}
+                      updateProduce={(item: any) => updateProduce(item)}
+                    />
+
+                    <ViewHistorySheet
                       details={invoice}
                       updateProduce={(item: any) => updateProduce(item)}
                     />

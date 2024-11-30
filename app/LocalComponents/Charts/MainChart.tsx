@@ -144,6 +144,7 @@ interface ProductDetails {
   paymentStatus: any;
   price: number;
   totalAmount: number;
+  dateAdded: string;
 }
 export function MainChart({ chartTitle, data }: MainChartProps) {
   const updateData = (data: any, chartData: any) => {
@@ -173,7 +174,7 @@ export function MainChart({ chartTitle, data }: MainChartProps) {
           mobile: Number(product.stocks),
           title: product.title,
         }))
-        .reduce((acc, curr) => acc + curr.desktop, 0),
+        .reduce((acc: number, curr: any) => acc + curr.desktop, 0),
       // chartData.reduce((acc, curr) => acc + curr.desktop, 0),
       mobile: data
         .map((product: ProductDetails) => ({
@@ -182,7 +183,7 @@ export function MainChart({ chartTitle, data }: MainChartProps) {
           mobile: Number(product.stocks),
           title: product.title,
         }))
-        .reduce((acc, curr) => acc + curr.mobile, 0),
+        .reduce((acc: number, curr: any) => acc + curr.mobile, 0),
     }),
     [],
   );
@@ -210,7 +211,6 @@ export function MainChart({ chartTitle, data }: MainChartProps) {
               >
                 <span className="text-xs text-muted-foreground">
                   {chartConfig[chart].label}
-                  {console.log("chartConfig[chart]", chartConfig[chart].label)}
                 </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
                   {total[key as keyof typeof total].toLocaleString()}
@@ -250,9 +250,12 @@ export function MainChart({ chartTitle, data }: MainChartProps) {
                 <ChartTooltipContent
                   className="w-[150px]"
                   nameKey="views"
-                  labelFormatter={(value) => {
-                    console.log("ChartTooltip ChartTooltipContent", value);
-                    return moment(value).format("MMM d, YYYY");
+                  labelFormatter={(value, dsa) => {
+                    console.log(
+                      "ChartTooltip ChartTooltipContent",
+                      dsa[0].payload.title,
+                    );
+                    return dsa[0].payload.title; //moment(value).format("MMM d, YYYY");
                   }}
                 />
               }

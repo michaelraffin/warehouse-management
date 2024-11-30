@@ -18,6 +18,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+const chartData = [
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+];
 
 const chartConfig = {
   visitors: {
@@ -29,24 +32,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function CircleChart(props: any) {
-  const numberFormat = (value: number) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "PHP",
-    }).format(value);
-
-  const chartData = [
-    {
-      browser: "safari",
-      visitors: props.data,
-      fill: "var(--color-safari)",
-    },
-  ];
+export function ProductCounter() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Your Annual Sales</CardTitle>
+        <CardTitle>Radial Chart - Text</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -56,9 +46,10 @@ export function CircleChart(props: any) {
         >
           <RadialBarChart
             data={chartData}
-            endAngle={100}
+            startAngle={0}
+            endAngle={250}
             innerRadius={80}
-            outerRadius={140}
+            outerRadius={110}
           >
             <PolarGrid
               gridType="circle"
@@ -67,38 +58,34 @@ export function CircleChart(props: any) {
               className="first:fill-muted last:fill-background"
               polarRadius={[86, 74]}
             />
-            <RadialBar dataKey="visitors" background />
+            <RadialBar dataKey="visitors" background cornerRadius={10} />
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
               <Label
                 content={({ viewBox }) => {
-                  try {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
+                          className="fill-foreground text-4xl font-bold"
                         >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-4xl font-bold"
-                          >
-                            {chartData[0].visitors.toLocaleString()}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground"
-                          >
-                            Annual sales
-                          </tspan>
-                        </text>
-                      );
-                    }
-                  } catch (error) {
-                    return "empty";
+                          {chartData[0].visitors.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground"
+                        >
+                          Visitors
+                        </tspan>
+                      </text>
+                    );
                   }
                 }}
               />
