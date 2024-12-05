@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Dialog,
   DialogContent,
@@ -32,11 +33,11 @@ export default function AddUserPopup(props: any) {
     });
   };
   return (
-    <Dialog open={isOpen}>
+    <Dialog onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          className="mb-20"
+          variant="default"
+          className="mb-20 rounded-full"
           onClick={() => setOpen(true)}
         >
           Add User
@@ -110,9 +111,19 @@ export default function AddUserPopup(props: any) {
             </Label>
             <DropdownBranches didSelect={(e: string) => props.didSelect(e)} />
           </div>
+          <Alert>
+            <AlertTitle>Password?</AlertTitle>
+            <AlertDescription className="text-xs font-light">
+              Password will be generated automatic and share via SMS.
+            </AlertDescription>
+          </Alert>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={() => dismissedCallBack()}>
+          <Button
+            type="submit"
+            onClick={() => dismissedCallBack()}
+            className="rounded-full"
+          >
             Save Profile
           </Button>
         </DialogFooter>
