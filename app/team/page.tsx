@@ -3,7 +3,13 @@
 import * as React from "react";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
+import AddUser from "@/app/LocalComponents/addUserPopup";
 import { getAllUserProfile } from "@/Utils/serviceLogin";
+import { signUpUser } from "@/Utils/supabaseService";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { Toaster, toast } from "sonner";
+import { ReactNode } from "react";
 import {
   Sheet,
   SheetContent,
@@ -60,11 +66,26 @@ const users = [
   },
   // Add more users here...
 ];
-
+function InlineWrapperWithMargin({ children }: { children?: ReactNode }) {
+  return <div style={{ marginRight: "0.5rem" }}>{children}</div>;
+}
+interface User {
+  fullName: string; // Full name of the user
+  username: string; // Username
+  logisticName: string; // Name of the logistic, e.g., "Lai-Warehouse"
+  userType: string; // Type of the applicant
+  mobileNumber: string; // Contact number
+  branch: string; // Branch name
+}
 export default function UserManagement() {
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [allUsers, setUsers] = React.useState<UserInfo[]>([]);
-
+  const [username, setUsername] = React.useState<string>("");
+  const [fullName, setFullName] = React.useState<string>("");
+  const [branch, setSelectedBranch] = React.useState<string>("");
+  const [userType, setUserType] = React.useState<string>("");
+  const [mobileNumber, setMobile] = React.useState<string>("");
+  const [isDimissed, setDismissAdduser] = React.useState<boolean>(false);
   React.useEffect(() => {
     const services = () => {
       const data = async () => {
@@ -78,13 +99,81 @@ export default function UserManagement() {
     };
     services();
   }, []);
+  const dismissedCallBack = async () => {};
+  const setupData = async () => {
+    let data = {
+      name: fullName,
+      userName: username,
+      logisticName: "Lai-Warehouse",
+      applicantType: userType,
+      contactNumber: mobileNumber,
+      branch: branch,
+    };
+    const service = async () => {
+      try {
+        await signUpUser(data);
+        setDismissAdduser(true);
+      } catch (error) {
+        alert("error");
+      }
+    };
+    //service();
+
+    toast.promise(service, {
+      loading: "Loading...",
+      success: (data) => {
+        console.log("data updated response", data);
+        return `${fullName} Item has been added`;
+      },
+      error: "Error",
+    });
+  };
   return (
     <div className="">
       <SideNavigation />
       <HeaderPage title={`Good morning! 👋 `} subtitle="" />
-
+      {/* <Button
+        onClick={(invoice) => signUpUser()}
+        variant="outline"
+        className="bg-white border-white ml-40"
+        size="icon"
+      >
+        <svg
+          className="w-4 h-4  dark:text-white"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="4"
+          height="4"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+          />
+        </svg>
+      </Button> */}
       <div className="p-6 ml-20">
-        <h1 className="text-2xl font-bold mb-4">User Management</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          User Management {allUsers.length}
+        </h1>
+        {/* <Button className="flex items-center gap-2 rounded-full">
+          <Plus className="h-4 w-4" />
+          Add User
+        </Button> */}
+
+        <AddUser
+          dimissed={dismissedCallBack}
+          didSelectAccount={(e: string) => setUserType(e)}
+          username={(e: string) => setUsername(e)}
+          name={(e: string) => setFullName(e)}
+          didSelect={(e: string) => setSelectedBranch(e)}
+          mobileNumberUser={(e: string) => setMobile(e)}
+          didSave={() => setupData()}
+        />
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <table className="w-[90%]  text-left text-sm">
             <thead>
@@ -100,7 +189,7 @@ export default function UserManagement() {
               {allUsers.map((user: UserInfo) => (
                 <tr key={user.id} className="border-b">
                   <td className="px-4 py-2">{user.id}</td>
-                  <td className="px-4 py-2">{user.user_details?.name}</td>
+                  <td className="px-4 py-2">{user.application_info?.name}</td>
                   <td className="px-4 py-2">
                     {user.user_details?.contactNumber}
                   </td>
@@ -108,14 +197,26 @@ export default function UserManagement() {
                     {user.user_details?.contactNumber}
                   </td>
                   <td className="px-4 py-2">
-                    <Button>Manage</Button>
+                    <Button
+                      variant="outline"
+                      className="text-xs font-light rounded-full"
+                    >
+                      Manage
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table>{" "}
+          {allUsers.length === 0 ? (
+            <Skeleton
+              count={5}
+              wrapper={InlineWrapperWithMargin}
+              inline
+              width={"90%"}
+            />
+          ) : null}
         </div>
-
         {selectedUser && (
           <Sheet
             open={!!selectedUser}
@@ -158,6 +259,7 @@ export default function UserManagement() {
           </Sheet>
         )}
       </div>
+      <Toaster />
     </div>
   );
 }
