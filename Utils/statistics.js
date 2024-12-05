@@ -25,6 +25,27 @@ export const fetchTopSales = async (payload) => {
     console.log("error Product", error);
   }
 };
+export const fetchPreviousSales = async (payload) => {
+  try {
+    let data = {
+      query: [
+        { $and: [{ year: currentYear - 1 }, { month: { $gte: 1, $lte: 12 } }] }, //Set From and to Dynamic
+        { $and: [{ year: currentYear - 1 }, { month: { $gte: 3, $lte: 12 } }] },
+      ],
+    };
+    if (payload === undefined) {
+      payload = data;
+    }
+
+    let productList = await axios.post(
+      "/reports/LesseeTransaction/Annualy",
+      payload,
+    );
+    return productList.data.results;
+  } catch (error) {
+    console.log("error Product", error);
+  }
+};
 export const fetchWeeklySales = async () => {
   try {
     const currentDate = moment(new Date());

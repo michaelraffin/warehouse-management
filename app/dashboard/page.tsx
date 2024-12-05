@@ -24,6 +24,7 @@ import {
   fetchWeeklySales,
   generateMonth,
   generateDay,
+  fetchPreviousSales,
 } from "../../Utils/statistics";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
 import { Button } from "@/components/ui/button";
@@ -90,6 +91,13 @@ export default function TableDemo() {
   const [topTransaction, setTopTransactions] = useState([]);
   useEffect(() => {
     getProfile();
+    fetchPreviousSales().then((previousSales) => {
+      const totalSum = previousSales.reduce(
+        (acc: number, item: any) => acc + item.grandTotal,
+        0,
+      );
+      console.log("previous year", totalSum);
+    });
     fetchDailySales().then((items) => {
       // const dailySales = items.data.results.map((item) => {
       //   return {
@@ -152,6 +160,7 @@ export default function TableDemo() {
           (acc: number, item: any) => acc + item.grandTotal,
           0,
         );
+        console.log("totalSum ", totalSum);
         setGrandtotalSales(totalSum);
         setAnnualsales(newObject);
         console.log("newObject fetchTopSales", newObject);
@@ -356,14 +365,16 @@ export default function TableDemo() {
         <div className="h-[auto] rounded-lg ">
           {/* //RIGHT */}
 
-          <h1 className="text-md font-bold text-black">Top products</h1>
+          <h1 className="text-md font-bold text-black">Annual Sales</h1>
           <div className=" mb-20">
             <div className="m-2   grid w-[90%] grid-cols-2 gap-2">
               <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
 
-                  <p className="text-2xl text-xs text-gray-900">$240.94</p>
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(grandTotalSales)}
+                  </p>
                 </div>
 
                 <div className="mt-1 flex gap-1 text-green-600">
@@ -394,7 +405,9 @@ export default function TableDemo() {
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
 
-                  <p className="text-2xl text-xs text-gray-900">$240.94</p>
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(grandTotalSales)}
+                  </p>
                 </div>
 
                 <div className="mt-1 flex gap-1 text-red-600">
