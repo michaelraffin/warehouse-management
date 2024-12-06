@@ -6,7 +6,7 @@ import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import AddUser from "@/app/LocalComponents/addUserPopup";
 import ViewUserSheet from "@/app/LocalComponents/UserAccountSheet";
 import { getAllUserProfile } from "@/Utils/serviceLogin";
-import { signUpUser } from "@/Utils/supabaseService";
+import { signUpUser, updateUser } from "@/Utils/supabaseService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster, toast } from "sonner";
@@ -28,6 +28,7 @@ interface UserInfo {
     level: string;
   };
   application_info: {
+    accountStatus?: boolean;
     iss: string;
     sub: string;
     name: string;
@@ -101,6 +102,17 @@ export default function UserManagement() {
     services();
   }, []);
   const dismissedCallBack = async () => {};
+  const updateUserStatus = (e: UserInfo, status: boolean) => {
+    const service = async () => {
+      e.application_info.accountStatus = status;
+      return await updateUser(e, status);
+    };
+    service().then((status) => {
+      toast.warning(
+        status ? "Account has been turned on" : "Account has beened turn off",
+      );
+    });
+  };
   const setupData = async () => {
     let data = {
       name: fullName,
@@ -199,9 +211,7 @@ export default function UserManagement() {
                   </td>
                   <td className="px-4 py-2">
                     <ViewUserSheet
-                      didSwitch={(e: any) =>
-                        toast.warning("Account has been turn off")
-                      }
+                      didSwitch={(e: boolean) => updateUserStatus(user, e)}
                       data={user}
                       didSelect={(e: string) => console.log(e)}
                       buttonTitle={"View Settings"}

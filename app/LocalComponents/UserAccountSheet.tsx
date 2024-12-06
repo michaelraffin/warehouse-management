@@ -29,6 +29,7 @@ interface UserInfo {
   };
   application_info: {
     iss: string;
+    accountStatus?: boolean;
     branch: string;
     applicantType: string;
     sub: string;
@@ -61,6 +62,11 @@ type ProductDetails = {
 
 export default function Add(props: any) {
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
+
+  const [isActive, setIsActive] = useState<Boolean>(
+    props.data.application_info?.accountStatus || false,
+  );
+
   const submitItem = () => {
     props.didSubmit();
     setLogo("");
@@ -80,8 +86,9 @@ export default function Add(props: any) {
   React.useEffect(() => {
     setUserDetails(props.data);
   }, []);
-  const didStatusUpdate = (e: any, id: any) => {
-    props.didSwitch();
+  const didStatusUpdate = (e: boolean) => {
+    setIsActive(!isActive);
+    props.didSwitch(e);
   };
   const displayLogo = () => {
     try {
@@ -171,10 +178,9 @@ export default function Add(props: any) {
               </div>
               <div>
                 <p className="font-medium text-gray-700">Account Status</p>
-
                 <Switch
-                  onCheckedChange={(e) => didStatusUpdate(e, "")}
-                  // checked={invoice.status}
+                  onCheckedChange={(e: boolean) => didStatusUpdate(e)}
+                  checked={isActive}
                 />
               </div>
             </div>
@@ -199,12 +205,12 @@ export default function Add(props: any) {
             Add store logo here.
           </SheetDescription> */}
         </SheetHeader>
-        <SheetTrigger
+        {/* <SheetTrigger
           className="mb-20 mt-20 bg-black w-full hover:bg-gray-600 rounded-full"
           onClick={() => submitItem()}
         >
           <div className="m-2 text-white text-xs">Save </div>
-        </SheetTrigger>
+        </SheetTrigger> */}
       </SheetContent>
     </Sheet>
   );

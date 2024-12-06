@@ -30,3 +30,15 @@ export const signUpUser = async (config, identifier) => {
     return data;
   } catch (error) {}
 };
+export const updateUser = async (user, status) => {
+  try {
+    const { data, error } = await supabase
+      .from("profile")
+      .update(user)
+      .eq("id", user.id)
+      .select();
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
