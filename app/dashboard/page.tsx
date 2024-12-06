@@ -24,6 +24,7 @@ import {
   fetchWeeklySales,
   generateMonth,
   generateDay,
+  fetchPreviousSales,
 } from "../../Utils/statistics";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
 import { Button } from "@/components/ui/button";
@@ -82,7 +83,7 @@ export default function TableDemo() {
   const [myVendors, setVendors] = useState([]);
   const [dailySales, setDailySales] = useState(0);
   const [annualSales, setAnnualsales] = useState(null);
-  const [grandTotalSales, setGrandtotalSales] = useState(null);
+  const [grandTotalSales, setGrandtotalSales] = useState(0);
 
   const [weekySales, setWeeklySales] = useState(null);
   const [isVendorsReady, setVendorsReady] = useState(false);
@@ -90,6 +91,13 @@ export default function TableDemo() {
   const [topTransaction, setTopTransactions] = useState([]);
   useEffect(() => {
     getProfile();
+    fetchPreviousSales().then((previousSales) => {
+      const totalSum = previousSales.reduce(
+        (acc: number, item: any) => acc + item.grandTotal,
+        0,
+      );
+      console.log("previous year", totalSum);
+    });
     fetchDailySales().then((items) => {
       // const dailySales = items.data.results.map((item) => {
       //   return {
@@ -152,6 +160,7 @@ export default function TableDemo() {
           (acc: number, item: any) => acc + item.grandTotal,
           0,
         );
+        console.log("totalSum ", totalSum);
         setGrandtotalSales(totalSum);
         setAnnualsales(newObject);
         console.log("newObject fetchTopSales", newObject);
@@ -292,7 +301,7 @@ export default function TableDemo() {
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
 
-                    <span className="text-gray-500"> Since last week </span>
+                    <span className="text-gray-500"> Since last year </span>
                   </p>
                 </div>
               </article>
@@ -324,7 +333,7 @@ export default function TableDemo() {
 
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
-                    <span className="text-gray-500"> Since last week </span>
+                    <span className="text-gray-500"> Since last year </span>
                   </p>
                 </div>
               </article>
@@ -356,14 +365,16 @@ export default function TableDemo() {
         <div className="h-[auto] rounded-lg ">
           {/* //RIGHT */}
 
-          <h1 className="text-md font-bold text-black">Top products</h1>
+          <h1 className="text-md font-bold text-black">Annual Sales</h1>
           <div className=" mb-20">
             <div className="m-2   grid w-[90%] grid-cols-2 gap-2">
               <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
 
-                  <p className="text-2xl text-xs text-gray-900">$240.94</p>
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(grandTotalSales)}
+                  </p>
                 </div>
 
                 <div className="mt-1 flex gap-1 text-green-600">
@@ -385,16 +396,17 @@ export default function TableDemo() {
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
 
-                    <span className="text-gray-500"> Since last week </span>
+                    <span className="text-gray-500"> Since last year </span>
                   </p>
                 </div>
               </article>
 
-              <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+              {/* <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
-
-                  <p className="text-2xl text-xs text-gray-900">$240.94</p>
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(grandTotalSales)}
+                  </p>
                 </div>
 
                 <div className="mt-1 flex gap-1 text-red-600">
@@ -412,13 +424,12 @@ export default function TableDemo() {
                       d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
                     />
                   </svg>
-
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
                     <span className="text-gray-500"> Since last week </span>
                   </p>
                 </div>
-              </article>
+              </article> */}
             </div>
           </div>
           <div className="mt-20  h-72 w-[100%]">
