@@ -4,6 +4,7 @@ import * as React from "react";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import AddUser from "@/app/LocalComponents/addUserPopup";
+import ViewUserSheet from "@/app/LocalComponents/UserAccountSheet";
 import { getAllUserProfile } from "@/Utils/serviceLogin";
 import { signUpUser } from "@/Utils/supabaseService";
 import Skeleton from "react-loading-skeleton";
@@ -188,7 +189,7 @@ export default function UserManagement() {
             <tbody>
               {allUsers.map((user: UserInfo) => (
                 <tr key={user.id} className="border-b">
-                  <td className="px-4 py-2">{user.id}</td>
+                  <td className="px-4 py-2">{user.id.slice(-6)} </td>
                   <td className="px-4 py-2">{user.application_info?.name}</td>
                   <td className="px-4 py-2">
                     {user.user_details?.contactNumber}
@@ -197,12 +198,26 @@ export default function UserManagement() {
                     {user.user_details?.contactNumber}
                   </td>
                   <td className="px-4 py-2">
-                    <Button
+                    <ViewUserSheet
+                      didSwitch={(e: any) =>
+                        toast.warning("Account has been turn off")
+                      }
+                      data={user}
+                      didSelect={(e: string) => console.log(e)}
+                      buttonTitle={"View Settings"}
+                      upload_here={() => console.log("s")}
+                      image_file={(e: any) => console.log(e)}
+                      title={(e: any) => console.log(e)}
+                      quantity={(e: any) => console.log(e)}
+                      didSubmit={(e: any) => console.log()}
+                      contactNumber={(e: any) => console.log(e)}
+                    />
+                    {/* <Button
                       variant="outline"
                       className="text-xs font-light rounded-full"
                     >
                       Manage
-                    </Button>
+                    </Button> */}
                   </td>
                 </tr>
               ))}

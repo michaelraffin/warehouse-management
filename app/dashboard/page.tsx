@@ -83,7 +83,7 @@ export default function TableDemo() {
   const [myVendors, setVendors] = useState([]);
   const [dailySales, setDailySales] = useState(0);
   const [annualSales, setAnnualsales] = useState(null);
-  const [grandTotalSales, setGrandtotalSales] = useState(null);
+  const [grandTotalSales, setGrandtotalSales] = useState(0);
 
   const [weekySales, setWeeklySales] = useState(null);
   const [isVendorsReady, setVendorsReady] = useState(false);
@@ -301,7 +301,7 @@ export default function TableDemo() {
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
 
-                    <span className="text-gray-500"> Since last week </span>
+                    <span className="text-gray-500"> Since last year </span>
                   </p>
                 </div>
               </article>
@@ -333,7 +333,7 @@ export default function TableDemo() {
 
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
-                    <span className="text-gray-500"> Since last week </span>
+                    <span className="text-gray-500"> Since last year </span>
                   </p>
                 </div>
               </article>
@@ -396,15 +396,14 @@ export default function TableDemo() {
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
 
-                    <span className="text-gray-500"> Since last week </span>
+                    <span className="text-gray-500"> Since last year </span>
                   </p>
                 </div>
               </article>
 
-              <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+              {/* <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
                 <div>
                   <p className="text-sm text-gray-500">Profit</p>
-
                   <p className="text-2xl text-xs text-gray-900">
                     {numberFormat(grandTotalSales)}
                   </p>
@@ -425,13 +424,12 @@ export default function TableDemo() {
                       d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
                     />
                   </svg>
-
                   <p className="flex gap-2 text-xs">
                     <span className="text-xs"> 67.81% </span>
                     <span className="text-gray-500"> Since last week </span>
                   </p>
                 </div>
-              </article>
+              </article> */}
             </div>
           </div>
           <div className="mt-20  h-72 w-[100%]">
