@@ -91,9 +91,9 @@ export default function Add(props: any) {
     setIsActive(!isActive);
     props.didSwitch(e);
   };
-  const getBadgeType = (e: UserInfo) => {
+  const getBadgeType = (e: UserInfo | null) => {
     try {
-      if (e.application_info?.accountStatus) {
+      if (e != null && e.application_info?.accountStatus) {
         return (
           <Badge
             variant="outline"
