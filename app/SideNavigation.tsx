@@ -1,4 +1,5 @@
 import React from "react";
+import { Badge } from "@/components/ui/badge";
 
 function SideNavigation() {
   const sideNavigation = () => {
@@ -185,6 +186,12 @@ function SideNavigation() {
                           Accounts
                         </span>
                       </a>
+                      <Badge
+                        variant="destructive"
+                        className="text-xs font-light"
+                      >
+                        New
+                      </Badge>
                     </li>
                     <li>
                       <a
