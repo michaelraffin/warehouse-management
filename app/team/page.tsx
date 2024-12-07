@@ -11,6 +11,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster, toast } from "sonner";
 import { ReactNode } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
   SheetContent,
@@ -194,7 +195,7 @@ export default function UserManagement() {
                 <th className="px-4 py-2">User name</th>
                 <th className="px-4 py-2">Email</th>
                 <th className="px-4 py-2">Last active</th>
-                <th className="px-4 py-2">Date added</th>
+                <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Actions</th>
               </tr>
             </thead>
@@ -207,7 +208,9 @@ export default function UserManagement() {
                     {user.user_details?.contactNumber}
                   </td>
                   <td className="px-4 py-2">
-                    {user.user_details?.contactNumber}
+                    <Badge variant="outline" className=" mb-2 text-xs">
+                      Active
+                    </Badge>
                   </td>
                   <td className="px-4 py-2">
                     <ViewUserSheet
