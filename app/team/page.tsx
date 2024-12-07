@@ -11,6 +11,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster, toast } from "sonner";
 import { ReactNode } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
   SheetContent,
@@ -89,6 +90,9 @@ export default function UserManagement() {
   const [mobileNumber, setMobile] = React.useState<string>("");
   const [isDimissed, setDismissAdduser] = React.useState<boolean>(false);
   React.useEffect(() => {
+    getUsers();
+  }, []);
+  const getUsers = () => {
     const services = () => {
       const data = async () => {
         try {
@@ -100,18 +104,47 @@ export default function UserManagement() {
       data();
     };
     services();
-  }, []);
+  };
   const dismissedCallBack = async () => {};
   const updateUserStatus = (e: UserInfo, status: boolean) => {
     const service = async () => {
       e.application_info.accountStatus = status;
-      return await updateUser(e, status);
+      const userUpdate = await updateUser(e, status);
+      setUsers([]);
+      getUsers();
+      return userUpdate;
     };
     service().then((status) => {
       toast.warning(
         status ? "Account has been turned on" : "Account has beened turn off",
       );
     });
+  };
+  const getBadgeType = (e: UserInfo) => {
+    try {
+      if (e.application_info?.accountStatus) {
+        return (
+          <Badge
+            variant="outline"
+            className=" mb-2 text-xs border border-green-600 text-green-800"
+          >
+            Active
+          </Badge>
+        );
+      } else {
+        return (
+          <Badge variant="destructive" className=" mb-2 text-xs">
+            Disabled
+          </Badge>
+        );
+      }
+    } catch (error) {
+      return (
+        <Badge variant="destructive" className=" mb-2 text-xs">
+          In-Active
+        </Badge>
+      );
+    }
   };
   const setupData = async () => {
     let data = {
@@ -194,21 +227,19 @@ export default function UserManagement() {
                 <th className="px-4 py-2">User name</th>
                 <th className="px-4 py-2">Email</th>
                 <th className="px-4 py-2">Last active</th>
-                <th className="px-4 py-2">Date added</th>
+                <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
               {allUsers.map((user: UserInfo) => (
                 <tr key={user.id} className="border-b">
-                  <td className="px-4 py-2">{user.id.slice(-6)} </td>
+                  <td className="px-4 py-2">#{user.id.slice(-6)} </td>
                   <td className="px-4 py-2">{user.application_info?.name}</td>
                   <td className="px-4 py-2">
                     {user.user_details?.contactNumber}
                   </td>
-                  <td className="px-4 py-2">
-                    {user.user_details?.contactNumber}
-                  </td>
+                  <td className="px-4 py-2">{getBadgeType(user)}</td>
                   <td className="px-4 py-2">
                     <ViewUserSheet
                       didSwitch={(e: boolean) => updateUserStatus(user, e)}
