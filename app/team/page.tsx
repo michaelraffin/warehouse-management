@@ -90,6 +90,9 @@ export default function UserManagement() {
   const [mobileNumber, setMobile] = React.useState<string>("");
   const [isDimissed, setDismissAdduser] = React.useState<boolean>(false);
   React.useEffect(() => {
+    getUsers();
+  }, []);
+  const getUsers = () => {
     const services = () => {
       const data = async () => {
         try {
@@ -101,12 +104,15 @@ export default function UserManagement() {
       data();
     };
     services();
-  }, []);
+  };
   const dismissedCallBack = async () => {};
   const updateUserStatus = (e: UserInfo, status: boolean) => {
     const service = async () => {
       e.application_info.accountStatus = status;
-      return await updateUser(e, status);
+      const userUpdate = await updateUser(e, status);
+      setUsers([]);
+      getUsers();
+      return userUpdate;
     };
     service().then((status) => {
       toast.warning(
@@ -228,7 +234,7 @@ export default function UserManagement() {
             <tbody>
               {allUsers.map((user: UserInfo) => (
                 <tr key={user.id} className="border-b">
-                  <td className="px-4 py-2">{user.id.slice(-6)} </td>
+                  <td className="px-4 py-2">#{user.id.slice(-6)} </td>
                   <td className="px-4 py-2">{user.application_info?.name}</td>
                   <td className="px-4 py-2">
                     {user.user_details?.contactNumber}
