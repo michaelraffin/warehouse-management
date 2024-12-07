@@ -63,7 +63,7 @@ type ProductDetails = {
 export default function Add(props: any) {
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
 
-  const [isActive, setIsActive] = useState<Boolean>(
+  const [isActive, setIsActive] = useState<boolean>(
     props.data.application_info?.accountStatus || false,
   );
 
