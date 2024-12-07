@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import moment from "moment";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -90,6 +91,32 @@ export default function Add(props: any) {
     setIsActive(!isActive);
     props.didSwitch(e);
   };
+  const getBadgeType = (e: UserInfo) => {
+    try {
+      if (e.application_info?.accountStatus) {
+        return (
+          <Badge
+            variant="outline"
+            className=" mb-2 text-xs border border-green-600 text-green-800"
+          >
+            Active
+          </Badge>
+        );
+      } else {
+        return (
+          <Badge variant="destructive" className=" mb-2 text-xs">
+            Disabled
+          </Badge>
+        );
+      }
+    } catch (error) {
+      return (
+        <Badge variant="destructive" className=" mb-2 text-xs">
+          In-Active
+        </Badge>
+      );
+    }
+  };
   const displayLogo = () => {
     try {
       return (
@@ -129,6 +156,7 @@ export default function Add(props: any) {
             <p className="font-medium text-gray-700">
               {userDetails?.application_info?.name}
             </p>
+            {getBadgeType(userDetails)}
             <div className="flex space-x-2">
               <span className="font-light">
                 {/* <input
