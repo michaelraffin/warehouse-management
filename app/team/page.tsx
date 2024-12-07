@@ -114,6 +114,32 @@ export default function UserManagement() {
       );
     });
   };
+  const getBadgeType = (e: UserInfo) => {
+    try {
+      if (e.application_info?.accountStatus) {
+        return (
+          <Badge
+            variant="outline"
+            className=" mb-2 text-xs border border-green-600 text-green-800"
+          >
+            Active
+          </Badge>
+        );
+      } else {
+        return (
+          <Badge variant="destructive" className=" mb-2 text-xs">
+            Disabled
+          </Badge>
+        );
+      }
+    } catch (error) {
+      return (
+        <Badge variant="destructive" className=" mb-2 text-xs">
+          In-Active
+        </Badge>
+      );
+    }
+  };
   const setupData = async () => {
     let data = {
       name: fullName,
@@ -207,11 +233,7 @@ export default function UserManagement() {
                   <td className="px-4 py-2">
                     {user.user_details?.contactNumber}
                   </td>
-                  <td className="px-4 py-2">
-                    <Badge variant="outline" className=" mb-2 text-xs">
-                      Active
-                    </Badge>
-                  </td>
+                  <td className="px-4 py-2">{getBadgeType(user)}</td>
                   <td className="px-4 py-2">
                     <ViewUserSheet
                       didSwitch={(e: boolean) => updateUserStatus(user, e)}
