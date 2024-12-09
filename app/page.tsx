@@ -28,15 +28,21 @@ export default function LandingPage() {
         return null;
       }
     };
-    setStatus(true);
-    service().then((result: any) => {
-      setStatus(false);
-      if (result != null) {
-        router.push("/dashboard");
-      } else {
-        toast.error("Invalid credentials");
-      }
-    });
+
+    if (password == "" || username === "") {
+      toast.error("Empty credentials");
+    } else {
+      setStatus(true);
+      service().then((result: any) => {
+        setStatus(false);
+
+        if (result != null) {
+          router.push("/dashboard");
+        } else {
+          toast.error("Invalid credentials");
+        }
+      });
+    }
   };
   const isOpacity = () => {
     if (loadingStatus) {

@@ -62,7 +62,7 @@ function SideNavigation() {
                   <ul className="space-y-1 border-t border-gray-100 pt-4">
                     <li>
                       <a
-                        href="/dashboard"
+                        href="/team"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <svg
@@ -84,6 +84,12 @@ function SideNavigation() {
                           Teams
                         </span>
                       </a>
+                      <Badge
+                        variant="destructive"
+                        className="text-xs font-light"
+                      >
+                        New
+                      </Badge>
                     </li>
                     <li>
                       <a
@@ -164,7 +170,7 @@ function SideNavigation() {
                     </li>
                     <li>
                       <a
-                        href="/team"
+                        href="/profile"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <svg
@@ -186,12 +192,6 @@ function SideNavigation() {
                           Accounts
                         </span>
                       </a>
-                      <Badge
-                        variant="destructive"
-                        className="text-xs font-light"
-                      >
-                        New
-                      </Badge>
                     </li>
                     <li>
                       <a

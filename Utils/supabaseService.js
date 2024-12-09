@@ -60,7 +60,6 @@ export const siginWithUsername = async (payload) => {
     console.log("profile,,", profile);
     localStorage.setItem("profile", JSON.stringify(profile));
     localStorage.setItem("x-auth-ID", profile.id);
-
     create(profile.id);
     return true;
   }
