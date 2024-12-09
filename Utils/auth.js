@@ -5,14 +5,15 @@ export async function create(data) {
   try {
     localStorage.setItem("x-auth-ID", JSON.stringify(data));
     return true;
-  } catch (error) {}
+  } catch (error) {
+    return false;
+  }
 }
 export async function validateUser() {
   try {
-    const apiData = localStorage.getItem("x-auth-ID");
-    return apiData ? JSON.parse(apiData) : null;
+    return true;
   } catch (error) {
-    console.log("invalid-user", error);
+    console.log(error);
     return "invalid-user";
   }
 }

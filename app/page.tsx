@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input"; // Use ShadCN input
 import { Button } from "@/components/ui/button"; // Use ShadCN button
 import Link from "next/link";
+import { Toaster, toast } from "sonner";
 import {
   signUpUser,
   updateUser,
@@ -13,13 +14,13 @@ export default function LandingPage() {
   const [username, setUsername] = React.useState<string>("");
   const router = useRouter();
   const [password, setPassword] = React.useState<string>("");
-
+  const [loadingStatus, setStatus] = React.useState<boolean>(false);
   const tapLogin = () => {
     const service = async () => {
       try {
         let payload = {
-          email: "agent@gmail.com",
-          password: "Password1234",
+          email: username,
+          password: password,
         };
         return await siginWithUsername(payload);
       } catch (error) {
@@ -27,13 +28,22 @@ export default function LandingPage() {
         return null;
       }
     };
+    setStatus(true);
     service().then((result: any) => {
+      setStatus(false);
       if (result != null) {
         router.push("/dashboard");
       } else {
-        alert("Invalid Password");
+        toast.error("Invalid credentials");
       }
     });
+  };
+  const isOpacity = () => {
+    if (loadingStatus) {
+      return "space-y-4 opacity-30";
+    } else {
+      return "space-y-4 opacity-100";
+    }
   };
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -64,13 +74,14 @@ export default function LandingPage() {
         <div className="w-full max-w-md space-y-4">
           <h2 className="text-2xl font-bold text-gray-900">Log In</h2>
           {/* <form action="/dashboard" > */}
-          <div className="space-y-4">
+          <div className={isOpacity()}>
             <div>
               <label htmlFor="email" className="block text-sm text-gray-700">
                 Email Address
               </label>
               <Input
                 id="email"
+                disabled={loadingStatus}
                 type="email"
                 placeholder="Enter your email"
                 className="mt-1 w-full"
@@ -84,6 +95,7 @@ export default function LandingPage() {
               <Input
                 id="password"
                 type="password"
+                disabled={loadingStatus}
                 placeholder="Enter your password"
                 className="mt-1 w-full"
                 onChange={(e: any) => setPassword(e.nativeEvent.target.value)}
@@ -92,6 +104,7 @@ export default function LandingPage() {
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center">
                 <input
+                  disabled={loadingStatus}
                   type="checkbox"
                   id="remember"
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded"
@@ -109,6 +122,7 @@ export default function LandingPage() {
             </div>
           </div>
           <Button
+            disabled={loadingStatus}
             onClick={() => tapLogin()}
             className="w-full bg-blue-500 mt-6 rounded-full"
           >
@@ -123,6 +137,7 @@ export default function LandingPage() {
           </p>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 }

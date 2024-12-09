@@ -20,17 +20,21 @@ const Logout = () => {
   const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
   useEffect(() => {
-    validateUser().then((response) => {
-      console.log(response);
-      if (response === "invalid-user") {
-        localStorage.removeItem("x-auth-ID");
-        localStorage.removeItem("userToken"); // Example: Clear user token
-        setShowModal(true);
-        setTimeout(() => {
-          router.push("/");
-        }, 6000);
-      }
-    });
+    console.log(
+      ' localStorage.getItem("x-auth-ID");',
+      localStorage.getItem("x-auth-ID"),
+    );
+    // validateUser().then((response) => {
+    // console.log(response);
+    if (localStorage.getItem("x-auth-ID") == null) {
+      localStorage.removeItem("x-auth-ID");
+      localStorage.removeItem("userToken"); // Example: Clear user token
+      setShowModal(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 6000);
+    }
+    // });
   }, [router]);
 
   return (
