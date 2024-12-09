@@ -4,12 +4,16 @@ import * as React from "react";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import AddUser from "@/app/LocalComponents/addUserPopup";
+import UserValidation from "@/app/LocalComponents/UserValidation";
 import ViewUserSheet from "@/app/LocalComponents/UserAccountSheet";
 import { getAllUserProfile } from "@/Utils/serviceLogin";
+import { create, validateUser } from "@/Utils/auth";
 import { signUpUser, updateUser } from "@/Utils/supabaseService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster, toast } from "sonner";
+import { cookies } from "next/headers";
+
 import { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -98,7 +102,11 @@ export default function UserManagement() {
         try {
           let users: UserInfo[] = (await getAllUserProfile()) || [];
           console.log("userss", users);
+          create("Xaxadsadsa");
           setUsers(users);
+          validateUser().then((response) => {
+            console.log(response);
+          });
         } catch (error) {}
       };
       data();
@@ -316,6 +324,7 @@ export default function UserManagement() {
         )}
       </div>
       <Toaster />
+      <UserValidation />
     </div>
   );
 }

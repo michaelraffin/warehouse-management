@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Head from "next/head";
+import UserValidation from "@/app/LocalComponents/UserValidation";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import moment from "moment";
@@ -672,6 +673,7 @@ export default function TableDemo() {
         <Map coordinates={(e) => setStoreCoordinates(e)} />
       </div> */}
       <Toaster />
+      <UserValidation />
     </div>
   );
 }
