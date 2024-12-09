@@ -42,3 +42,16 @@ export const updateUser = async (user, status) => {
     return null;
   }
 };
+export const siginWithUsername = async (payload) => {
+  // : {
+  //   username: any;
+  //   password: any;
+  // }
+  console.log(payload);
+  const { data, error } = await supabase.auth.signInWithPassword(payload);
+  if (error) {
+    console.log("error siginWithUsername", error);
+    // check if its accountStatus if agree
+    throw error;
+  } else return data;
+};
