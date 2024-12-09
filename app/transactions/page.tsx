@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
+import UserValidation from "@/app/LocalComponents/UserValidation";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
 import moment from "moment";
@@ -638,6 +639,7 @@ export default function TableDemo() {
           </div>
         </div>
 </div> */}
+      <UserValidation />
     </div>
   );
 }

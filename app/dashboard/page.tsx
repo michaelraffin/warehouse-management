@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import UserValidation from "@/app/LocalComponents/UserValidation";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
@@ -756,6 +757,7 @@ export default function TableDemo() {
         </TabsContent>
       </Tabs>
       <div>{/* <MapV2 /> */}</div>
+      <UserValidation />
     </div>
   );
 }
