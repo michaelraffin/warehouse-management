@@ -168,7 +168,7 @@ function SideNavigation() {
                         </span>
                       </a>
                     </li>
-                    <li>
+                    {/* <li>
                       <a
                         href="/profile"
                         className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -192,7 +192,7 @@ function SideNavigation() {
                           Accounts
                         </span>
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <a
                         href="/dashboard"

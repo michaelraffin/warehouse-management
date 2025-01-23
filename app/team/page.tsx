@@ -235,7 +235,8 @@ export default function UserManagement() {
       </Button> */}
       <div className="p-6 ml-20">
         <h1 className="text-2xl font-bold mb-4">
-          User Management {allUsers.length}
+          User Management{" "}
+          <span className="text-red-500">{allUsers.length}</span>
         </h1>
         {/* <Button className="flex items-center gap-2 rounded-full">
           <Plus className="h-4 w-4" />

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -20,13 +21,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import RequestSheet from "@/app/LocalComponents/RequestSheet";
 
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { UploadImageService } from "../../../Utils/image_uploader";
-import { axios, url } from "@/Utils/axios";
+import { url } from "@/Utils/axios";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,6 +83,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Loader2 } from "lucide-react";
+
 interface TransactionLog {
   transactionID: string; // Assuming transactionID is a string
 }
@@ -150,7 +152,6 @@ export default function VendorDetails({
   });
 
   let parentClass = "LesseeVendor";
-
   useEffect(() => {
     getDetails();
   }, []);
@@ -165,73 +166,36 @@ export default function VendorDetails({
 
   const deleteThisVendor = () => {
     setStatus(true);
-    const service = async (): Promise<VendorResult | undefined> => {
-      if (vendorDetails != null) {
-        vendorDetails.className = "LesseeVendor";
-        let result = await axiosV2("dsadsa").post(
-          `${url}/deleteProduct/LesseeVendor`,
-          vendorDetails,
-        );
-        setStatus(false);
-        return { result: vendorDetails };
-      }
+    const serviceV2 = (): Promise<VendorResult | undefined> => {
+      return new Promise((resolve, reject) => {
+        if (vendorDetails != null) {
+          vendorDetails.className = "LesseeVendor";
+          axios
+            .post(`/api/item/delete/LesseeVendor`, {
+              queryData: { vendorID: vendorDetails.vendorID },
+            })
+            .then(() => {
+              resolve({ result: vendorDetails }); // Resolve with the vendorDetails
+            })
+            .catch((error) => {
+              reject(error); // Reject if there's an error
+            });
+        } else {
+          resolve(undefined); // Resolve with undefined if vendorDetails is null
+        }
+      });
     };
 
-    // toast.promise(service, {
-    //   loading: "Deleting...",
-    //   success: (data?: { results?: { vendorTitle?: string } }) => {
-    //     return `${data?.results?.vendorTitle} toast has been added`;
-    //   },
-    //   error: "Error",
-    // });
-    // toast.promise(
-    //   service().then((vendor: VendorResult) => {
-    //     if (vendor) {
-    //       return { results: { vendorTitle: "vendor.title " } };
-    //     }
-    //     return undefined;
-    //   }),
-    //   {
-    //     loading: "Deleting...",
-    //     success: (data?: VendorResult) => {
-    //       return `${data?.result.vendorTitle || "Default vendor title"} toast has been added`;
-    //     },
-    //     error: "Error",
-    //   },
-    // );
+    toast.promise(serviceV2, {
+      loading: "Removing...",
+      success: (data) => {
+        return `${vendorDetails?.vendorTitle} has been removed`;
+      },
+      error: "Error",
+    });
   };
   const updateSettings = () => {
     setStatus(true);
-    // let service = async () => {
-    //   // let payload: Vendor = { ...vendorDetails };
-    //   if (vendorDetails != null) {
-    //     vendorDetails.coordinates = storeCoordinates;
-    //   }
-    //   console.log(vendorDetails.coordinates);
-
-    //   if (vendorDetails) {
-    //     const updatedVendorDetails = {
-    //       ...vendorDetails,
-    //       coordinates: storeCoordinates,
-    //     };
-    //     // payload.vendorDetails.coordinates = storeCoordinates;
-    //     setVendorDetails(updatedVendorDetails);
-    //   }
-
-    //   let productList = await axiosV2("dsadsa").post(
-    //     `${url}/updateItem/${parentClass}`,
-    //     payload,
-    //   );
-    //   return null;
-    // };
-    // service().then((item) => {
-    //   console.log(item);
-    //   toast({
-    //     title: "Successfully Updated",
-    //     description: "Store has been updated with it settings...",
-    //   });
-    //   setStatus(false);
-    // });
   };
   const getDetails = async () => {
     let payload = {
@@ -243,25 +207,24 @@ export default function VendorDetails({
       `${url}/store/${parentClass}`,
       payload,
     );
-    console.log(vendorsList.data.results);
-    let coordinates = vendorsList.data.results[0];
-    console.log("coordinates.coordinates coordinates", coordinates.coordinates);
-    setInitialLocation(
-      coordinates.coordinates != undefined
-        ? coordinates.coordinates
-        : { lng: 123.841, lat: 8.1822 },
-    );
-    setLocation(
-      coordinates.coordinates != undefined
-        ? [coordinates.coordinates]
-        : [{ lng: 123.841, lat: 8.1822 }],
-    );
-    // if (coordinates.coordinates != null) {
-    console.log("initial load for vendor", vendorsList.data.results[0]);
-    setVendorDetails(vendorsList.data.results[0]);
-    setVendorTransaction(vendorsList.data.results[0].transactionLogs ?? []);
-    setStatus(false);
-    // }
+    if (vendorsList.data.results[0]) {
+      let coordinates = vendorsList.data.results[0];
+      setInitialLocation(
+        coordinates.coordinates != undefined
+          ? coordinates.coordinates
+          : { lng: 123.841, lat: 8.1822 },
+      );
+      setLocation(
+        coordinates.coordinates != undefined
+          ? [coordinates.coordinates]
+          : [{ lng: 123.841, lat: 8.1822 }],
+      );
+      setVendorDetails(vendorsList.data.results[0]);
+      setVendorTransaction(vendorsList.data.results[0].transactionLogs ?? []);
+      setStatus(false);
+    } else {
+      toast.error("Vendor was not found");
+    }
   };
   useEffect(() => {
     getSession().then((data) => {
@@ -328,7 +291,35 @@ export default function VendorDetails({
 
     return result;
   };
-  const displayAlert = () => {};
+  const displayAlert = () => {
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="destructive"
+            className="mb-20 rounded-full mt-4  w-[90%] hover:border ease-out duration-300   "
+          >
+            {status ? <Loader2 className="animate-spin" /> : null}
+            <div className="m-2  text-xs ">Delete this store</div>
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Vendor has been deleted</AlertDialogTitle>
+            <AlertDialogDescription>
+              Vendor has now remove to our system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteThisVendor()}>
+              Continuez
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  };
 
   const submitProduct = () => {
     const asyncService = async () => {
@@ -395,7 +386,7 @@ export default function VendorDetails({
                   }}
                 >
                   <img
-                    src={`https://via.placeholder.com/48`} // Replace with actual avatar URL
+                    src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlev6xzFfPonliTRgafNYt9i9ZEXlH1ynVSw&s`} // Replace with actual avatar URL
                     alt="User"
                     className="object-cover w-full h-full"
                   />
@@ -616,73 +607,6 @@ export default function VendorDetails({
       </Breadcrumb>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mr-10 ml-20">
         <div className="h-32 rounded-lg  lg:col-span-2">
-          {/* RIGHT */}
-          {/* <div className=" mb-20">
-            <div className="grid grid-cols-3 gap-4 m-2">
-              <article className="rounded-lg border border-gray-300 bg-black p-6 hover:shadow-lg">
-                <div>
-                  <p className="text-sm text-white">Profit</p>
-
-                  <p className="text-2xl font-medium text-white">$240.94</p>
-                </div>
-
-                <div className="mt-1 flex gap-1 text-green-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    />
-                  </svg>
-
-                  <p className="flex gap-2 text-xs">
-                    <span className="font-medium"> 67.81% </span>
-
-                    <span className="text-gray-100"> Since last week </span>
-                  </p>
-                </div>
-              </article>
-
-              <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
-                <div>
-                  <p className="text-sm text-gray-500">Profit</p>
-
-                  <p className="text-2xl font-medium text-gray-900">$240.94</p>
-                </div>
-
-                <div className="mt-1 flex gap-1 text-red-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
-                    />
-                  </svg>
-
-                  <p className="flex gap-2 text-xs">
-                    <span className="font-medium"> 67.81% </span>
-                    <span className="text-gray-500"> Since last week </span>
-                  </p>
-                </div>
-              </article>
-            </div>
-          </div> */}
-
-          {/* {renderLineChart()} */}
           {transactions.length === 0
             ? renderEmptyTransaction()
             : renderTableComponent()}
@@ -729,17 +653,6 @@ export default function VendorDetails({
                 ? null
                 : displayMerchantMap()}
             </main>
-            {/* {displayMerchantMap()} */}
-
-            {/* {vendorDetails.coordinates === undefined ? null :   <Map
-            initialLocation={vendorDetails.coordinates}
-            mainStyle={LocalClass.vendorMainStyle}
-            coordinates={(e) => updateLocation(e)} /> } */}
-            {/* <Map
-              initialLocation={vendorDetails.coordinates}
-              mainStyle={LocalClass.vendorMainStyle}
-              coordinates={(e) => updateLocation(e)}
-            /> */}
             <Button
               variant="secondary"
               className="mb-20 mt-4  w-[90%]  rounded-full hover:border border-gray-600 ease-out duration-300   "
@@ -781,12 +694,9 @@ export default function VendorDetails({
         </div>
       </div>
       <div className="w-1/2 ml-20 mt-20">
-        <div
-        // on:click={()=>setProduct(order)}
-        >
-          {/* <Badge variant="outline " className="bg-[#6ab04c] mb-2 text-xs">{convertToPesos(order.totalPrice * 0.05)}</Badge> */}
-        </div>
+        <div></div>
       </div>
+      <Toaster />
     </div>
   );
 }

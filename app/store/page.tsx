@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -35,7 +36,7 @@ import {
 } from "@/components/ui/popover";
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
-import { axiosV2Local, url, axiosV2, axios } from "../../Utils/axios";
+import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
 import Link from "next/link";
 import LocalChart from "../LocalComponents/Charts";
 import {
@@ -314,17 +315,27 @@ export default function TableDemo() {
           status: false,
           coordinates: storeCoordinates,
         };
-        let productList = await axiosV2("dsadsa").post(`${url}/Loogy/add`, {
+        let response = await axios.post(`/api/item/add`, {
           details: payload,
-          className: parentClass,
+          className: "LesseeVendor",
         });
-        console.log("productList", productList);
-        return productList;
+        fetchStores();
+
+        return response;
       } catch (error) {}
     };
-    asyncService().then((item) => {
-      console.log(item);
-      fetchStores();
+    // asyncService().then((item) => {
+    //   toast.success("Vendor has been added");
+
+    // });
+
+    toast.promise(asyncService(), {
+      loading: `Adding ${productTitle}...`,
+      success: (data) => {
+        setStatus(false);
+        return `${productTitle} Item has been updated`;
+      },
+      error: "Error",
     });
   };
   return (
