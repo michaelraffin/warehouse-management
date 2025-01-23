@@ -633,7 +633,7 @@ export default function TableDemo() {
                   {/* {vendors.payment_method != undefined
                     ? vendors.payment_method.type.toUpperCase()
                     : ""} */}
-                  {vendors?.transaction.date_created}
+                  {vendors?.transaction?.date_created}
                 </TableCell>
                 <TableCell className="text-xs">
                   {vendors.transaction != undefined

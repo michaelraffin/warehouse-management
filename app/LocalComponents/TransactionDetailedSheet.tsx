@@ -175,7 +175,7 @@ export default function DeliveryDetailsSheet(props: any) {
           <div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Date Created</p>
             <p className="text-sm text-gray-500">
-              {props.orderDetails.transaction.date_created}
+              {props.orderDetails?.transaction?.date_created}
             </p>
           </div>
 

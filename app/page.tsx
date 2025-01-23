@@ -35,7 +35,6 @@ export default function LandingPage() {
       setStatus(true);
       service().then((result: any) => {
         setStatus(false);
-
         if (result != null) {
           router.push("/dashboard");
         } else {

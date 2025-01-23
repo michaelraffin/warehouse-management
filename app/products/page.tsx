@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -176,7 +177,7 @@ export default function TableDemo() {
     const service = async () => {
       try {
         let productList = await axiosV2("dsadsa").post(
-          `${url}/updateItem/LesseeProduct`,
+          `/updateItem/LesseeProduct`,
           payload,
         );
         return productList;
@@ -207,11 +208,14 @@ export default function TableDemo() {
           transactionLogs: null,
           restockLogs: null,
         };
-        let productList = await axiosV2("dsadsa").post(`${url}/Loogy/add`, {
-          details: payload,
-          className: "LesseeProduct",
-        });
 
+        let productList = await axios.post(
+          `/api/product/add`, // Dynamic route with type
+          {
+            details: payload,
+            className: "LesseeProduct",
+          },
+        );
         fetchProduct();
         return productList;
       } catch (error) {}

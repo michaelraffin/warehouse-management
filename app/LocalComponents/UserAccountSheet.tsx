@@ -16,6 +16,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ComboboxDemo } from "../LocalComponents/Sizes";
 import { DropdownBranches } from "../LocalComponents/DropDownBranches";
 import Map from "../LocalComponents/MapPickerV2";
@@ -89,7 +99,24 @@ export default function Add(props: any) {
   }, []);
   const didStatusUpdate = (e: boolean) => {
     setIsActive(!isActive);
+    if (userDetails != null) {
+      userDetails.application_info.accountStatus = e;
+    }
+    // application_info.accountStatus
     props.didSwitch(e);
+  };
+  const didUpdateUserType = (input: string) => {
+    const userType = input.split(",");
+    const userValueType = userType.slice(-1).join(",");
+    let userTypeData = { applicantType: userType[0], userType: userValueType };
+    if (userDetails != null) {
+      userDetails.application_info.applicantType = userType[0];
+      userDetails.userLevel = {
+        access: [],
+        userType: userValueType,
+      };
+    }
+    props.userRole(userTypeData);
   };
   const getBadgeType = (e: UserInfo | null) => {
     try {
@@ -188,7 +215,20 @@ export default function Add(props: any) {
               </div>
               <div>
                 <p className="font-medium text-gray-700">Account Level</p>
-                <p>{userDetails?.member_details.level}</p>
+                {/* <p>{userDetails?.member_details.level}</p> */}
+                <Select onValueChange={(e) => didUpdateUserType(e)}>
+                  <SelectTrigger className="w-auto ring-0">
+                    <SelectValue placeholder="Select a Account type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Account type</SelectLabel>
+                      <SelectItem value="admin,0">Admin</SelectItem>
+                      <SelectItem value="agent,1">Agent</SelectItem>
+                      <SelectItem value="stockman,2">Stockman</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <p className="font-medium text-gray-700">Contact Number</p>

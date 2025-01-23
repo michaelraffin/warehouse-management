@@ -26,6 +26,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { Exo_2 } from "next/font/google";
 interface UserInfo {
   id: string;
   created_at: string;
@@ -116,7 +117,7 @@ export default function UserManagement() {
   const dismissedCallBack = async () => {};
   const updateUserStatus = (e: UserInfo, status: boolean) => {
     const service = async () => {
-      e.application_info.accountStatus = status;
+      // e.application_info.accountStatus = status;
       const userUpdate = await updateUser(e, status);
       setUsers([]);
       getUsers();
@@ -154,6 +155,20 @@ export default function UserManagement() {
       );
     }
   };
+
+  const getTypeOfUser = () => {
+    switch (userType) {
+      case "admin":
+        return 0;
+      case "agent":
+        return 1;
+      case "stockman":
+        return 2;
+      default: {
+        return 3;
+      }
+    }
+  };
   const setupData = async () => {
     let data = {
       name: fullName,
@@ -165,7 +180,15 @@ export default function UserManagement() {
     };
     const service = async () => {
       try {
-        await signUpUser(data);
+        let user = await signUpUser(data);
+
+        let users: UserInfo[] = (await getAllUserProfile()) || [];
+        let thisUser = users.filter((person) => person.id == user.user.id);
+        thisUser[0].userLevel = {
+          access: [],
+          userType: getTypeOfUser(),
+        };
+        await updateUser(thisUser[0], null);
         setDismissAdduser(true);
       } catch (error) {
         alert("error");
@@ -250,6 +273,7 @@ export default function UserManagement() {
                   <td className="px-4 py-2">{getBadgeType(user)}</td>
                   <td className="px-4 py-2">
                     <ViewUserSheet
+                      userRole={(e: UserInfo) => updateUserStatus(user, false)}
                       didSwitch={(e: boolean) => updateUserStatus(user, e)}
                       data={user}
                       didSelect={(e: string) => console.log(e)}
