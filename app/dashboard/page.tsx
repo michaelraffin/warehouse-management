@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
 import { ReactNode } from "react";
+
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -29,7 +31,7 @@ import {
 } from "../../Utils/statistics";
 import LocalChart from "@/app/LocalComponents/Charts/lineCurve";
 import { Button } from "@/components/ui/button";
-import { axios, url, axiosV2 } from "@/Utils/axios";
+import { url, axiosV2 } from "@/Utils/axios";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -193,9 +195,23 @@ export default function TableDemo() {
         referenceOrder: "e",
         number: 20,
         showLimit: true,
-        queryData: { status: "orderStatus", userReference: "e" },
+        queryData: { status: true },
+        className: "LesseeVendor",
+        // status: "orderStatus", userReference: "e"
       };
-      let productList = await axiosV2("").post(`${url}/store/LesseeVendor`);
+      let productList = await axios.post(
+        `/api/vendors`, // Dynamic route with type
+        data,
+      );
+
+      // await axiosV2("").post(`${url}/store/LesseeVendor`);
+      // let productList = await axios.post(
+      //   `/api/product/add`, // Dynamic route with type
+      //   {
+      //     details: payload,
+      //     className: "LesseeProduct",
+      //   },
+      // );
       setVendors(productList.data.results.slice(0, 10));
       setVendorsReady(true);
     } catch (error) {
