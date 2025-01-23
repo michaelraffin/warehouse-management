@@ -151,8 +151,8 @@ export default function TableDemo() {
   const [reRequest, setRefRequest] = useState(invoices);
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [requestItems, setRequestOrder] = useState([]);
-  const [transactionID, setTransactionID] = useState("");
-  const [reasonOnHolding, setStateReason] = useState("");
+  const [transactionID, setTransactionID] = useState<String | null>("");
+  const [reasonOnHolding, setStateReason] = useState<String | null>("");
 
   const [transactionDetails, setTransactionDetails] = useState<Order | null>(
     null,
@@ -188,10 +188,11 @@ export default function TableDemo() {
   }, []);
 
   useEffect(() => {
-    let id = pathname.split("/")[2];
-    console.log("type,", id);
+    let id: string | null = pathname?.split("/")[2] ?? "";
     setTransactionID(id);
-    fetchTransaction(id);
+    if (id) {
+      fetchTransaction(id);
+    }
   }, []);
   useEffect(() => {}, [transactionDetails]);
   useEffect(() => {

@@ -183,7 +183,7 @@ export default function UserManagement() {
         let user = await signUpUser(data);
 
         let users: UserInfo[] = (await getAllUserProfile()) || [];
-        let thisUser = users.filter((person) => person.id == user.user.id);
+        let thisUser = users.filter((person) => person.id == user?.user?.id);
         thisUser[0].userLevel = {
           access: [],
           userType: getTypeOfUser(),
