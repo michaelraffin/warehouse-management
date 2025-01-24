@@ -107,7 +107,7 @@ export default function LandingPage() {
               />
             </div>
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   disabled={loadingStatus}
                   type="checkbox"
@@ -120,7 +120,7 @@ export default function LandingPage() {
                 >
                   Remember information
                 </label>
-              </div>
+              </div> */}
               <Link href="/forgot-password" className="text-blue-600">
                 Forgot password?
               </Link>
