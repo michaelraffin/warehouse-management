@@ -1,5 +1,4 @@
-import { axios } from "../Utils/axios";
-import axiosLocal from "axios";
+import { axios, axiosLocal } from "../Utils/axios";
 import moment from "moment";
 let currentDate = new Date();
 let currentDay = currentDate.getDay();
