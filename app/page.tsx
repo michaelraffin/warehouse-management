@@ -46,8 +46,7 @@ export default function LandingPage() {
         }
 
         let result = await siginWithUsername(payload);
-        console.log("result.userLevel.userType;", result.userLevel.userType);
-        return result.userLevel.userType;
+        return Number(result.userLevel.userType);
       } catch (error) {
         console.log(error);
         return null;
