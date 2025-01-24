@@ -61,7 +61,7 @@ export const siginWithUsername = async (payload) => {
     localStorage.setItem("profile", JSON.stringify(profile));
     localStorage.setItem("x-auth-ID", profile.id);
     create(profile.id);
-    return true;
+    return profile;
   }
 };
 export const getProfile = async (id) => {

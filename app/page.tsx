@@ -45,7 +45,9 @@ export default function LandingPage() {
           localStorage.removeItem("rememberedPassword");
         }
 
-        return await siginWithUsername(payload);
+        let result = await siginWithUsername(payload);
+        console.log("result.userLevel.userType;", result.userLevel.userType);
+        return result.userLevel.userType;
       } catch (error) {
         console.log(error);
         return null;
@@ -59,23 +61,20 @@ export default function LandingPage() {
       toast.promise(service(), {
         loading: "Logging in...",
         success: (result) => {
-          if (result != null) {
+          console.log("result", result);
+          if ((result != null && result === 3) || result === 0) {
             router.push("/dashboard");
             return "Login successful!";
+          } else if (result === 1 || result === 2) {
+            setStatus(false);
+            return "Unauthorize Access!";
           } else {
+            setStatus(false);
             throw new Error("Invalid credentials");
           }
         },
         error: "Invalid credentials",
       });
-      // service().then((result: any) => {
-      //   setStatus(false);
-      //   if (result != null) {
-      //     router.push("/dashboard");
-      //   } else {
-      //     toast.error("Invalid credentials");
-      //   }
-      // });
     }
   };
   const isOpacity = () => {
