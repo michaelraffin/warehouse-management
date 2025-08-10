@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Copy, Check } from "lucide-react";
-
-const SecretKeyToggle = (props) => {
+type SecretKeyToggleProps = {
+  secretKey: string;
+};
+const SecretKeyToggle = (props: SecretKeyToggleProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -21,7 +23,7 @@ const SecretKeyToggle = (props) => {
     }
   };
 
-  const maskKey = (key) => {
+  const maskKey = (key: string) => {
     return "•".repeat(key.length);
   };
 

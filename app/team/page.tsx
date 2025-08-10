@@ -44,6 +44,7 @@ interface UserInfo {
     avatar_url: string;
     provider_id: string;
     email_verified: boolean;
+    agentID: String;
   };
   user_details: {
     name?: string;

@@ -29,7 +29,7 @@ export default function AddUserPopup(props: any) {
   const [isOpen, setOpen] = React.useState<boolean>(false);
 
   const dismissedCallBack = () => {
-    props.didSave().then((e) => {
+    props.didSave().then(() => {
       setOpen(false);
     });
   };

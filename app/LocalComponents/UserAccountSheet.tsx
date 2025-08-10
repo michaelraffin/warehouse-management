@@ -53,6 +53,7 @@ interface UserInfo {
     provider_id: string;
     email_verified: boolean;
     contactNumber: string;
+    secret: string;
   };
   user_details: {
     name?: string;
