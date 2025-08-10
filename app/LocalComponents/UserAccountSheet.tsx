@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import moment from "moment";
 import { Badge } from "@/components/ui/badge";
+import SecretKey from "@/app/LocalComponents/SecrectKey";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -251,7 +252,19 @@ export default function Add(props: any) {
                   checked={isActive}
                 />
               </div>
+              {/*<div>
+                <p className="font-medium text-gray-700">Secret</p>
+                <p>{userDetails?.application_info?.secret}</p>
+              </div>*/}
             </div>
+
+            <SecretKey
+              secretKey={
+                userDetails?.application_info?.secret != null
+                  ? userDetails?.application_info?.secret
+                  : "*******"
+              }
+            />
           </div>
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 

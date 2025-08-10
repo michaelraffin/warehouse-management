@@ -40,15 +40,19 @@ export const getProfile = async () => {
 };
 
 export const getAllUserProfile = async () => {
-  // try {
-  //   const {
-  //     data: { users },
-  //     error,
-  //   } = await supabase.auth.admin.listUsers();
-  //   return users;
-  // } catch (error) {}
   try {
     let { data: users, error } = await supabase.from("profile").select("*");
+    await getUsers();
+    return users;
+  } catch (error) {
+    console.log("error getAllProfile", error);
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    let { data: users, error } = await supabase.auth.admin.listUsers();
+    console.log(users);
     return users;
   } catch (error) {
     console.log("error getAllProfile", error);

@@ -53,7 +53,6 @@ export function DropdownBranches(props: any) {
       // setProductsReference(productList.data.results);
       // setStatus(false);
     } catch (error) {
-      alert("opss");
       console.log("error Product", error);
     }
   };

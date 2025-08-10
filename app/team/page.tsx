@@ -8,12 +8,12 @@ import UserValidation from "@/app/LocalComponents/UserValidation";
 import ViewUserSheet from "@/app/LocalComponents/UserAccountSheet";
 import { getAllUserProfile } from "@/Utils/serviceLogin";
 import { create, validateUser } from "@/Utils/auth";
-import { signUpUser, updateUser } from "@/Utils/supabaseService";
+import { signUpUser, updateUser, deleteUser } from "@/Utils/supabaseService";
+import { addAgentProfile } from "@/Utils/serviceCrud";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster, toast } from "sonner";
 import { cookies } from "next/headers";
-
 import { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -102,7 +102,6 @@ export default function UserManagement() {
       const data = async () => {
         try {
           let users: UserInfo[] = (await getAllUserProfile()) || [];
-          console.log("userss", users);
           create("Xaxadsadsa");
           setUsers(users);
           validateUser().then((response) => {
@@ -169,6 +168,15 @@ export default function UserManagement() {
       }
     }
   };
+  function generateRandomString(length = 6) {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "AIL-";
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
   const setupData = async () => {
     let data = {
       name: fullName,
@@ -181,29 +189,68 @@ export default function UserManagement() {
     const service = async () => {
       try {
         let user = await signUpUser(data);
-
-        let users: UserInfo[] = (await getAllUserProfile()) || [];
-        let thisUser = users.filter((person) => person.id == user?.user?.id);
-        thisUser[0].userLevel = {
-          access: [],
-          userType: getTypeOfUser(),
+        let agentID = generateRandomString();
+        let agentData = {
+          fullName: fullName,
+          agentID: agentID,
+          email: username,
+          onHandProducts: [],
+          agentLogs: [],
         };
-        await updateUser(thisUser[0], null);
-        setDismissAdduser(true);
+
+        await addAgentProfile(agentData);
+
+        if (user != null) {
+          let users: UserInfo[] = (await getAllUserProfile()) || [];
+          let thisUser = users.filter((person) => person.id == user?.user?.id);
+          thisUser[0].userLevel = {
+            access: [],
+            userType: getTypeOfUser(),
+          };
+          thisUser[0].application_info.agentID = agentID;
+          let newUser = await updateUser(thisUser[0], null);
+          setDismissAdduser(true);
+          return newUser;
+        } else {
+          return null;
+        }
       } catch (error) {
-        alert("error");
+        return null;
       }
     };
-    //service();
 
-    toast.promise(service, {
-      loading: "Loading...",
-      success: (data) => {
-        console.log("data updated response", data);
-        return `${fullName} Item has been added`;
-      },
-      error: "Error",
-    });
+    try {
+      // Show loading toast
+      const toastId = toast.loading("Loading...");
+      // Execute the service and get the actual data
+      const result = await service();
+      // Update toast with success
+      toast.success(`${fullName} Item has been added`, { id: toastId });
+
+      // Now you have access to the result
+      console.log("data updated response", result);
+
+      // Return or use the result
+      // dismissedCallBack();
+      return result;
+    } catch (error) {
+      toast.error("Error");
+      throw error;
+    }
+  };
+
+  const deleteThis = async (id: string) => {
+    try {
+      const toastId = toast.loading("Loading...");
+      // Execute the service and get the actual data
+      const result = await deleteUser(id);
+      // Update toast with success
+      toast.success(`user has been deleted`, { id: toastId });
+
+      // Now you have access to the result
+      console.log("data updated response", result);
+      getUsers();
+    } catch (error) {}
   };
   return (
     <div className="">
@@ -250,8 +297,9 @@ export default function UserManagement() {
           name={(e: string) => setFullName(e)}
           didSelect={(e: string) => setSelectedBranch(e)}
           mobileNumberUser={(e: string) => setMobile(e)}
-          didSave={() => setupData()}
+          didSave={setupData}
         />
+
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <table className="w-[90%]  text-left text-sm">
             <thead>
@@ -286,12 +334,13 @@ export default function UserManagement() {
                       didSubmit={(e: any) => console.log()}
                       contactNumber={(e: any) => console.log(e)}
                     />
-                    {/* <Button
+                    <Button
+                      onClick={() => deleteThis(user.id)}
                       variant="outline"
                       className="text-xs font-light rounded-full"
                     >
-                      Manage
-                    </Button> */}
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               ))}

@@ -27,13 +27,14 @@ import { DropdownBranches } from "../LocalComponents/DropDownBranches";
 export default function AddUserPopup(props: any) {
   const [userName, setUsername] = React.useState<String>("");
   const [isOpen, setOpen] = React.useState<boolean>(false);
+
   const dismissedCallBack = () => {
-    props.didSave().then(() => {
+    props.didSave().then((e) => {
       setOpen(false);
     });
   };
   return (
-    <Dialog onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={isOpen}>
       <DialogTrigger asChild>
         <Button
           variant="default"
@@ -82,7 +83,7 @@ export default function AddUserPopup(props: any) {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Username
+              Email
             </Label>
             <Input
               id="username"
