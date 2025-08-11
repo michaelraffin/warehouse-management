@@ -11,32 +11,70 @@ import {
   siginWithUsername,
 } from "@/Utils/supabaseService";
 export default function LandingPage() {
-  const [username, setUsername] = React.useState<string>("");
   const router = useRouter();
+  const [username, setUsername] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [loadingStatus, setStatus] = React.useState<boolean>(false);
-  const tapLogin = () => {
+  const [rememberPassword, setRememberPassword] =
+    React.useState<boolean>(false);
+  React.useEffect(() => {
+    const storedUsername = localStorage.getItem("rememberedUsername");
+    const storedPassword = localStorage.getItem("rememberedPassword");
+    if (storedUsername && storedPassword) {
+      console.log(storedUsername, storedPassword);
+      setUsername(storedUsername);
+      setPassword(storedPassword);
+      setRememberPassword(true);
+      setTimeout(() => {
+        tapLogin(storedUsername, storedPassword);
+      }, 1000);
+    }
+  }, []);
+  const tapLogin = (us1: string, ps2: string) => {
     const service = async () => {
       try {
         let payload = {
-          email: username,
-          password: password,
+          email: us1,
+          password: ps2,
         };
-        return await siginWithUsername(payload);
+        if (rememberPassword) {
+          localStorage.setItem("rememberedUsername", us1);
+          localStorage.setItem("rememberedPassword", ps2);
+        } else {
+          localStorage.removeItem("rememberedUsername");
+          localStorage.removeItem("rememberedPassword");
+        }
+
+        let result = await siginWithUsername(payload);
+        return Number(result.userLevel.userType);
       } catch (error) {
         console.log(error);
         return null;
       }
     };
-    setStatus(true);
-    service().then((result: any) => {
-      setStatus(false);
-      if (result != null) {
-        router.push("/dashboard");
-      } else {
-        toast.error("Invalid credentials");
-      }
-    });
+
+    if (us1 == "" || ps2 === "") {
+      toast.error("Empty credentials");
+    } else {
+      setStatus(true);
+      toast.promise(service(), {
+        loading: "Logging in...",
+        success: (result) => {
+          console.log("result", result);
+          if ((result != null && result === 3) || result === 0) {
+            router.push("/dashboard");
+            return "Login successful!";
+          } else if (result === 1 || result === 2) {
+            setStatus(false);
+            return "Unauthorize Access!";
+          } else {
+            setStatus(false);
+            throw new Error("Invalid credentials");
+          }
+        },
+        error: "Invalid credentials",
+      });
+    }
   };
   const isOpacity = () => {
     if (loadingStatus) {
@@ -107,6 +145,7 @@ export default function LandingPage() {
                   disabled={loadingStatus}
                   type="checkbox"
                   id="remember"
+                  onChange={(e) => setRememberPassword(e.target.checked)}
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                 />
                 <label
@@ -123,7 +162,7 @@ export default function LandingPage() {
           </div>
           <Button
             disabled={loadingStatus}
-            onClick={() => tapLogin()}
+            onClick={() => tapLogin(username, password)}
             className="w-full bg-blue-500 mt-6 rounded-full"
           >
             Login

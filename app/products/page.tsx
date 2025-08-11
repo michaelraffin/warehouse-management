@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -38,7 +39,10 @@ import {
 import { getSession } from "../../Utils/serviceLogin";
 import { UserProfile } from "../../Utils/userProfile";
 import { axiosV2Local, axiosV2, url } from "../../Utils/axios";
-
+import {
+  StoreSettingsResponse,
+  ProductLitterCategory,
+} from "@/model/storeModel";
 interface UserDetails {
   firstName?: String;
   status?: any;
@@ -89,6 +93,9 @@ export default function TableDemo() {
   const [price, setProductPrice] = useState(0);
   const [productQuantity, setProducQuantity] = useState(null);
   const [imageLink, setImageLink] = useState<string>("");
+  const [productLitters, setProductCategory] = useState<
+    [ProductLitterCategory] | null
+  >(null);
   useEffect(() => {
     UserProfile().then((profile) => {
       setUser(profile);
@@ -100,6 +107,7 @@ export default function TableDemo() {
     });
 
     fetchProduct();
+    fetchStoreSettings();
   }, []);
   const fetchProduct = async () => {
     try {
@@ -123,19 +131,44 @@ export default function TableDemo() {
     }
   };
 
+  const fetchStoreSettings = async () => {
+    try {
+      let productList = await axiosV2("dsadsa").post(`${url}/store/Lessee`);
+
+      console.log("SHITT", productList.data.results[0]?.productLittersCategory);
+      setProductCategory(productList.data.results[0]?.productLittersCategory);
+      return productList;
+    } catch (error) {
+      console.log("error Product", error);
+    }
+  };
   const deleteThis = (e: ProductDetails) => {
     setStatus(true);
+
     const service = async () => {
-      if (e != null) {
-        e.className = "LesseeProduct";
-        let result = await axiosV2("dsadsa").post(
-          `${url}/deleteProduct/LesseeProduct`,
-          e,
-        );
-        setStatus(false);
-        return result;
+      try {
+        const response = await axios.post("/api/product/delete", {
+          className: "LesseeProduct", // MongoDB collection name
+          productID: e.productID,
+        });
+
+        console.log("Response:", response.data);
+        return response.status;
+      } catch (error) {
+        throw error;
       }
     };
+    // const service = async () => {
+    //   if (e != null) {
+    //     e.className = "LesseeProduct";
+    //     let result = await axiosV2("dsadsa").post(
+    //       `${url}/deleteProduct/LesseeProduct`,
+    //       e,
+    //     );
+    //     setStatus(false);
+    //     return result;
+    //   }
+    // };
 
     let newProduct: ProductDetails[] = products.filter(
       (item: ProductDetails) => item.productID != e.productID,
@@ -143,6 +176,7 @@ export default function TableDemo() {
     service().then(() => {
       setProducts(newProduct);
       toast.info("Successfully deleted");
+      setStatus(false);
     });
   };
   const didStatusUpdate = (e: any, id: any) => {
@@ -176,7 +210,7 @@ export default function TableDemo() {
     const service = async () => {
       try {
         let productList = await axiosV2("dsadsa").post(
-          `${url}/updateItem/LesseeProduct`,
+          `/updateItem/LesseeProduct`,
           payload,
         );
         return productList;
@@ -207,11 +241,14 @@ export default function TableDemo() {
           transactionLogs: null,
           restockLogs: null,
         };
-        let productList = await axiosV2("dsadsa").post(`${url}/Loogy/add`, {
-          details: payload,
-          className: "LesseeProduct",
-        });
 
+        let productList = await axios.post(
+          `/api/product/add`, // Dynamic route with type
+          {
+            details: payload,
+            className: "LesseeProduct",
+          },
+        );
         fetchProduct();
         return productList;
       } catch (error) {}
@@ -290,6 +327,7 @@ export default function TableDemo() {
         >
           <div className=" top-0 right-0 w-full">
             <AddProduct
+              litters={productLitters}
               selectedLiters={(e: any) => setProductLiters(e)}
               price={(e: any) => setProductPrice(e)}
               buttonTitle={"Add Product"}
@@ -484,38 +522,6 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      {/* <div className="ml-20 mt-20 w-1/2">
-        <div>
-          <div className="{order.receiptImageLink === undefined ? 'border-red-500 ' :  ''} group static max-w-sm overflow-hidden  rounded border bg-white transition duration-100 ease-in-out hover:border-l-4 hover:border-black hover:shadow-lg ">
-            <div className="px-6 py-4">
-              <div className="mb-2  font-bold">
-                <div className="grid-flow-col-2 mb-2 flex place-items-center  justify-between">
-                  Michael Raffin Paculba
-                  <p className="text-xs font-light">{"Agent"}</p>
-                </div>
-                <div>
-                  <p className="text-xs ">
-                    <span className="text-gray-600"></span>{" "}
-                    {false === undefined
-                      ? "no name"
-                      : "order.deliveryDetails.customerName"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-2 grid   grid-cols-4 "></div>
-            </div>
-            <div className="px-4 pb-2 pt-4">
-              <span className="mb-2 mr-2 inline-block rounded-full bg-white px-3 text-xs font-light text-gray-400">
-                {moment(new Date()).format("LLLL")}
-              </span>
-              <p className="right-4 top-2 ml-3 inline-block text-xs font-light text-gray-100  transition duration-100 ease-in-out group-hover:font-bold group-hover:text-black">
-                Tap to view full detail of order
-              </p>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <UserValidation />
     </div>
   );

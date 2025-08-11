@@ -1,4 +1,6 @@
 import Axios from "axios";
+import axiosLocalV2 from "axios";
+export const axiosLocal = axiosLocalV2;
 export const url = "https://loogyapi.digital"; //"http://localhost:9091"; //  `https://looky-search-api.onrender.com`; // `https://laiwarehouse.onrender.com`; ////process.env.stagingEndpoint
 // "http://192.168.1.148:9091"; //
 export const urlFirebase = "https://loogyapi.digital"; //process.env.urlFirebase;

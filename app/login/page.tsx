@@ -53,7 +53,7 @@ export default function LandingPage() {
                 />
               </div>
               <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <input
                     type="checkbox"
                     id="remember"
@@ -65,9 +65,9 @@ export default function LandingPage() {
                   >
                     Remember information
                   </label>
-                </div>
+                </div> */}
                 <Link href="/forgot-password" className="text-blue-600">
-                  Forgot password?
+                  Forgot password?z
                 </Link>
               </div>
             </div>

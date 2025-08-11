@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { axios, axiosLocal } from "../Utils/axios";
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -36,6 +37,15 @@ export const updatProfile = async (parameter) => {
     });
   } catch (error) {
     console.log("errrror updatProfile", error);
+  }
+};
+
+export const addAgentProfile = async (body) => {
+  try {
+    let agent = await axiosLocal.post("/api/agent", body);
+    return agent.data.results;
+  } catch (error) {
+    console.log("errrror addAgentProfile", error);
   }
 };
 export const signinAuth = async () => {

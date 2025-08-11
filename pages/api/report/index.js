@@ -1,16 +1,17 @@
-import db from "path-to-your-db-connection-file";
+import db from "@/../../Utils/mongodbservice";
 
+import { NextApiRequest, NextApiResponse } from "next";
 export default async function handler(req, res) {
-  // if (req.method !== "POST") {
-  //   return res.status(405).json({ error: "Method not allowed" });
-  // }
+  console.log("welcoem to Report");
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   const param = req.body;
-  const { className, type } = req.query; // Access URL params from `req.query`
-  const classType = db.get(className);
+  let className = "LesseeTransaction";
+  let type = param.type;
 
-  console.log("classname -> ", className);
-  console.log("param -> ", JSON.stringify(param));
+  const classType = db.get(className);
 
   try {
     const aggregationPipeline = [
@@ -58,15 +59,7 @@ export default async function handler(req, res) {
         },
       },
     ];
-
-    // Uncomment and customize this if you need to update a document:
-    // const updatedDoc = await classType.findOneAndUpdate(
-    //   { _id: param.reference },
-    //   { $set: { orderStatus: param.orderStatus } }
-    // );
-
     const aggregatedData = await classType.aggregate(aggregationPipeline);
-
     res.status(200).json({
       results: aggregatedData,
       count: aggregatedData.length,

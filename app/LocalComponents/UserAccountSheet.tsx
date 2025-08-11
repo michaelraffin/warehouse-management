@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import moment from "moment";
 import { Badge } from "@/components/ui/badge";
+import SecretKey from "@/app/LocalComponents/SecrectKey";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -16,6 +17,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ComboboxDemo } from "../LocalComponents/Sizes";
 import { DropdownBranches } from "../LocalComponents/DropDownBranches";
 import Map from "../LocalComponents/MapPickerV2";
@@ -42,6 +53,7 @@ interface UserInfo {
     provider_id: string;
     email_verified: boolean;
     contactNumber: string;
+    secret: string;
   };
   user_details: {
     name?: string;
@@ -89,7 +101,24 @@ export default function Add(props: any) {
   }, []);
   const didStatusUpdate = (e: boolean) => {
     setIsActive(!isActive);
+    if (userDetails != null) {
+      userDetails.application_info.accountStatus = e;
+    }
+    // application_info.accountStatus
     props.didSwitch(e);
+  };
+  const didUpdateUserType = (input: string) => {
+    const userType = input.split(",");
+    const userValueType = userType.slice(-1).join(",");
+    let userTypeData = { applicantType: userType[0], userType: userValueType };
+    if (userDetails != null) {
+      userDetails.application_info.applicantType = userType[0];
+      userDetails.userLevel = {
+        access: [],
+        userType: userValueType,
+      };
+    }
+    props.userRole(userTypeData);
   };
   const getBadgeType = (e: UserInfo | null) => {
     try {
@@ -135,7 +164,21 @@ export default function Add(props: any) {
       return null;
     }
   };
-
+  const getUserSelectValue = (userDetails?: String): string => {
+    if (userDetails === "admin") {
+      return "admin,0";
+    }
+    // Add other user types as needed
+    if (userDetails === "agent") {
+      return "agent,1";
+    }
+    if (userDetails === "stockman") {
+      return "stockman,2";
+    }
+    console.log("fallback");
+    // Default fallback
+    return "agent,1";
+  };
   return (
     <Sheet>
       <SheetTrigger className="   h-9 m-2 ">
@@ -148,7 +191,7 @@ export default function Add(props: any) {
           <SheetTitle>#{userDetails?.id.slice(-6)}</SheetTitle>
           <div className="grid-cols-2 flex ">
             <img
-              src={userDetails?.application_info.avatar_url}
+              src={userDetails?.application_info?.avatar_url}
               className=" h-10 w-10 rounded-lg  object-cover hover:shadow-lg "
             />
           </div>
@@ -179,8 +222,9 @@ export default function Add(props: any) {
                 <p>{userDetails?.application_info?.name}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-700">Account Type</p>
-                <p>{userDetails?.application_info?.applicantType}</p>
+                <p className="font-medium text-gray-700"></p>
+
+                {/*<p>{userDetails?.application_info?.applicantType}</p>*/}
               </div>
               <div>
                 <p className="font-medium text-gray-700">Assigned</p>
@@ -188,15 +232,33 @@ export default function Add(props: any) {
               </div>
               <div>
                 <p className="font-medium text-gray-700">Account Level</p>
-                <p>{userDetails?.member_details.level}</p>
+                {/* <p>{userDetails?.member_details.level}</p> */}
+                <Select
+                  defaultValue={getUserSelectValue(
+                    userDetails?.application_info?.applicantType,
+                  )}
+                  onValueChange={(e) => didUpdateUserType(e)}
+                >
+                  <SelectTrigger className="w-auto ring-0">
+                    <SelectValue placeholder="Select a Account type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Account type</SelectLabel>
+                      <SelectItem value="admin,0">Admin</SelectItem>
+                      <SelectItem value="agent,1">Agent</SelectItem>
+                      <SelectItem value="stockman,2">Stockman</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <p className="font-medium text-gray-700">Contact Number</p>
                 <p>{userDetails?.application_info?.contactNumber}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-700">Vendor</p>
-                <p>Unicode</p>
+                <p className="font-medium text-gray-700"></p>
+                {/*<p>Unicode</p>*/}
               </div>
               <div>
                 <p className="font-medium text-gray-700">Date created</p>
@@ -211,7 +273,19 @@ export default function Add(props: any) {
                   checked={isActive}
                 />
               </div>
+              {/*<div>
+                <p className="font-medium text-gray-700">Secret</p>
+                <p>{userDetails?.application_info?.secret}</p>
+              </div>*/}
             </div>
+
+            <SecretKey
+              secretKey={
+                userDetails?.application_info?.secret != null
+                  ? userDetails?.application_info?.secret
+                  : "*******"
+              }
+            />
           </div>
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 

@@ -113,18 +113,20 @@ export default function DeliveryDetailsSheet(props: any) {
 
   const renderFiles = (transactionDetails: Order) => {
     let counter: number = 0;
-    return transactionDetails?.attachedFile.map((item) => {
-      counter += 1;
-      return (
-        <a key={counter} href={item} download={item}>
-          <img
-            key={counter}
-            src={item}
-            className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
-          />
-        </a>
-      );
-    });
+    if (transactionDetails?.attachedFile != undefined) {
+      return transactionDetails?.attachedFile.map((item) => {
+        counter += 1;
+        return (
+          <a key={counter} href={item} download={item}>
+            <img
+              key={counter}
+              src={item}
+              className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
+            />
+          </a>
+        );
+      });
+    }
   };
   return (
     <Sheet>
@@ -175,7 +177,7 @@ export default function DeliveryDetailsSheet(props: any) {
           <div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Date Created</p>
             <p className="text-sm text-gray-500">
-              {props.orderDetails.transaction.date_created}
+              {props.orderDetails?.transaction?.date_created}
             </p>
           </div>
 
@@ -200,7 +202,7 @@ export default function DeliveryDetailsSheet(props: any) {
             <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
               <div>
                 <p className="font-medium text-gray-700">Sold to</p>
-                <p> {props.orderDetails.vendor.vendorTitle}</p>
+                <p> {props.orderDetails.vendor?.vendorTitle}</p>
               </div>
               <div>
                 <p className="font-medium text-gray-700">Order Number</p>
@@ -210,7 +212,7 @@ export default function DeliveryDetailsSheet(props: any) {
               </div>
               <div>
                 <p className="font-medium text-gray-700">Agent Assignee</p>
-                <p> {props.orderDetails.agent.agentOwner}</p>
+                <p> {props.orderDetails.agent?.agentOwner}</p>
               </div>
               <div>
                 <p className="font-medium text-gray-700">Location Number</p>
