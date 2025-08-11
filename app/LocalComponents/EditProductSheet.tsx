@@ -201,7 +201,7 @@ export default function ProductDetailsSheet(props: any) {
           </div>
           <Separator className="my-4" />
           {/* General Info */}
-          <div className="space-y-3">
+          <div className="space-y-3 hidden">
             <h3 className="font-semibold text-gray-800">General</h3>
             <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
               <div>

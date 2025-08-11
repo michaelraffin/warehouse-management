@@ -18,13 +18,17 @@ import { DropdownLiters } from "../LocalComponents/DropDownLiters";
 import Map from "../LocalComponents/MapPickerV2";
 // import {useForm} from 'react-hook-form'
 import { Textarea } from "@/components/ui/textarea";
-
+import {
+  StoreSettingsResponse,
+  ProductLitterCategory,
+} from "@/model/storeModel";
 type ProductDetails = {
   example: string;
   exampleRequired: string;
 };
 
 export default function Add(props: any) {
+  console.log("props.litters", props.litters);
   const submitItem = () => {
     props.didSubmit();
     setLogo("");
@@ -35,6 +39,9 @@ export default function Add(props: any) {
   //   watch,
   //   formState: { errors },
   // } = useForm<ProductDetails>()
+  const [productLitters, setProductCategory] = useState<
+    [ProductLitterCategory] | null
+  >(props.litters);
   const [isLoading, setStatus] = useState(false);
   const [logo, setLogo] = useState("");
   const didUpload = (e: any) => {
@@ -110,7 +117,10 @@ export default function Add(props: any) {
             />
           </div>
 
-          <ComboboxDemo selectedItem={(e: string) => props.selectedLiters(e)} />
+          <ComboboxDemo
+            litters={props.litters}
+            selectedItem={(e: string) => props.selectedLiters(e)}
+          />
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 
           {/* <div className="flex items-center mb-4">

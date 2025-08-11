@@ -111,8 +111,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import {
+  StoreSettingsResponse,
+  ProductLitterCategory,
+} from "@/model/storeModel";
 export function ComboboxDemo(props: any) {
+  const [productLitters, setProductCategory] = React.useState<
+    [ProductLitterCategory] | null
+  >(props.litters);
+  console.log("productLitters", productLitters, props);
   return (
     <Select>
       <SelectTrigger className="w-full">
@@ -121,7 +128,7 @@ export function ComboboxDemo(props: any) {
       <SelectContent onChange={(e) => console.log(e)}>
         <SelectGroup>
           <SelectLabel>Select Litter</SelectLabel>
-          {frameworks.map((framework) => (
+          {productLitters?.map((framework) => (
             // <CommandItem
             //   key={framework.value}
             //   value={framework.value}
