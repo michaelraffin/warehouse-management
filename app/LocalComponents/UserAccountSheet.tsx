@@ -164,7 +164,21 @@ export default function Add(props: any) {
       return null;
     }
   };
-
+  const getUserSelectValue = (userDetails?: String): string => {
+    if (userDetails === "admin") {
+      return "admin,0";
+    }
+    // Add other user types as needed
+    if (userDetails === "agent") {
+      return "agent,1";
+    }
+    if (userDetails === "stockman") {
+      return "stockman,2";
+    }
+    console.log("fallback");
+    // Default fallback
+    return "agent,1";
+  };
   return (
     <Sheet>
       <SheetTrigger className="   h-9 m-2 ">
@@ -177,7 +191,7 @@ export default function Add(props: any) {
           <SheetTitle>#{userDetails?.id.slice(-6)}</SheetTitle>
           <div className="grid-cols-2 flex ">
             <img
-              src={userDetails?.application_info.avatar_url}
+              src={userDetails?.application_info?.avatar_url}
               className=" h-10 w-10 rounded-lg  object-cover hover:shadow-lg "
             />
           </div>
@@ -208,8 +222,9 @@ export default function Add(props: any) {
                 <p>{userDetails?.application_info?.name}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-700">Account Type</p>
-                <p>{userDetails?.application_info?.applicantType}</p>
+                <p className="font-medium text-gray-700"></p>
+
+                {/*<p>{userDetails?.application_info?.applicantType}</p>*/}
               </div>
               <div>
                 <p className="font-medium text-gray-700">Assigned</p>
@@ -218,7 +233,12 @@ export default function Add(props: any) {
               <div>
                 <p className="font-medium text-gray-700">Account Level</p>
                 {/* <p>{userDetails?.member_details.level}</p> */}
-                <Select onValueChange={(e) => didUpdateUserType(e)}>
+                <Select
+                  defaultValue={getUserSelectValue(
+                    userDetails?.application_info?.applicantType,
+                  )}
+                  onValueChange={(e) => didUpdateUserType(e)}
+                >
                   <SelectTrigger className="w-auto ring-0">
                     <SelectValue placeholder="Select a Account type" />
                   </SelectTrigger>
@@ -237,8 +257,8 @@ export default function Add(props: any) {
                 <p>{userDetails?.application_info?.contactNumber}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-700">Vendor</p>
-                <p>Unicode</p>
+                <p className="font-medium text-gray-700"></p>
+                {/*<p>Unicode</p>*/}
               </div>
               <div>
                 <p className="font-medium text-gray-700">Date created</p>

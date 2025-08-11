@@ -45,6 +45,7 @@ interface UserInfo {
     provider_id: string;
     email_verified: boolean;
     agentID: String;
+    applicantType?: String;
   };
   user_details: {
     name?: string;
@@ -56,6 +57,8 @@ interface UserInfo {
   team_info: null | unknown; // Update 'unknown' if you know the type of team_info
   company_info: null | unknown; // Update 'unknown' if you know the type of company_info
   userLevel: null | unknown; // Update 'unknown' if you know the type of userLevel
+  applicantType?: String;
+  userType?: String;
 }
 
 const users = [
@@ -115,6 +118,26 @@ export default function UserManagement() {
     services();
   };
   const dismissedCallBack = async () => {};
+  const updateuserLevel = (fromUser: UserInfo, toUser: UserInfo) => {
+    if (fromUser.application_info) {
+      fromUser.application_info.applicantType = toUser.applicantType;
+    }
+    if (fromUser.userLevel) {
+      fromUser.userType = toUser.userType;
+    }
+    console.log(fromUser);
+    const service = async () => {
+      const userUpdate = await updateUser(fromUser, true);
+      setUsers([]);
+      getUsers();
+      return userUpdate;
+    };
+    service().then((status) => {
+      toast.warning(
+        status ? "Account has been updated" : "Account has been updated",
+      );
+    });
+  };
   const updateUserStatus = (e: UserInfo, status: boolean) => {
     const service = async () => {
       // e.application_info.accountStatus = status;
@@ -307,7 +330,7 @@ export default function UserManagement() {
               <tr className="bg-gray-50 border-b">
                 <th className="px-4 py-2">User name</th>
                 <th className="px-4 py-2">Email</th>
-                <th className="px-4 py-2">Last active</th>
+                <th className="px-4 py-2">Type</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Actions</th>
               </tr>
@@ -318,12 +341,12 @@ export default function UserManagement() {
                   <td className="px-4 py-2">#{user.id.slice(-6)} </td>
                   <td className="px-4 py-2">{user.application_info?.name}</td>
                   <td className="px-4 py-2">
-                    {user.user_details?.contactNumber}
+                    {user.application_info?.applicantType}
                   </td>
                   <td className="px-4 py-2">{getBadgeType(user)}</td>
                   <td className="px-4 py-2">
                     <ViewUserSheet
-                      userRole={(e: UserInfo) => updateUserStatus(user, false)}
+                      userRole={(e: UserInfo) => updateuserLevel(user, e)}
                       didSwitch={(e: boolean) => updateUserStatus(user, e)}
                       data={user}
                       didSelect={(e: string) => console.log(e)}
