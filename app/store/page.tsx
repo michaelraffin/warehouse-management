@@ -1,176 +1,57 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import Head from "next/head";
-import UserValidation from "@/app/LocalComponents/UserValidation";
-import { Label } from "@/components/ui/label";
-import SideNavigation from "@/app/SideNavigation";
-import moment from "moment";
-import HeaderPage from "@/app/LocalComponents/HeaderPage";
-import AddStore from "@/app/LocalComponents/AddStoreSheet";
-import BottomDrawerSheet from "@/app/LocalComponents/BottomDrawerSheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import RequestSheet from "@/app/LocalComponents/RequestSheet";
-// import { useToast } from "@/components/ui/use-toast";
-import { Switch } from "@/components/ui/switch";
-import { Toaster, toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { UploadImageService } from "../../Utils/image_uploader";
-import Map from "../LocalComponents/MapPickerV2";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { getSession } from "../../Utils/serviceLogin";
-import { UserProfile } from "../../Utils/userProfile";
-import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
-import Link from "next/link";
-import LocalChart from "../LocalComponents/Charts";
-import {
-  PolarGrid,
-  PolarRadiusAxis,
-  RadialBar,
-  RadialBarChart,
-} from "recharts";
+  Search,
+  Plus,
+  Filter,
+  MoreHorizontal,
+  Building2,
+  Mail,
+  Check,
+  Loader2,
+} from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
-
-const chartData = [
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-];
+// TypeScript interfaces
 interface TransactionLog {
-  transactionID: string; // Assuming transactionID is a string
-}
-interface ToastData {
-  title: string;
-  description: string; // Assuming transactionID is a string
-}
-interface UserDetails {
-  firstName?: String;
-  status?: any;
-}
-interface UserProfile {
-  user_details?: UserDetails;
-}
-
-export interface SubBranch {
-  branchID: number;
-  branchDisplayName: string;
-  status: boolean;
-}
-
-export interface Branch {
-  branchID: number;
-  city: string;
-  subBranches: SubBranch[];
-}
-export interface LeeaseBranches {
-  _id: string;
-  branches: Branch[];
+  id: string;
+  amount: number;
+  date: string;
+  description: string;
 }
 
 interface Vendor {
   id: string;
   branch: string;
   vendorDescription: string;
-  _id: string; // The unique identifier for the product
-  vendorID: string; // The unique identifier for the vendor
-  vendorTitle: string; // The title of the vendor
-  paymentMethod: string; // The payment method used
-  stocks: string; // The number of stocks available
-  img: string; // The image URL for the product
-  status: boolean; // The availability status of the product
-  totalSpent: number; // The total amount spent
-  transactionLogs: TransactionLog[]; // An array of transaction logs
+  _id: string;
+  vendorID: string;
+  vendorTitle: string;
+  paymentMethod: string;
+  stocks: string;
+  img: string;
+  status: boolean;
+  totalSpent: number;
+  transactionLogs: TransactionLog[];
   coordinates: { lat: number; lng: number };
   lat: number;
   lng: number;
   paymentStatus: string;
   totalAmount: number;
 }
-export default function TableDemo() {
-  // const { toast } = useToast();
-  const [branches, setBranches] = useState<LeeaseBranches[]>([]);
+import SideNavigation from "@/app/SideNavigation";
+import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
+const StocksUI = () => {
+  const [activeTab, setActiveTab] = useState("Order Stock");
   const [products, setProducts] = useState<Vendor[]>([]);
-  const [vendorReference, setProductsReference] = useState<Vendor[]>([]);
-  const [userProfile, setUser] = useState<UserProfile | null>(null);
-  const [status, setStatus] = useState(true);
-  const [productTitle, setProducTitle] = useState<String | null>(null);
-  const [productQuantity, setProducQuantity] = useState(null);
-  const [contactNumber, setContactNumber] = useState<String | null>(null);
-  const [storeCoordinates, setStoreCoordinates] = useState(null);
-  const [imageLink, setImageLink] = useState<String | null>(null);
-  const [vendorBranch, setVendorBranch] = useState<String | null>(null);
+  const [productsReference, setProductsReference] = useState<Vendor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  let parentClass = "LesseeVendor";
-  useEffect(() => {
-    UserProfile().then((profile) => {
-      setUser(profile);
-    });
-  }, [userProfile]);
-
-  useEffect(() => {
-    getSession().then((data) => {
-      console.log("data", data);
-    });
-
-    fetchStores();
-    // fetchBranches();
-  }, []);
-
-  const fetchVendors = async () => {
-    try {
-      let data = {
-        local_id: "e",
-        queryType: "all",
-        storeOwner: "storeOwner",
-        isAPI: true,
-        referenceOrder: "e",
-        number: 20,
-        showLimit: true,
-        queryData: { status: "orderStatus", userReference: "e" },
-      };
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/store/LesseeVendor`,
-      );
-      // setVendors(productList.data.results);
-    } catch (error) {
-      console.log("error Product", error);
-    }
-  };
+  // Your existing fetchStores function (adapted)
   const fetchStores = async () => {
     try {
-      let data = {
+      setLoading(true);
+      const data = {
         local_id: "e",
         queryType: "all",
         storeOwner: "storeOwner",
@@ -180,577 +61,441 @@ export default function TableDemo() {
         showLimit: true,
         queryData: { status: "orderStatus", userReference: "e" },
       };
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/store/${parentClass}`,
-      );
-      setProducts(productList.data.results);
-      setProductsReference(productList.data.results);
-      setStatus(false);
-    } catch (error) {
-      console.log("error Product", error);
-    }
-  };
-  const fetchBranches = async () => {
-    try {
-      let data = {
-        local_id: "e",
-        queryType: "all",
-        storeOwner: "storeOwner",
-        isAPI: true,
-        referenceOrder: "e",
-        number: 20,
-        showLimit: true,
-        // queryData: { status: "orderStatus", userReference: "e" },
-      };
-      let productList = await axiosV2("dsadsa").post(
-        `${url}/store/LesseConfig`,
-      );
-      setBranches(productList.data.results);
-      // setProductsReference(productList.data.results);
-      // setStatus(false);
-    } catch (error) {
-      console.log("error Product", error);
-    }
-  };
-  const updateVendorService = async (data: Vendor) => {
-    try {
-      if (data === null) {
-        toast.error("No vendor data provided.");
-        return;
-      }
-      data.status = !data.status;
-      let agentResponse = await axios.post(`/updateItem/${parentClass}`, data);
 
-      return agentResponse.data.results;
-    } catch (error) {
-      toast.error("Something went wrong...");
-    }
-  };
-  const didStatusUpdate = (e: any, id: any) => {
-    console.log(id);
-    let updatedList = products.map((item: Vendor) => {
-      if (item.vendorID === id) {
-        return { ...item, status: e };
-      }
-      return item;
-    });
-    setProducts(updatedList);
-    setProductsReference(updatedList);
-    let updateThis = products.find((item: Vendor) => item.vendorID === id);
-    if (updateVendorService.length != 0) {
-      toast.promise(updateVendorService(updateThis!), {
-        loading: "Loading...",
-        success: (data) => {
-          // setTransactionDetails(data);
-          setStatus(false);
-          console.log("data updated response", data);
-          return `${id} Item has been updated`;
+      // Replace with your actual API call
+      const productList = await fetch(`${url}/store/LesseeVendor`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        error: "Error",
+        body: JSON.stringify(data),
       });
+
+      const response = await productList.json();
+      setProducts(response.results || []);
+      setProductsReference(response.results || []);
+      setLoading(false);
+    } catch (error) {
+      console.log("error Product", error);
+      setLoading(false);
     }
   };
-  const didSearchedStore = (e: any, keyword: any) => {
-    if (keyword.length >= 2) {
-      const updatedList = products.filter(
-        (item) =>
-          item.vendorTitle.toLowerCase().includes(keyword.toLowerCase()) ||
-          item.vendorID.toLowerCase().includes(keyword.toLowerCase()),
-        // item.vendorDescription.toLowerCase().includes(keyword.toLowerCase()
-        // ),
-      );
-      setProducts(updatedList);
+
+  useEffect(() => {
+    fetchStores();
+  }, []);
+
+  // Filter products based on search term
+  const filteredProducts = products.filter(
+    (product) =>
+      product.vendorTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.vendorID.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  // Calculate totals for the dashboard
+  const totalAssetValue = products.reduce(
+    (sum, product) => sum + (product.totalAmount || 0),
+    0,
+  );
+  const inStockCount = products.filter(
+    (p) => p.status && parseInt(p.stocks) > 10,
+  ).length;
+  const lowStockCount = products.filter(
+    (p) => p.status && parseInt(p.stocks) <= 10 && parseInt(p.stocks) > 0,
+  ).length;
+  const outOfStockCount = products.filter(
+    (p) => !p.status || parseInt(p.stocks) === 0,
+  ).length;
+
+  const getStatusInfo = (vendor: Vendor) => {
+    const stockCount = parseInt(vendor.stocks) || 0;
+    const isActive = vendor.status;
+
+    if (!isActive || stockCount === 0) {
+      return {
+        status: "OUT OF STOCK",
+        color: "text-red-600 bg-red-100",
+        progress: 0,
+      };
+    } else if (stockCount <= 10) {
+      return {
+        status: "LOW STOCK",
+        color: "text-orange-600 bg-orange-100",
+        progress: 30,
+      };
     } else {
-      setProducts(vendorReference);
+      return {
+        status: "IN STOCK",
+        color: "text-green-600 bg-green-100",
+        progress: 100,
+      };
     }
   };
-  const generateRandomString = () => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
 
-    for (let i = 0; i < 8; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters.charAt(randomIndex);
+  const getPaymentStatusColor = (paymentStatus: string) => {
+    switch (paymentStatus?.toLowerCase()) {
+      case "paid":
+      case "completed":
+        return "text-green-600 bg-green-100";
+      case "pending":
+        return "text-yellow-600 bg-yellow-100";
+      case "failed":
+      case "cancelled":
+        return "text-red-600 bg-red-100";
+      default:
+        return "text-gray-500 bg-gray-100";
     }
-
-    return result;
-  };
-  const displayAlert = () => {
-    var toastData: ToastData = {
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
-    };
-    // toast({message:"Scheduled: Catch up"})
-    // toast({
-    //   position: "bottom", // Example position; can also be "top", "top-right", etc.
-    //   render: () => (
-    //     <div
-    //       style={{
-    //         padding: "1em",
-    //         backgroundColor: "#3182ce",
-    //         color: "white",
-    //         borderRadius: "8px",
-    //       }}
-    //     >
-    //       <strong>Scheduled: Catch up</strong>
-    //       <p>Friday, February 10, 2023 at 5:57 PM</p>
-    //     </div>
-    //   ),
-    // });
   };
 
-  const addVendor = () => {
-    const asyncService = async () => {
-      try {
-        let payload = {
-          vendorID: generateRandomString(),
-          vendorTitle: productTitle,
-          vendorDescription: productQuantity,
-          vendorContactNumber: contactNumber,
-          paymentMethod: "N/A",
-          branch: vendorBranch,
-          stocks: 0,
-          img: imageLink,
-          status: false,
-          coordinates: storeCoordinates,
-        };
-        let response = await axios.post(`/api/item/add`, {
-          details: payload,
-          className: "LesseeVendor",
-        });
-        fetchStores();
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "PHP",
+    }).format(amount);
+  };
 
-        return response;
-      } catch (error) {}
-    };
-    // asyncService().then((item) => {
-    //   toast.success("Vendor has been added");
-
-    // });
-
-    toast.promise(asyncService(), {
-      loading: `Adding ${productTitle}...`,
-      success: (data) => {
-        setStatus(false);
-        return `${productTitle} Item has been updated`;
-      },
-      error: "Error",
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
+
+  function getLatestTransaction(logs?: TransactionLog[]): string | null {
+    return logs?.[logs.length - 1]?.transactionID ?? null;
+  }
+
+  const grandTotalVendorSpent = filteredProducts.reduce(
+    (sum, vendor) => sum + (vendor.totalSpent ?? 0),
+    0,
+  );
+
   return (
-    <div className="">
+    <>
+      {" "}
       <SideNavigation />
-      <HeaderPage
-        title={`Your Vendors ! 👋 ${userProfile != null ? userProfile?.user_details?.firstName : ""}`}
-        subtitle=""
-      />
-      {/* <Map initialLocation={{ lat: 124.238151, lng: 8.226861 }} /> */}
-      <Tabs
-        defaultValue="AllProducts"
-        className="w-[90] ml-24 bt-60 bg-white rounded-lg "
-      >
-        <TabsList className="rounded-full mb-20">
-          <div className="flex w-full max-w-sm items-center space-x-2 mr-2">
-            <Input
-              type="text"
-              placeholder="Search"
-              className="rounded-full"
-              onChange={(e) => didSearchedStore(e.target.value, e.target.value)}
-            />
-
-            {/* <Button type="submit" className='text-xs'>Search</Button> */}
-          </div>
-
-          <TabsTrigger className="rounded-full" value="AllProducts">
-            All Vendor{" "}
-            <span className="text-red-500 ml-2 font-bold">
-              {products.length}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger className="rounded-full" value="Active">
-            Active{" "}
-            <span className="text-red-500 ml-2 font-bold">
-              {products.filter((item) => item.status).length}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger className="rounded-full" value="inActive">
-            In-Active{" "}
-            <span className="text-red-500 ml-2 font-bold">
-              {products.filter((item) => item.status === false).length}
-            </span>
-          </TabsTrigger>
-
-          {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
-        </TabsList>
-        {/* <BottomDrawerSheet /> */}
-        <AddStore
-          didSelect={(e: string) => setVendorBranch(e)}
-          buttonTitle={"Add Store"}
-          upload_here={UploadImageService}
-          image_file={(e: any) => setImageLink(e)}
-          title={(e: any) => setProducTitle(e)}
-          quantity={(e: any) => setProducQuantity(e)}
-          didSubmit={(e: any) => addVendor()}
-          contactNumber={(e: any) => setContactNumber(e)}
-        />
-        <TabsContent
-          value="AllProducts"
-          className={` ${status ? "opacity-20" : "opacity-100"}   `}
-        >
-          <Table className="mb-20">
-            <TableCaption>{products.length} vendors found</TableCaption>
-            <TableHeader className="bg-gray-100 rounded-tl-md">
-              <TableRow>
-                <TableHead className="w-[200px] ">Vendor </TableHead>
-                <TableHead>Logo</TableHead>
-                <TableHead className="text-right">Stocks</TableHead>
-                <TableHead className="text-center">Total</TableHead>
-                <TableHead className="text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.reverse().map((invoice: Vendor) => (
-                <TableRow key={invoice.id}>
-                  <TableCell className="font-medium text-blue-500">
-                    <a
-                      href={`store/${invoice.vendorID}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <p className="text-xs font-light">
-                        {invoice.vendorTitle}
-                      </p>
-                      <p className="text-gray-400 text-xs"> {invoice.branch}</p>
-                    </a>
-                  </TableCell>
-                  <TableCell
-                    className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                  >
-                    <a
-                      href={`store/${invoice.vendorID}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        src={invoice.img}
-                        className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
-                      />
-                    </a>
-                  </TableCell>
-
-                  <TableCell className="text-right text-xs text-red-500 font-light">
-                    <div className="w-60 h-20">
-                      <LocalChart />
-                    </div>
-                    {/* {invoice.vendorDescription} */}
-                    {/* {invoice.stocks} cases left */}
-                    <Badge className="bg-red-500 ml-4 text-xs">
-                      Out of stocks
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <p className="font-bold text-gray-600">
-                      {invoice.totalSpent != undefined
-                        ? invoice.totalSpent.toLocaleString("en-PH", {
-                            style: "currency",
-                            currency: "PHP",
-                          })
-                        : Number(0).toLocaleString("en-PH", {
-                            style: "currency",
-                            currency: "PHP",
-                          })}
-                    </p>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {/* {invoice.totalAmount} */}
-
-                    <Switch
-                      onCheckedChange={(e) =>
-                        didStatusUpdate(e, invoice.vendorID)
-                      }
-                      checked={invoice.status}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TabsContent>
-
-        <TabsContent
-          value="Active"
-          className={status ? `opacity-20` : `opacity-100`}
-        >
-          <Table className="mb-20">
-            <TableCaption>
-              {products.filter((item) => item.status === true).length} vendors
-              found
-            </TableCaption>
-            <TableHeader className="bg-gray-100 rounded-tl-md">
-              <TableRow>
-                <TableHead className="w-[200px] ">Vendor </TableHead>
-                <TableHead>Logo</TableHead>
-                <TableHead className="text-right">Stocks</TableHead>
-                <TableHead className="text-center">Total</TableHead>
-                <TableHead className="text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products
-                .filter((item: Vendor) => item.status)
-                .map((invoice) => (
-                  <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">
-                      <a
-                        href={`store/${invoice.vendorID}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <p className="text-xs font-light">
-                          {invoice.vendorTitle}
-                        </p>
-                      </a>
-                    </TableCell>
-                    <TableCell
-                      className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                    >
-                      <a
-                        href={`store/${invoice.vendorID}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={invoice.img}
-                          className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
-                        />
-                      </a>
-                    </TableCell>
-                    <TableCell className="text-right text-md text-red-500 font-light">
-                      <div className="w-60 h-20">
-                        <LocalChart />
-                      </div>
-                      {invoice.vendorDescription}
-                      <Badge className="bg-red-500 ml-4">Out of stock</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <p className="font-bold text-gray-600">
-                        {invoice.totalSpent != undefined
-                          ? invoice.totalSpent.toLocaleString("en-PH", {
-                              style: "currency",
-                              currency: "PHP",
-                            })
-                          : Number(0).toLocaleString("en-PH", {
-                              style: "currency",
-                              currency: "PHP",
-                            })}
-                      </p>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {/* {invoice.totalAmount} */}
-                      <Switch
-                        onCheckedChange={(e) =>
-                          didStatusUpdate(e, invoice.vendorID)
-                        }
-                        checked={invoice.status}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TabsContent>
-        <TabsContent value="inActive">
-          <Table className="mb-20">
-            <TableCaption>
-              {products.filter((item) => item.status === false).length} vendors
-              found
-            </TableCaption>
-            <TableHeader className="bg-gray-100 rounded-tl-md">
-              <TableRow>
-                <TableHead className="w-[200px] ">Vendor </TableHead>
-                <TableHead>Logo</TableHead>
-                <TableHead className="text-right">Stocks</TableHead>
-                <TableHead className="text-center">Total</TableHead>
-                <TableHead className="text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products
-                .filter((item) => item.status === false)
-                .map((invoice) => (
-                  <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">
-                      <a
-                        href={`store/${invoice.vendorID}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <p className="text-xs font-light">
-                          {invoice.vendorTitle}
-                        </p>
-                      </a>
-                    </TableCell>
-                    <TableCell
-                      className={`text-xs ${invoice?.paymentStatus === "Approved" ? "text-blue-600" : "text-red-500"}`}
-                    >
-                      <a
-                        href={`store/${invoice.vendorID}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={invoice.img}
-                          className=" w-10 h-10 object-cover  hover:shadow-lg rounded-lg "
-                        />
-                      </a>
-                    </TableCell>
-                    <TableCell className="text-right text-md text-red-500 font-light">
-                      <div className="w-60 h-20">
-                        <LocalChart />
-                      </div>
-                      {invoice.vendorDescription}
-                      <Badge className="bg-red-500 ml-4">Out of stock</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <p className="font-bold text-gray-600">
-                        {invoice.totalSpent != undefined
-                          ? invoice.totalSpent.toLocaleString("en-PH", {
-                              style: "currency",
-                              currency: "PHP",
-                            })
-                          : Number(0).toLocaleString("en-PH", {
-                              style: "currency",
-                              currency: "PHP",
-                            })}
-                      </p>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {/* {invoice.totalAmount} */}
-                      <Switch
-                        onCheckedChange={(e) =>
-                          didStatusUpdate(e, invoice.vendorID)
-                        }
-                        checked={invoice.status}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TabsContent>
-
-        <TabsContent value="Stockman">Change your password here.</TabsContent>
-        <TabsContent value="Cashier">Change your password here.</TabsContent>
-      </Tabs>
-
-      {/* <div className="w-1/2 ml-20 mt-20">
-        // on:click={() => setProduct(order)}
-        <div>
-          <div className="max-w-sm group static rounded overflow-hidden hover:border-black hover:border-l-4  hover:shadow-lg bg-white transition duration-100 ease-in-out  {order.receiptImageLink === undefined ? 'border-red-500 border ' : ''} ">
-            <div className="px-6 py-4">
-              <div className="font-bold  mb-2">
-                <div className="flex grid-flow-col-2 justify-between place-items-center  mb-2">
-                  Michael Raffin Paculba
-                  <p className="text-xs font-light">{"Agent"}</p>
+      <div className="min-h-screen bg-gray-50  ml-16">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-8">
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Stores/Vendors
+              </h1>
+              <div className="flex items-center space-x-4 hidden">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    placeholder="Search for anything here..."
+                    className="pl-10 pr-4 py-2 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
                 </div>
+                <button className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div className=" items-center space-x-4 hidden">
+              <span className="text-sm text-gray-500">1/4</span>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
                 <div>
-                  <p className="text-xs ">
-                    <span className="text-gray-600"></span>{" "}
-                    {false === undefined
-                      ? "no name"
-                      : "order.deliveryDetails.customerName"}
-                  </p>
+                  <div className="text-sm font-medium">Darrell Steward</div>
+                  <div className="text-xs text-gray-500">Super admin</div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-4   mt-2 "></div>
-            </div>
-            <div className="px-4 pt-4 pb-2">
-              <span className="inline-block bg-white rounded-full px-3 font-light text-xs text-gray-400 mr-2 mb-2">
-                {moment(new Date()).format("LLLL")}
-              </span>
-              <p
-                className="text-xs font-light text-gray-100 ml-3 transition duration-100 ease-in-out  group-hover:font-bold group-hover:text-black inline-block top-2 right-4"
-                stye="fontSize:20"
-              >
-                Tap to view full detail of order
-              </p>
             </div>
           </div>
         </div>
-      </div> */}
-      {/* <div className=" ml-20 " mainStyle={"w-1/2  h-full "}>
-        <Map coordinates={(e) => setStoreCoordinates(e)} />
-      </div> */}
-      <Toaster />
-      <UserValidation />
-    </div>
-  );
-}
 
-const productsz = [
-  {
-    local_id: "INV001",
-    paymentStatus: "Approved",
-    stocks: 23,
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-    img: "https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
-    status: false,
-  },
-  {
-    local_id: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-    stocks: 10,
-    img: "https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
-    status: false,
-  },
-  {
-    local_id: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    stocks: 20,
-    paymentMethod: "Bank Transfer",
-    img: "https://download.sepehranformatic.com/2021/04/warehouse-logo-sepehr.jpg",
-    status: true,
-  },
-  {
-    local_id: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    stocks: 23,
-    paymentMethod: "Credit Card",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh4Mxg9RBGi80Yt06UKs0vU_lSPh-ilp4KCA&usqp=CAU",
-    status: true,
-  },
-  {
-    local_id: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-    stocks: 23,
-    img: "https://www.spencers.in/media/catalog/product/1/1/1193105_1.jpg",
-    status: true,
-  },
-  {
-    local_id: "INV006",
-    paymentStatus: "Pending",
-    ".": "$200.00",
-    paymentMethod: "Bank Transfer",
-    stocks: 23,
-    img: "https://www.cokesolutions.com/content/dam/cokesolutions/us/images/Products/Coca-Cola-glass.jpg",
-    status: false,
-  },
-  {
-    local_id: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-    stocks: 23,
-    img: "https://134739296.cdn6.editmysite.com/uploads/1/3/4/7/134739296/s867280269857904318_p617_i1_w10000.png?width=2560",
-    status: false,
-  },
-];
+        <div className="px-6 py-6">
+          {/* Stats Section */}
+          <div className="bg-white rounded-lg p-6 mb-6">
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 font-semibold text-sm">P</span>
+              </div>
+              <div>
+                <div className="text-sm text-gray-500 uppercase tracking-wide">
+                  TOTAL VENDOR SPENT
+                </div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(grandTotalVendorSpent)}
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <div className="text-sm text-gray-700 mb-2">
+                {products.length} Vendors
+              </div>
+              <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="bg-cyan-400"
+                  style={{
+                    width: `${products.length > 0 ? (inStockCount / products.length) * 100 : 0}%`,
+                  }}
+                ></div>
+                <div
+                  className="bg-orange-400"
+                  style={{
+                    width: `${products.length > 0 ? (lowStockCount / products.length) * 100 : 0}%`,
+                  }}
+                ></div>
+                <div
+                  className="bg-red-400"
+                  style={{
+                    width: `${products.length > 0 ? (outOfStockCount / products.length) * 100 : 0}%`,
+                  }}
+                ></div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-600 mt-2">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full mr-1"></div>
+                  In stock: {inStockCount}
+                </div>
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full mr-1"></div>
+                  Low stock: {lowStockCount}
+                </div>
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-red-400 rounded-full mr-1"></div>
+                  Out of stock: {outOfStockCount}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="bg-white rounded-lg">
+            {/* Tabs */}
+            <div className="border-b border-gray-200">
+              <nav className="flex px-6">
+                {["Inventory", "Order Stock"].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`py-4 px-4 text-sm font-medium border-b-2 ${
+                      activeTab === tab
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            {/* Search and Actions */}
+            <div className="px-6 py-4 flex items-center justify-between">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="Search vendors..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div className="flex items-center space-x-4">
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+                  <Filter className="h-4 w-4" />
+                  <span className="text-sm">Filters</span>
+                </button>
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                  <Plus className="h-4 w-4" />
+                  <span className="text-sm">Order Stock</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-t border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      VENDOR
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      BRANCH
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      SPENT
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      STATUS
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      STOCK LEVEL
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      PAYMENT STATUS
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      PROFILE
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-8 text-center">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+                          <span className="text-gray-500">
+                            Loading vendors...
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : filteredProducts.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-6 py-8 text-center text-gray-500"
+                      >
+                        {searchTerm
+                          ? "No vendors found matching your search."
+                          : "No vendors available."}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredProducts.map((vendor, index) => {
+                      const statusInfo = getStatusInfo(vendor);
+                      return (
+                        <tr key={vendor._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="flex-shrink-0 h-10 w-10">
+                                {vendor.img ? (
+                                  <img
+                                    className="h-10 w-10 rounded-full object-cover"
+                                    src={vendor.img}
+                                    alt={vendor.vendorTitle}
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = "none";
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <Building2 className="h-5 w-5 text-gray-400" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {vendor.vendorTitle}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  ID: {vendor.vendorID}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {vendor.branch || "Main Branch"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {vendor.totalSpent != undefined
+                              ? vendor.totalSpent.toLocaleString("en-PH", {
+                                  style: "currency",
+                                  currency: "PHP",
+                                })
+                              : Number(0).toLocaleString("en-PH", {
+                                  style: "currency",
+                                  currency: "PHP",
+                                })}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}
+                            >
+                              {statusInfo.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                                <div
+                                  className={`h-1.5 rounded-full ${
+                                    statusInfo.progress === 100
+                                      ? "bg-green-500"
+                                      : statusInfo.progress === 30
+                                        ? "bg-orange-500"
+                                        : "bg-red-500"
+                                  }`}
+                                  style={{ width: `${statusInfo.progress}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm text-gray-500">
+                                {vendor.stocks}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {/*<span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPaymentStatusColor(vendor.paymentStatus)}`}
+                            >
+                              {vendor.paymentStatus || "PENDING"}
+                            </span>*/}
+
+                            <button
+                              disabled={
+                                !getLatestTransaction(vendor.transactionLogs)
+                              }
+                              className={`px-3 py-1  rounded-full text-sm text-blue-600 hover:bg-blue-100 disabled:cursor-not-allowed ${
+                                getLatestTransaction(vendor.transactionLogs)
+                                  ? "bg-blue-50"
+                                  : "bg-gray-300 text-gray-600"
+                              }`}
+                              onClick={() => {
+                                window.open(
+                                  `/transactions/${getLatestTransaction(vendor.transactionLogs)}`,
+                                  "_blank",
+                                  "noopener,noreferrer",
+                                );
+                              }}
+                            >
+                              View Details
+                            </button>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                              <button
+                                className="px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                onClick={() => {
+                                  window.open(
+                                    `/store/${vendor.vendorID}`,
+                                    "_blank",
+                                    "noopener,noreferrer",
+                                  );
+                                }}
+                              >
+                                View Details
+                              </button>
+                              {/*<button className="text-gray-400 hover:text-gray-600">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </button>*/}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default StocksUI;
