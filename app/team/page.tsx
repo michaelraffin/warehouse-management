@@ -1,6 +1,7 @@
 // pages/user-management.tsx
 "use client";
 import * as React from "react";
+import Sample from "./sample";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import AddUser from "@/app/LocalComponents/addUserPopup";
@@ -423,6 +424,7 @@ export default function UserManagement() {
       </div>
       <Toaster />
       <UserValidation />
+      {/*<Sample />*/}
     </div>
   );
 }

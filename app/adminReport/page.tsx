@@ -263,9 +263,250 @@ export default function TableDemo() {
         title={`Good morning! 👋 ${userProfile != null ? userProfile.user_details.firstName : ""}`}
         subtitle=""
       />
+      <div className="ml-20 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 ">
+        <div className="h-auto rounded-lg bg-white lg:col-span-2 ">
+          {/* //LEFT */}
+          <h1 className="text-md ml-2 font-bold text-black">Top Sales</h1>
+          <CircleChart data={grandTotalSales} />
+          {/* <MainChart data={null} chartTitle={"Lai Warehouse Monthly Sales"} /> */}
+          {/* <ChartContainer
+            config={chartConfig}
+            className="min-h-[200px] w-full h-1/8"
+          >
+            <BarChart accessibilityLayer data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+              <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            </BarChart>
+          </ChartContainer> */}
 
+          <div className=" mb-20 hidden">
+            <div className="m-2   grid w-full grid-cols-3 gap-4">
+              <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Profit</p>
+
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(dailySales)}
+                  </p>
+                </div>
+
+                <div className="mt-1 flex gap-1 text-green-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+
+                  <p className="flex gap-2 text-xs">
+                    <span className="text-xs"> 67.81% </span>
+
+                    <span className="text-gray-500"> Since last year </span>
+                  </p>
+                </div>
+              </article>
+
+              <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Profit Yesteday</p>
+
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(dailySales)}
+                  </p>
+                </div>
+
+                <div className="mt-1 flex gap-1 text-red-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                    />
+                  </svg>
+
+                  <p className="flex gap-2 text-xs">
+                    <span className="text-xs"> 67.81% </span>
+                    <span className="text-gray-500"> Since last year </span>
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+          <div className="mb-20 h-full w-[100%]">
+            {/* h-48 */}
+
+            {/* <p className="text-xs">Todays Sales</p> */}
+            {todaysTransaction === null ? (
+              <img
+                src={
+                  "https://cdn.dribbble.com/userupload/11708150/file/original-825be68b3517931ad747e0180a4116d3.png?resize=1504x1128"
+                }
+                className=" h-full w-full  object-cover  hidden"
+              />
+            ) : (
+              <LocalChart
+                id={"1"}
+                sourceAmount={"amount"}
+                xLabel={"title"}
+                bottomTitle="title"
+                data={todaysTransaction}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="h-[auto] rounded-lg ">
+          {/* //RIGHT */}
+
+          <h1 className="text-md font-bold text-black">Annual Sales</h1>
+          <div className=" mb-20">
+            <div className="m-2   grid w-[90%] grid-cols-2 gap-2">
+              <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Profit</p>
+
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(grandTotalSales)}
+                  </p>
+                </div>
+
+                <div className="mt-1 flex gap-1 text-green-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+
+                  <p className="flex gap-2 text-xs">
+                    <span className="text-xs"> 67.81% </span>
+
+                    <span className="text-gray-500"> Since last year </span>
+                  </p>
+                </div>
+              </article>
+
+              {/* <article className="rounded-lg border border-gray-300 bg-white p-6 hover:shadow-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Profit</p>
+                  <p className="text-2xl text-xs text-gray-900">
+                    {numberFormat(grandTotalSales)}
+                  </p>
+                </div>
+
+                <div className="mt-1 flex gap-1 text-red-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                    />
+                  </svg>
+                  <p className="flex gap-2 text-xs">
+                    <span className="text-xs"> 67.81% </span>
+                    <span className="text-gray-500"> Since last week </span>
+                  </p>
+                </div>
+              </article> */}
+            </div>
+          </div>
+          <div className="mt-20  h-72 w-[100%]">
+            <div className="grid-cols10 mb-10 grid w-[350px]">
+              <a className="text-xs text-blue-800" href="reports/products">
+                View Products Reports
+              </a>
+              {/* <p className="text-xs">View Weekly Sales</p> */}
+              {/* <Button className="mb-10">View reports</Button> */}
+            </div>
+            <BarChartVertical />
+            {weekySales === null ? (
+              "..."
+            ) : (
+              <LocalChart
+                id={"2"}
+                sourceAmount={"amount"}
+                bottomTitle="date"
+                xLabel={""}
+                data={weekySales}
+              />
+            )}
+          </div>
+          <div className="mt-40 h-20 w-[100%]">
+            <a className="text-xs text-blue-800" href="reports/Monthly">
+              View Monthly Sales
+            </a>
+            {
+              annualSales === null ? (
+                "..."
+              ) : (
+                <LocalChart
+                  id={"3"}
+                  sourceAmount={"amount"}
+                  xLabel={""}
+                  bottomTitle="date"
+                  data={annualSales}
+                />
+              )
+              // "..."
+            }
+          </div>
+          <div className="mt-20 h-20 w-[100%]">
+            <p className="text-xs">Annual Sales</p>
+            {annualSales === null ? (
+              "..."
+            ) : (
+              <LocalChart
+                id={"4"}
+                bottomTitle="date"
+                sourceAmount={"amount"}
+                xLabel={""}
+                data={annualSales}
+              />
+            )}
+          </div>
+        </div>
+      </div>
       {/* //TABLE */}
-      <div className="mt-10 ml-24 text-lg font-bold">Your Transactions</div>
+      <div className="mt-40 ml-24 text-lg font-bold">Your Transactions</div>
       {/* <Tabs
         defaultValue="account"
         className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"
