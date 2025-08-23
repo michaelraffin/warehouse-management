@@ -86,12 +86,22 @@ const StocksUI = () => {
     fetchStores();
   }, []);
 
+  const topVendors = () => {
+    return [...products]
+      .sort((a, b) => b.totalGrandTotal - a.totalGrandTotal) // sort descending
+      .slice(0, 3); // take top 3
+  };
   // Filter products based on search term
-  const filteredProducts = products.filter(
-    (product) =>
-      product.vendorTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.vendorID.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredProducts =
+    activeTab === "Top 3 stores"
+      ? topVendors()
+      : products.filter(
+          (product) =>
+            product.vendorTitle
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            product.vendorID.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
 
   // Calculate totals for the dashboard
   const totalAssetValue = products.reduce(
@@ -214,7 +224,7 @@ const StocksUI = () => {
 
         <div className="px-6 py-6">
           {/* Stats Section */}
-          <div className="bg-white rounded-lg p-6 mb-6">
+          <div className="bg-white w-1/4 rounded-lg  p-6 mb-6">
             <div className="flex items-center space-x-4 mb-4">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-semibold text-sm">P</span>
@@ -275,7 +285,7 @@ const StocksUI = () => {
             {/* Tabs */}
             <div className="border-b border-gray-200">
               <nav className="flex px-6">
-                {["Inventory", "Order Stock"].map((tab) => (
+                {["All stores", "Top 3 stores"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -297,6 +307,7 @@ const StocksUI = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
                   type="text"
+                  disabled={activeTab === "Top 3 stores" ? true : false}
                   placeholder="Search vendors..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -335,9 +346,9 @@ const StocksUI = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       STOCK LEVEL
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      PAYMENT STATUS
-                    </th>
+                    {/*<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Transaction STATUS
+                    </th>*/}
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       PROFILE
                     </th>
@@ -439,12 +450,7 @@ const StocksUI = () => {
                               </span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {/*<span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPaymentStatusColor(vendor.paymentStatus)}`}
-                            >
-                              {vendor.paymentStatus || "PENDING"}
-                            </span>*/}
+                          {/*<td className="px-6 py-4 whitespace-nowrap ">
 
                             <button
                               disabled={
@@ -465,7 +471,7 @@ const StocksUI = () => {
                             >
                               View Details
                             </button>
-                          </td>
+                          </td>*/}
                           <td className="px-6 py-4 whitespace-nowrap text-right">
                             <div className="flex items-center justify-end space-x-2">
                               <button
@@ -480,9 +486,6 @@ const StocksUI = () => {
                               >
                                 View Details
                               </button>
-                              {/*<button className="text-gray-400 hover:text-gray-600">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </button>*/}
                             </div>
                           </td>
                         </tr>

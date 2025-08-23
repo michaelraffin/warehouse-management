@@ -9,101 +9,70 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Eye, FileImage, FileText } from "lucide-react";
+import {
+  UserDetails,
+  Order,
+  AgentAssinged,
+  Transaction,
+  UserProfile,
+  DiscountedItem,
+  PromoCode,
+  PaymentMethod,
+  TransactionLog,
+  Vendor,
+  Product,
+} from "../src/types";
+function ReceiptAttachments() {
+  const attachments = [
+    {
+      id: 1,
+      name: "CHECKDEPOS_YG64CYUGDSFLJ R...png",
+      type: "image",
+      size: "—", // no size shown in screenshot for image
+    },
+    {
+      id: 2,
+      name: "Card-Transaction-Receipt-REF...pdf",
+      type: "image",
+      size: "200KB",
+    },
+  ];
 
-interface UserDetails {
-  firstName?: String;
-  status?: any;
-}
-interface UserProfile {
-  user_details?: UserDetails;
-}
-interface DiscountedItem {
-  isPercentage: boolean;
-  requiredCategory: string[];
-  requiredAmount: number;
-  discountedPrice: number;
-  message: string;
-}
-
-interface PromoCode {
-  type: string;
-  valid: string;
-  dateFrom: string; // Use Date type if you want to handle dates properly
-  dateTo: string; // Use Date type if you want to handle dates properly
-  acquiredCustomer: number;
-  maxLimit: number;
-  discountedItems: DiscountedItem;
-}
-
-interface PaymentMethod {
-  type: string;
-  checknumber: string;
-}
-
-interface TransactionLog {
-  transactionID: string;
-}
-
-interface Product {
-  _id: string;
-  local_id: string;
-  paymentStatus: string;
-  totalAmount: string;
-  title: string;
-  stocks: number;
-  img: string;
-  status: boolean;
-  totalSold: number;
-  transactionLogs: TransactionLog[];
-  restockLogs: TransactionLog[];
-  price: number;
-  case_quantity: number;
-}
-
-interface Vendor {
-  _id: string;
-  vendorID: string;
-  vendorTitle: string;
-  paymentMethod: string;
-  stocks: string;
-  img: string;
-  status: boolean;
-  totalSpent: number;
-  transactionLogs: TransactionLog[];
-}
-
-interface Transaction {
-  vendor: Vendor;
-  payment_method: PaymentMethod;
-  promoCode: PromoCode;
-  date_created: string; // Use Date type if you want to handle dates properly
-  grandTotal: number;
-  data_state: string;
-  cart: Product[];
-}
-interface AgentAssinged {
-  fullName: string;
-}
-interface Order {
-  _id: string;
-  id: string;
-  assigned_to: AgentAssinged;
-  paymentStatus: string;
-  totalAmount: string;
-  payment_method: PaymentMethod;
-  promoCode: PromoCode;
-  transaction: Transaction;
-  transactionID: String;
-  vendor: Vendor;
-  date_created: string; // Use Date type if you want to handle dates properly
-  grandTotal: number;
-  data_state: string;
-  status: string;
-  officeStatus: any;
-  stockman: string;
-  attachedFile: [string];
-  // payload.status = "Approved";
-  // payload.officeStatus = {
+  return (
+    <div className="w-full max-w-md bg-white rounded-lg border p-3">
+      <h3 className="text-sm font-medium text-gray-600 mb-2">Attachments</h3>
+      <div className="space-y-2">
+        {attachments.map((file) => (
+          <div
+            key={file.id}
+            className="flex items-center justify-between border rounded-lg px-3 py-2 hover:bg-gray-50"
+          >
+            <div className="flex items-center gap-2 truncate">
+              {file.type === "image" ? (
+                <FileImage className="h-5 w-5 text-gray-500" />
+              ) : (
+                <FileText className="h-5 w-5 text-red-500" />
+              )}
+              <span className="text-sm text-gray-800 truncate max-w-[160px]">
+                {file.name}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              {file.size !== "—" && (
+                <span className="text-xs text-gray-500">{file.size}</span>
+              )}
+              {file.type === "image" && (
+                <button className="text-gray-500 hover:text-gray-700">
+                  <Eye className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 export default function DeliveryDetailsSheet(props: any) {
   const formatter = new Intl.NumberFormat("en-PH", {
@@ -118,11 +87,37 @@ export default function DeliveryDetailsSheet(props: any) {
         counter += 1;
         return (
           <a key={counter} href={item} download={item}>
-            <img
+            {/*<img
               key={counter}
               src={item}
               className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
-            />
+            />*/}
+
+            <div
+              key={item.id}
+              className="flex items-center justify-between border rounded-lg px-3 py-2 hover:bg-gray-50"
+            >
+              <div className="flex items-center gap-2 truncate">
+                {true === "image" ? (
+                  <FileImage className="h-5 w-5 text-gray-500" />
+                ) : (
+                  <FileText className="h-5 w-5 text-red-500" />
+                )}
+                <span className="text-sm text-gray-800 truncate max-w-[160px]">
+                  {item}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                {false !== "—" && (
+                  <span className="text-xs text-gray-500">{item.size}</span>
+                )}
+                {item.type === "image" && (
+                  <button className="text-gray-500 hover:text-gray-700">
+                    <Eye className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
           </a>
         );
       });
@@ -135,7 +130,10 @@ export default function DeliveryDetailsSheet(props: any) {
           View Summary
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full max-w-md bg-white p-6">
+      <SheetContent
+        side="right"
+        className="w-full max-w-md bg-white p-6 overflow-auto"
+      >
         <SheetHeader>
           <SheetTitle className="text-lg font-semibold">
             <span className="bg-[#D4ED31]">
@@ -147,7 +145,7 @@ export default function DeliveryDetailsSheet(props: any) {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-4 mt-6">
+        <div className="space-y-4 mt-6 overflow-auto">
           {/* Assignees */}
           <div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Assignee</p>
@@ -234,14 +232,19 @@ export default function DeliveryDetailsSheet(props: any) {
                 <p className="font-medium text-gray-700">Email Address</p>
                 <p>example@gmail.com</p>
               </div>
-              <div>
+              <div className="mb-4">
                 <p className="font-medium text-gray-700">
                   Proof of Transaction
                 </p>
-                {renderFiles(props.orderDetails)}
               </div>
             </div>
           </div>
+        </div>
+        <div className="w-full max-w-md bg-white rounded-lg  p-3">
+          <h3 className="text-sm font-medium text-gray-600 mb-2">
+            Attachments
+          </h3>
+          <div className="space-y-2">{renderFiles(props.orderDetails)}</div>
         </div>
       </SheetContent>
     </Sheet>
