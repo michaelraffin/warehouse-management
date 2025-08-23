@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { UploadImageService } from "@/Utils/image_uploader";
 import { Toaster, toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -83,7 +84,17 @@ export default function AddUserPopup(props: any) {
       throw error;
     }
   };
+  const didUpload = async (e: any) => {
+    setStatus(true);
 
+    let link = await UploadImageService(e.target.files[0], 1);
+    setStatus(false);
+    handleChange({ name: "img", value: link.data.storage.link });
+    // props.upload_here(e.target.files[0], 1).then((results: any) => {
+    //   props.image_file(results.data.storage.link);
+    //   ;
+    // });
+  };
   // Fixed handleChange function
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | { name: string; value: any },
@@ -135,7 +146,7 @@ export default function AddUserPopup(props: any) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <img
-            src={props.details?.img}
+            src={vendor?.img}
             className="w-20 h-20 object-cover hover:shadow-lg rounded-full"
           />
           <DialogTitle>Edit Profile</DialogTitle>
@@ -205,6 +216,19 @@ export default function AddUserPopup(props: any) {
               onCheckedChange={(checked) =>
                 handleChange({ name: "status", value: checked })
               }
+            />
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="status" className="text-right">
+              Image
+            </Label>
+            <Input
+              className="w-full"
+              // contentEditable={!isLoading}
+              id="picture"
+              type="file"
+              onChange={(e) => didUpload(e)}
             />
           </div>
         </div>
