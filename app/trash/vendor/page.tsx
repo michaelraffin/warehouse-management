@@ -27,18 +27,18 @@ import { Toaster, toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { UploadImageService } from "../../Utils/image_uploader";
-import Map from "../LocalComponents/MapPickerV2";
+import { UploadImageService } from "@/Utils/image_uploader";
+import Map from "../../LocalComponents/MapPickerV2";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getSession } from "../../Utils/serviceLogin";
-import { UserProfile } from "../../Utils/userProfile";
-import { axiosV2Local, url, axiosV2 } from "../../Utils/axios";
+import { getSession } from "@/Utils/serviceLogin";
+import { UserProfile } from "@/Utils/userProfile";
+import { axiosV2Local, url, axiosV2 } from "@/Utils/axios";
 import Link from "next/link";
-import LocalChart from "../LocalComponents/Charts";
+import LocalChart from "../../LocalComponents/Charts";
 import {
   PolarGrid,
   PolarRadiusAxis,

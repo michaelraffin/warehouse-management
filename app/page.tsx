@@ -12,6 +12,8 @@ import {
 } from "@/Utils/supabaseService";
 export default function LandingPage() {
   const router = useRouter();
+  // noah@gmail.com
+  // 5eNUDl7
   const [username, setUsername] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [loadingStatus, setStatus] = React.useState<boolean>(false);
@@ -90,21 +92,21 @@ export default function LandingPage() {
         className="flex-1 bg-blue-500 text-gray-950 flex flex-col justify-end p-8"
         style={{
           backgroundImage:
-            "url('https://cdn.dribbble.com/users/1207383/screenshots/5077105/media/304d2029bee462dd87db1080e0a87d37.png?resize=1600x1200&vertical=center')",
+            "url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjkwNC1udW5ueS0wMTItZy14XzEuanBn.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
         <div className="space-y-4 text-center mb-16">
-          <h1 className="text-3xl md:text-4xl font-bold">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#3A3A3A]">
             Streamline Your Storage, Optimize Your Operations
           </h1>
-          <p className="text-lg">Efficient Storage, Seamless Operations</p>
+          <p className="text-sm">Efficient Storage, Seamless Operations.</p>
         </div>
-        <div className="flex justify-center">
+        {/*<div className="flex justify-center">
           <div className="w-40 h-28 bg-blue-300 rounded-md shadow-md transform rotate-12" />
           <div className="w-40 h-28 bg-blue-200 rounded-md shadow-md -ml-12 transform -rotate-6" />
-        </div>
+        </div>*/}
       </div>
 
       {/* Right Section */}

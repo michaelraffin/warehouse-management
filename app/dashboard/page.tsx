@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import UserValidation from "@/app/LocalComponents/UserValidation";
+import DropdownV1 from "@/app/LocalComponents/Dropdownv1";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import SideNavigation from "@/app/SideNavigation";
@@ -81,6 +82,52 @@ function Loading() {
     <Skeleton count={5} wrapper={InlineWrapperWithMargin} inline width={90} />
   );
 }
+
+export function ProfileCard() {
+  return (
+    <div className="max-w-2xl rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="bg-green-900 p-4 flex items-center gap-3">
+        <div className="bg-white text-green-900 font-semibold w-12 h-12 flex items-center justify-center rounded-full">
+          RH
+        </div>
+        <div className="flex-1">
+          <h2 className="text-white font-semibold text-lg flex items-center gap-2">
+            Richard Hendricks
+            <span className="flex items-center gap-1 bg-green-600 text-xs px-2 py-0.5 rounded-md">
+              Active
+            </span>
+          </h2>
+          <p className="text-sm text-green-200 font-mono">cus_PKughP00Km6IjD</p>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="grid grid-cols-2 gap-6 p-6 bg-white">
+        <div>
+          <p className="text-xs text-gray-500">Language</p>
+          <p className="flex items-center gap-2 font-medium">
+            <span className="text-lg">🇺🇸</span> English (US)
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500">Account Details</p>
+          <p className="font-medium text-gray-700">richard@piedpiper.com</p>
+        </div>
+
+        <div>
+          <p className="text-xs text-gray-500">Next Invoice</p>
+          <p className="font-mono font-medium text-gray-700">10A5438B-0001</p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500">Tax Location Status</p>
+          <p className="font-medium text-gray-700">Unrecognized Location</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function TableDemo() {
   let [userProfile, setUser] = useState<UserProfile | null>(null);
   const [myVendors, setVendors] = useState([]);
@@ -92,6 +139,123 @@ export default function TableDemo() {
   const [isVendorsReady, setVendorsReady] = useState(false);
   const [todaysTransaction, setTodaysTransaction] = useState(null);
   const [topTransaction, setTopTransactions] = useState([]);
+
+  const exportToCSVV2 = (data, filename = "export", options = {}) => {
+    console.log("jSON, ", data);
+    if (!data || !data.length) {
+      alert("No data to export");
+      return;
+    }
+
+    const {
+      excludeFields = [], // Fields to exclude from export
+      fieldMapping = {}, // Custom field name mapping
+      dateFormat = "default", // How to format dates
+      includeHeaders = true,
+    } = options;
+
+    // Get all unique keys from all objects (in case objects have different properties)
+    const allKeys = [...new Set(data.flatMap(Object.keys))];
+
+    // Filter out excluded fields
+    const filteredKeys = allKeys.filter((key) => !excludeFields.includes(key));
+
+    // Create headers with custom mapping or use original field names
+    const headers = filteredKeys.map(
+      (key) => fieldMapping[key] || formatFieldName(key),
+    );
+
+    // Helper function to format field names (camelCase to Title Case)
+    function formatFieldName(fieldName) {
+      return fieldName
+        .replace(/([A-Z])/g, " $1") // Add space before capital letters
+        .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
+        .trim();
+    }
+
+    // Helper function to escape CSV values
+    function escapeCSVValue(value) {
+      if (value === null || value === undefined) return "";
+
+      // Convert to string
+      let stringValue = String(value);
+
+      // Handle dates
+      if (value instanceof Date) {
+        stringValue =
+          dateFormat === "iso"
+            ? value.toISOString().split("T")[0]
+            : value.toLocaleDateString();
+      }
+
+      // Escape quotes and wrap in quotes if necessary
+      if (
+        stringValue.includes(",") ||
+        stringValue.includes('"') ||
+        stringValue.includes("\n")
+      ) {
+        stringValue = `"${stringValue.replace(/"/g, '""')}"`;
+      }
+
+      return stringValue;
+    }
+
+    // Build CSV content
+    const csvRows = [];
+
+    // Add headers if requested
+    if (includeHeaders) {
+      csvRows.push(headers.join(","));
+    }
+
+    // Add data rows
+    data.forEach((row) => {
+      const values = filteredKeys.map((key) => escapeCSVValue(row[key]));
+      csvRows.push(values.join(","));
+    });
+
+    const csvContent = csvRows.join("\n");
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${filename}.csv`);
+    link.style.visibility = "hidden";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportToCSV = () => {
+    exportToCSVV2(topTransaction, "vendors-report", {
+      fieldMapping: {
+        transactionID: "Vendor ID",
+        GrandTotal: "Grand Total",
+      },
+      excludeFields: [], // Include all fields
+      dateFormat: "iso",
+    });
+  };
+
+  const exportVendorReport = () => {
+    exportToCSVV2(myVendors, "vendors-report", {
+      fieldMapping: {
+        id: "Vendor ID",
+        vendorTitle: "Company Name",
+        email: "Contact Email",
+        status: "Current Status",
+        revenue: "Annual Revenue",
+      },
+      excludeFields: [], // Include all fields
+      dateFormat: "iso",
+    });
+  };
+
   useEffect(() => {
     getProfile();
     fetchPreviousSales().then((previousSales) => {
@@ -266,6 +430,10 @@ export default function TableDemo() {
 
       {/* //TABLE */}
       <div className="mt-10 ml-24 text-lg font-bold">Your Transactions</div>
+      <div className="ml-20">
+        <ProfileCard />
+      </div>
+      <DropdownV1 exportCSV={() => exportToCSV()} />
       {/* <Tabs
         defaultValue="account"
         className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"
@@ -439,6 +607,7 @@ export default function TableDemo() {
         </Table>
       </Suspense>
       <div className="mt-40 ml-24 text-lg font-bold">Your Vendors Main</div>
+      <DropdownV1 exportCSV={() => exportVendorReport()} />
       <Tabs
         defaultValue="account"
         className="bt-20 mt-10 ml-24 w-[90%] rounded-lg bg-white"

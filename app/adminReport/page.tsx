@@ -43,7 +43,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import loadinggg from "./loading";
+// import loadinggg from "./loading";
 import { BarChartVertical } from "../LocalComponents/Charts/BarcharVertical";
 import { CircleChart } from "../LocalComponents/Charts/Circle";
 const chartData = [
@@ -604,7 +604,7 @@ export default function TableDemo() {
       </Tabs> */}
       <div>{/* <MapV2 /> */}</div>
 
-      <Suspense fallback={loadinggg()}>
+      <Suspense>
         <Table className="ml-20 w-[90%]">
           <TableCaption>
             <a

@@ -367,9 +367,8 @@ export default function TableDemo() {
                     />
                   </TableCell>
                   <TableCell>
-                    <Progress value={invoice.stocks} className="w-[60%]" />
+                    <Progress value={invoice.stocks} className="w-[60%] h-2" />
                     <span className="text-xs text-gray-400">
-                      dsadsa
                       {moment(invoice.dateAdded).format("MM-DD-YYYY hh:mm A")}
                     </span>{" "}
                     {/* {invoice.paymentMethod} */}
@@ -381,30 +380,19 @@ export default function TableDemo() {
                   <TableCell className="text-right">
                     {/* {invoice.totalAmount} */}
                     <EditProductSheet
+                      litters={productLitters}
                       details={invoice}
                       updateProduce={(item: any) => updateProduce(item)}
+                      selectedLiters={(e: any) => setProductLiters(e)}
                     />
-
                     <ViewHistorySheet
                       details={invoice}
                       updateProduce={(item: any) => updateProduce(item)}
                     />
-                    {/* <Switch
-                      onCheckedChange={(e) => didStatusUpdate(e, invoice.id)}
-                      checked={invoice.status}
-                    /> */}
-                    {/* <Popover>
-    <PopoverTrigger>Open</PopoverTrigger>
-    <PopoverContent>
-    Status :
-    </PopoverContent>
-  </Popover> */}
-                  </TableCell>
-                  <TableCell>
                     <Button
                       onClick={() => deleteThis(invoice)}
                       variant="outline"
-                      className="bg-white border-white"
+                      className="bg-white border-white ml-1"
                       size="icon"
                     >
                       <svg
@@ -426,6 +414,7 @@ export default function TableDemo() {
                       </svg>
                     </Button>
                   </TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               ))}
             </TableBody>

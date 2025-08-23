@@ -121,7 +121,13 @@ export function ComboboxDemo(props: any) {
   >(props.litters);
   console.log("productLitters", productLitters, props);
   return (
-    <Select>
+    <Select
+      defaultValue={
+        props.defaultValue != undefined
+          ? props.defaultValue
+          : "Regular can - 0.33 liters"
+      }
+    >
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Select a Litter" />
       </SelectTrigger>

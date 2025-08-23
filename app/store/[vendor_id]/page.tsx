@@ -51,7 +51,8 @@ import {
 } from "recharts";
 import { LineChart, Line } from "recharts";
 import LocalChart from "../../LocalComponents/Charts";
-
+import ProfileCard from "../profileCard";
+import VendorAssistant from "../VendorAssistant";
 import { useRouter } from "next/router";
 import {
   Popover,
@@ -394,7 +395,6 @@ export default function VendorDetails({
               ))}
             </div>
           </div>
-
           {/* Main Content */}
           <div className="relative z-10 flex flex-col items-center text-center">
             <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
@@ -606,16 +606,20 @@ export default function VendorDetails({
         </BreadcrumbList>
       </Breadcrumb>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mr-10 ml-20">
+        <ProfileCard
+          dismissedCallBack={() => alert("w")}
+          details={vendorDetails}
+        />
         <div className="h-32 rounded-lg  lg:col-span-2">
           {transactions.length === 0
             ? renderEmptyTransaction()
             : renderTableComponent()}
         </div>
 
-        <div className="h-auto rounded-lg ">
+        <div className="h-auto rounded-lg  ">
           {/* LEFT */}
           <div className="max-w-sm group static ease-in-out duration-300  rounded overflow-hidden hover:border-black hover:border-l-4  hover:shadow-lg bg-white transition   {order.receiptImageLink === undefined ? 'border-red-500 border ' : ''} ">
-            <div className="px-6 py-4">
+            <div className="px-6 py-4 hidden">
               <div className="font-bold  mb-2">
                 <div className="flex grid-flow-col-2 justify-between place-items-center  mb-2">
                   <p className="text-xs font-light">
@@ -630,14 +634,14 @@ export default function VendorDetails({
                 </div>
               </div>
               <div className="flex justify-center">
-                <img
+                {/*<img
                   src={vendorDetails?.img}
-                  className="mt-10 w-40 h-40 object-cover  hover:shadow-lg rounded-full "
-                />
+                  className="mt-10 w-44 h-44 object-cover  hover:shadow-lg rounded-full "
+                />*/}
               </div>
               <div className="grid grid-cols-4   mt-2 "></div>
             </div>
-            <div className="px-4 pt-4 pb-2">
+            <div className="px-4 pt-4 pb-2 hidden">
               <span className="inline-block bg-white rounded-full px-3 font-light text-xs text-gray-400 mr-2 mb-2">
                 {moment(new Date()).format("LLLL")}
               </span>
@@ -697,6 +701,7 @@ export default function VendorDetails({
         <div></div>
       </div>
       <Toaster />
+      {/*<VendorAssistant />*/}
     </div>
   );
 }

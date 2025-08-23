@@ -36,13 +36,12 @@ export default function AddUserPopup(props: any) {
   return (
     <Dialog onOpenChange={setOpen} open={isOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="default"
-          className="mb-20 rounded-full"
+        <button
           onClick={() => setOpen(true)}
+          className="mb-20 bg-blue-700 text-white px-4 mt-2 py-2 rounded-full  hover:bg-blue-200 flex items-center space-x-2"
         >
-          Add User
-        </Button>
+          <span className="text-xs"> Edit Profile</span>
+        </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -120,13 +119,12 @@ export default function AddUserPopup(props: any) {
           </Alert>
         </div>
         <DialogFooter>
-          <Button
-            type="submit"
+          <button
             onClick={() => dismissedCallBack()}
-            className="rounded-full"
+            className="bg-blue-700 text-white px-4 mt-2 py-2 rounded-full  hover:bg-blue-200 flex items-center space-x-2"
           >
-            Save Profile
-          </Button>
+            <span className="text-xs"> Save Profile</span>
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
