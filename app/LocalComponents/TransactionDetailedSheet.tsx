@@ -81,47 +81,43 @@ export default function DeliveryDetailsSheet(props: any) {
   });
 
   const renderFiles = (transactionDetails: Order) => {
-    let counter: number = 0;
-    if (transactionDetails?.attachedFile != undefined) {
-      return transactionDetails?.attachedFile.map((item) => {
-        counter += 1;
-        return (
-          <a key={counter} href={item} download={item}>
-            {/*<img
-              key={counter}
-              src={item}
-              className="mr-2 h-16 w-16 rounded-sm hover:shadow-lg"
-            />*/}
-
-            <div
-              key={item.id}
-              className="flex items-center justify-between border rounded-lg px-3 py-2 hover:bg-gray-50"
-            >
-              <div className="flex items-center gap-2 truncate">
-                {true === "image" ? (
-                  <FileImage className="h-5 w-5 text-gray-500" />
-                ) : (
-                  <FileText className="h-5 w-5 text-red-500" />
-                )}
-                <span className="text-sm text-gray-800 truncate max-w-[160px]">
-                  {item}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                {false !== "—" && (
-                  <span className="text-xs text-gray-500">{item.size}</span>
-                )}
-                {item.type === "image" && (
-                  <button className="text-gray-500 hover:text-gray-700">
-                    <Eye className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </a>
-        );
-      });
+    if (!transactionDetails?.attachedFile || !transactionDetails.attachedFile.length) {
+      return null;
     }
+    
+    return transactionDetails.attachedFile.map((item, index) => {
+      // Since attachedFile is an array of strings, we need to check if the URL ends with an image extension
+      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item);
+      
+      // Extract filename from the URL or use the full URL if not possible
+      const fileName = item.split('/').pop() || item;
+      
+      return (
+        <a key={`file-${index}`} href={item} download={fileName}>
+          <div
+            className="flex items-center justify-between border rounded-lg px-3 py-2 hover:bg-gray-50"
+          >
+            <div className="flex items-center gap-2 truncate">
+              {isImage ? (
+                <FileImage className="h-5 w-5 text-gray-500" />
+              ) : (
+                <FileText className="h-5 w-5 text-red-500" />
+              )}
+              <span className="text-sm text-gray-800 truncate max-w-[160px]">
+                {fileName}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              {isImage && (
+                <button className="text-gray-500 hover:text-gray-700">
+                  <Eye className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        </a>
+      );
+    });
   };
   return (
     <Sheet>

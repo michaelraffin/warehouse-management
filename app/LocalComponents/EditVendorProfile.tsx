@@ -77,10 +77,6 @@ export default function AddUserPopup(props: any) {
       );
       return response.data;
     } catch (error) {
-      console.error(
-        "❌ Error updating vendor:",
-        error.response?.data || error.message,
-      );
       throw error;
     }
   };

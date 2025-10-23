@@ -1,13 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const DropdownMenu = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+// Define the props interface
+interface DropdownMenuProps {
+  exportCSV: () => void;
+}
+
+// Define the menu item structure
+interface MenuItem {
+  icon: JSX.Element;
+  label: string;
+}
+
+const DropdownMenu: React.FC<DropdownMenuProps> = (props) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -18,7 +32,7 @@ const DropdownMenu = (props) => {
     };
   }, []);
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
       icon: (
         <svg
@@ -94,7 +108,7 @@ const DropdownMenu = (props) => {
   ];
 
   return (
-    <div className=" justify-items-end mr-10">
+    <div className="justify-items-end mr-10">
       <div className="relative" ref={dropdownRef}>
         {/* Header with buttons */}
         <div className="flex items-center space-x-3 mb-4">
@@ -118,16 +132,16 @@ const DropdownMenu = (props) => {
                 rx="1"
                 fill="#ffffff"
                 stroke="#e5e7eb"
-                stroke-width="1"
+                strokeWidth="1"
               />
               <rect x="4" y="2" width="12" height="4" rx="1" fill="#217346" />
               <text
                 x="10"
                 y="5.2"
-                font-family="Arial, sans-serif"
-                font-size="2.5"
-                font-weight="bold"
-                text-anchor="middle"
+                fontFamily="Arial, sans-serif"
+                fontSize="2.5"
+                fontWeight="bold"
+                textAnchor="middle"
                 fill="white"
               >
                 X
@@ -138,7 +152,7 @@ const DropdownMenu = (props) => {
                 x2="14"
                 y2="8"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <line
                 x1="6"
@@ -146,7 +160,7 @@ const DropdownMenu = (props) => {
                 x2="14"
                 y2="10"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <line
                 x1="6"
@@ -154,7 +168,7 @@ const DropdownMenu = (props) => {
                 x2="14"
                 y2="12"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <line
                 x1="6"
@@ -162,7 +176,7 @@ const DropdownMenu = (props) => {
                 x2="14"
                 y2="14"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <line
                 x1="8"
@@ -170,7 +184,7 @@ const DropdownMenu = (props) => {
                 x2="8"
                 y2="16"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <line
                 x1="10"
@@ -178,7 +192,7 @@ const DropdownMenu = (props) => {
                 x2="10"
                 y2="16"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <line
                 x1="12"
@@ -186,40 +200,22 @@ const DropdownMenu = (props) => {
                 x2="12"
                 y2="16"
                 stroke="#e5e7eb"
-                stroke-width="0.5"
+                strokeWidth="0.5"
               />
               <g transform="translate(12, 16)">
                 <circle cx="4" cy="4" r="4" fill="#217346" />
                 <path
                   d="M4 2v4M2 4l2 2 2-2"
                   stroke="white"
-                  stroke-width="1.2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   fill="none"
                 />
               </g>
             </svg>
             <span>Export </span>
           </button>
-
-          {/* Convert Button */}
-          {/*<button className="bg-slate-600 text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-slate-700 transition-colors flex items-center space-x-2">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <span>Convert</span>
-          </button>*/}
 
           {/* Three dots menu button */}
           <button

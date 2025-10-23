@@ -26,6 +26,7 @@ interface TransactionLog {
 
 interface Vendor {
   id: string;
+  totalGrandTotal: number;
   branch: string;
   vendorDescription: string;
   _id: string;

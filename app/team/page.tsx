@@ -1,7 +1,6 @@
 // pages/user-management.tsx
 "use client";
 import * as React from "react";
-import Sample from "./sample";
 import SideNavigation from "@/app/SideNavigation";
 import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import AddUser from "@/app/LocalComponents/addUserPopup";
@@ -357,7 +356,9 @@ export default function UserManagement() {
                     <AvatarUser name={user.application_info?.name} />
                   </td>
                   <td className="px-4 py-2">
-                    {capitalizeFirst(user.application_info?.applicantType)}
+                    {capitalizeFirst(
+                      user.application_info?.applicantType || "user"
+                    )}
                   </td>
                   <td className="px-4 py-2">{getBadgeType(user)}</td>
                   <td className="px-4 py-2">

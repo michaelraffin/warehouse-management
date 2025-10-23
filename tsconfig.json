@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2017", // ← Change from "es5" to "ES2017" or "ES2015"
     "lib": ["dom", "dom.iterable", "esnext"],
+    "downlevelIteration": true, // ← Add this line too for safety
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/team/sampletsx", "app/test/pagetsx"],
   "exclude": ["node_modules"]
 }

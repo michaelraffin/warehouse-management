@@ -11,11 +11,13 @@ export default function ProfileCard(props: any) {
     }
   }, [props.details]);
 
-  const numberFormat = (value: number) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "PHP",
-    }).format(value);
+  const numberFormat = (value: number | undefined) =>
+    value !== undefined
+      ? new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: "PHP",
+        }).format(value)
+      : "PHP 0.00";
 
   const updatedVendor = (newVendor: Vendor) => {
     setVendor(newVendor);

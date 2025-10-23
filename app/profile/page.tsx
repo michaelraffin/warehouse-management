@@ -1,10 +1,36 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { updateUser } from "@/Utils/supabaseService";
 import SideNavigation from "@/app/SideNavigation";
+
+// Define the type for application_info to avoid TypeScript errors
+interface ApplicationInfo {
+  name?: string;
+  email?: string;
+  userAddress?: string;
+  contactNumber?: string;
+  dateOfBirth?: string;
+  userLevelDetails?: {
+    applicantType?: string;
+  };
+}
+
+// Define the type for formData
+interface FormDataType {
+  gender: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
+  phone: string;
+  postalCode: string;
+  location?: string;
+  application_info?: ApplicationInfo;
+}
+
 export default function ProfilePage() {
   const [status, setStatus] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     gender: "male",
     firstName: "Roland",
     lastName: "Donald",
@@ -12,7 +38,7 @@ export default function ProfilePage() {
     address: "3605 Parker Rd.",
     phone: "(405) 555-0128",
     // dateOfBirth: "1 Feb, 1995",
-    // location: "Atlanta, USA",
+    location: "Atlanta, USA",
     postalCode: "30301",
   });
   useEffect(() => {
@@ -23,24 +49,24 @@ export default function ProfilePage() {
     console.log("profile", profile);
     setFormData(profile);
   }, []);
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => {
       const updated = { ...prev };
       const keys = name.split(".");
-      let obj = updated;
+      let obj: Record<string, any> = updated;
 
-      keys.slice(0, -1).forEach((key) => {
+      keys.slice(0, -1).forEach((key: string) => {
         if (!obj[key]) obj[key] = {}; // ensure object exists
-        obj = obj[key];
+        obj = obj[key] as Record<string, any>;
       });
 
       obj[keys[keys.length - 1]] = value;
       return updated;
     });
   };
-  const handleGenderChange = (gender) => {
+  const handleGenderChange = (gender: string) => {
     setFormData((prev) => ({
       ...prev,
       gender,
@@ -50,17 +76,20 @@ export default function ProfilePage() {
   const didUpdate = () => {
     try {
       const service = async () => {
-        let status = await updateUser(formData);
-        console.log("status", status[0]);
-        localStorage.setItem("profile", JSON.stringify(status[0]));
-        setFormData(status[0]);
+        let result = await updateUser(formData);
+        if (result && Array.isArray(result) && result.length > 0) {
+          console.log("status", result[0]);
+          localStorage.setItem("profile", JSON.stringify(result[0]));
+          setFormData(result[0]);
+        }
         setStatus(false);
-        return status;
+        return result;
       };
       setStatus(true);
       service();
     } catch (error) {
       console.log("error", error);
+      setStatus(false);
     }
   };
   return (

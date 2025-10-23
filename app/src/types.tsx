@@ -8,6 +8,9 @@ export interface TransactionLog {
 export interface Vendor {
   title: string;
   className: string;
+  branch: string;
+  vendorEmail?: string;
+  vendorContactNumber?: string;
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
   vendorTitle: string; // The title of the vendor
