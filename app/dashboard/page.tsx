@@ -428,6 +428,9 @@ export default function TableDemo() {
         subtitle=""
       />
 
+      {/*<div className="w-full   h-64 rounded-2xl   bg-gradient-to-tr from-purple-200 via-pink-100 to-blue-100 flex items-center justify-center text-black font-bold text-xl">
+        AI Style
+      </div>*/}
       {/* //TABLE */}
       <div className="mt-10 ml-24 text-lg font-bold">Your Transactions</div>
       <div className="ml-20">

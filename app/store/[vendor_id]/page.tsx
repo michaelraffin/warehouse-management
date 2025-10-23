@@ -53,7 +53,8 @@ import { LineChart, Line } from "recharts";
 import LocalChart from "../../LocalComponents/Charts";
 import ProfileCard from "../profileCard";
 import VendorAssistant from "../VendorAssistant";
-import { useRouter } from "next/router";
+
+import { useRouter } from "next/navigation";
 import {
   Popover,
   PopoverContent,
@@ -139,7 +140,7 @@ export default function VendorDetails({
   const [imageLink, setImageLink] = useState(null);
   const [transactions, setVendorTransaction] = useState([]);
   const [vendorDetails, setVendorDetails] = useState<Vendor | null>(null);
-
+  const router = useRouter();
   const mapboxToken =
     "pk.eyJ1IjoibWFtbmlkeiIsImEiOiJjanZsNnhhZ24wdDE1NDlwYmRvczJzNDk2In0.Bl06Qp0TgR-KfisAsKbciQ";
   const [selectedMarker, setSelectedMarker] = useState<VendorAirport | null>(
@@ -151,7 +152,6 @@ export default function VendorDetails({
     lng: 123.841,
     lat: 8.1822,
   });
-
   let parentClass = "LesseeVendor";
   useEffect(() => {
     getDetails();
@@ -190,6 +190,10 @@ export default function VendorDetails({
     toast.promise(serviceV2, {
       loading: "Removing...",
       success: (data) => {
+        toast.success("Redirecting....");
+        setTimeout(() => {
+          router.push("/store");
+        }, 800); // delay redirect so user sees the "Redirecting..." toast
         return `${vendorDetails?.vendorTitle} has been removed`;
       },
       error: "Error",

@@ -40,7 +40,7 @@ export default function AddUserPopup(props: any) {
           onClick={() => setOpen(true)}
           className="mb-20 bg-blue-700 text-white px-4 mt-2 py-2 rounded-full  hover:bg-blue-200 flex items-center space-x-2"
         >
-          <span className="text-xs"> Edit Profile</span>
+          <span className="text-xs"> {props.buttonTitle ?? "Create"}</span>
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

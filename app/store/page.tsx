@@ -1,5 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Toaster, toast } from "sonner";
+import { UploadImageService } from "@/Utils/image_uploader";
+import AddStore from "@/app/LocalComponents/AddStoreSheet";
 import {
   Search,
   Plus,
@@ -48,7 +52,69 @@ const StocksUI = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [status, setStatus] = useState(true);
+  const [productTitle, setProducTitle] = useState<String | null>(null);
+  const [productQuantity, setProducQuantity] = useState(null);
+  const [contactNumber, setContactNumber] = useState<String | null>(null);
+  const [storeCoordinates, setStoreCoordinates] = useState(null);
+  const [imageLink, setImageLink] = useState<String | null>(null);
+  const [vendorBranch, setVendorBranch] = useState<String | null>(null);
   // Your existing fetchStores function (adapted)
+
+  const generateRandomString = () => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+
+    for (let i = 0; i < 8; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+
+    return result;
+  };
+  const addVendor = () => {
+    const asyncService = async () => {
+      try {
+        let payload = {
+          vendorID: generateRandomString(),
+          vendorTitle: productTitle,
+          vendorDescription: productQuantity,
+          vendorContactNumber: contactNumber,
+          paymentMethod: "N/A",
+          branch: vendorBranch,
+          stocks: 0,
+          img: imageLink,
+          status: false,
+          coordinates: storeCoordinates,
+        };
+        let response = await axios.post(`/api/item/add`, {
+          details: payload,
+          className: "LesseeVendor",
+        });
+        // fetchStores();
+        //
+        console.log("response", response);
+        if (response.data.status) {
+          console.log("response.results", response.data.results);
+          return response.data.results;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.log("erropr in async api/item/ad ", error);
+      }
+    };
+    toast.promise(asyncService(), {
+      loading: `Adding ${productTitle}...`,
+      success: (data) => {
+        setProducts((prev) => [...prev, data]);
+        setStatus(false);
+        return `${productTitle} Item has been updated`;
+      },
+      error: "Error",
+    });
+  };
   const fetchStores = async () => {
     try {
       setLoading(true);
@@ -224,14 +290,14 @@ const StocksUI = () => {
 
         <div className="px-6 py-6">
           {/* Stats Section */}
-          <div className="bg-white w-1/4 rounded-lg  p-6 mb-6">
+          <div className="bg-white w-1/4 rounded-lg hover:shadow-lg    p-6 mb-6">
             <div className="flex items-center space-x-4 mb-4">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-semibold text-sm">P</span>
               </div>
               <div>
-                <div className="text-sm text-gray-500 uppercase tracking-wide">
-                  TOTAL VENDOR SPENT
+                <div className="text-sm text-gray-500  tracking-wide">
+                  Total Gross Income
                 </div>
                 <div className="text-2xl font-bold text-gray-900">
                   {formatCurrency(grandTotalVendorSpent)}
@@ -319,10 +385,21 @@ const StocksUI = () => {
                   <Filter className="h-4 w-4" />
                   <span className="text-sm">Filters</span>
                 </button>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-full  hover:bg-blue-700 flex items-center space-x-2">
+                {/*<button className="bg-blue-600 text-white px-4 py-2 rounded-full  hover:bg-blue-700 flex items-center space-x-2">
                   <Plus className="h-4 w-4" />
-                  <span className="text-sm">Order Stock</span>
-                </button>
+                  <span className="text-sm">Add Vendor</span>
+                </button>*/}
+
+                <AddStore
+                  didSelect={(e: string) => setVendorBranch(e)}
+                  buttonTitle={"Add Store"}
+                  upload_here={UploadImageService}
+                  image_file={(e: any) => setImageLink(e)}
+                  title={(e: any) => setProducTitle(e)}
+                  quantity={(e: any) => setProducQuantity(e)}
+                  didSubmit={(e: any) => addVendor()}
+                  contactNumber={(e: any) => setContactNumber(e)}
+                />
               </div>
             </div>
 
@@ -497,6 +574,7 @@ const StocksUI = () => {
             </div>
           </div>
         </div>
+        <Toaster />
       </div>
     </>
   );

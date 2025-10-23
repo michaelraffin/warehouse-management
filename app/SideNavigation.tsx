@@ -128,32 +128,6 @@ function SideNavigation() {
                       </a>
                     </li> */}
 
-                    {/* <li>
-                      <a
-                        href="/dashboard"
-                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 opacity-75"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                          />
-                        </svg>
-
-                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
-                          Invoices
-                        </span>
-                      </a>
-                    </li> */}
-
                     <li>
                       <a
                         href="/store"
@@ -240,6 +214,29 @@ function SideNavigation() {
                         </svg>
                         <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                           Products
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/profile"
+                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6 text-gray-700"
+                        >
+                          {/* Head */}
+                          <circle cx="12" cy="8" r="4" />
+                          {/* Shoulders */}
+                          <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+                        </svg>
+                        <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
+                          Profile
                         </span>
                       </a>
                     </li>

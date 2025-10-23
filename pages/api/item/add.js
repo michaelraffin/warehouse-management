@@ -7,10 +7,14 @@ export default async function handler(req, res) {
 
     try {
       const collection = db.collection(param.className);
-      await collection.insert(param.details);
+      let item = await collection.insert(param.details);
       res
         .status(200)
-        .json({ results: "Document has been added:", status: true });
+        .json({
+          results: item,
+          message: "Document has been added:",
+          status: true,
+        });
       // const result = await collection.findOneAndDelete({
       //   productID: param.productID,
       // });

@@ -66,7 +66,7 @@ export default function Add(props: any) {
 
   return (
     <Sheet>
-      <SheetTrigger className="ml-20 mb-20 bg-gray-900 hover:bg-gray-600 h-9 m-2 rounded-full">
+      <SheetTrigger className=" bg-gray-900 hover:bg-gray-600 h-9 m-2 rounded-full">
         {/* <Button className="ml-20 mb-20 bg-blue-600 hover:bg-blue-300"> */}
         <span className="m-4 text-white  text-xs font-light">
           + {props.buttonTitle}

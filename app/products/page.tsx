@@ -224,6 +224,13 @@ export default function TableDemo() {
   const submitProduct = () => {
     const asyncService = async () => {
       try {
+        let dateAdded = [
+          {
+            stocks: productQuantity,
+            price: price,
+            date: moment(new Date()).toString(),
+          },
+        ];
         let payload = {
           //TOBE FIX ProductDetails
           productID: generateRandomString(),
@@ -238,7 +245,7 @@ export default function TableDemo() {
           totalSold: 0,
           size: productLiters,
           dateAdded: moment(new Date()).toString(),
-          transactionLogs: null,
+          transactionLogs: [dateAdded],
           restockLogs: null,
         };
 
@@ -309,7 +316,7 @@ export default function TableDemo() {
 
           {/* <input className='ml-2 mr-2 pl-2 pr-2 rounded-md text-md' placeholder='search'/> */}
         </TabsList>
-        <div className="mt-20  h-full w-[40%] mr-20">
+        <div className="mt-20  h-full w-[50%] mr-20">
           <MainChart
             data={products}
             chartTitle={"Your products stock history"}

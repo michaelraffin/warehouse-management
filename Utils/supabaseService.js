@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { create, validateUser } from "@/Utils/auth";
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtjbWJ2dGxqbWZ2c2x2c3dsdHF3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5OTQ1NTM5OSwiZXhwIjoyMDE1MDMxMzk5fQ.WBW5WxFjmLuEUgZ1VjmwRx490bn20PtyXd0CMGNrJc0",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 function generateRandomString(length) {
   const characters =
@@ -27,6 +27,12 @@ export const signUpUser = async (config, identifier) => {
           contactNumber: config.contactNumber,
           branch: config.branch,
           secret: pass,
+          userLevel: config.userLevel,
+          accountStatus: false,
+          userLevelDetails: {
+            userType: config.userLevel,
+            applicantType: config.applicantType,
+          },
         },
       },
     });
@@ -60,7 +66,7 @@ export const siginWithUsername = async (payload) => {
     // check if its accountStatus if agree
     throw error;
   } else {
-    console.log(data.user.id);
+    console.log("data.user.id", data.user.id);
     let profile = await getProfile(data.user.id);
     console.log("profile,,", profile);
     localStorage.setItem("profile", JSON.stringify(profile));
@@ -74,9 +80,9 @@ export const getProfile = async (id) => {
     let { data: profile, error } = await supabase
       .from("profile")
       .select("*")
-      .eq("id", id);
-    console.log("profile", profile);
-    return profile[0];
+      .eq("id", id)
+      .single();
+    return profile;
   } catch (error) {
     return null;
   }

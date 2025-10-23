@@ -7,6 +7,7 @@ import HeaderPage from "@/app/LocalComponents/HeaderPage";
 import AddUser from "@/app/LocalComponents/addUserPopup";
 import UserValidation from "@/app/LocalComponents/UserValidation";
 import ViewUserSheet from "@/app/LocalComponents/UserAccountSheet";
+import AvatarUser from "@/app/LocalComponents/AvatarUser";
 import { getAllUserProfile } from "@/Utils/serviceLogin";
 import { create, validateUser } from "@/Utils/auth";
 import { signUpUser, updateUser, deleteUser } from "@/Utils/supabaseService";
@@ -159,21 +160,27 @@ export default function UserManagement() {
         return (
           <Badge
             variant="outline"
-            className=" mb-2 text-xs border border-green-600 text-green-800"
+            className=" mb-2 text-xs border font-normal rounded-sm border-green-600 text-green-800"
           >
             Active
           </Badge>
         );
       } else {
         return (
-          <Badge variant="destructive" className=" mb-2 text-xs">
+          <Badge
+            variant="destructive"
+            className=" mb-2 text-xs font-normal rounded-sm"
+          >
             Disabled
           </Badge>
         );
       }
     } catch (error) {
       return (
-        <Badge variant="destructive" className=" mb-2 text-xs">
+        <Badge
+          variant="destructive"
+          className=" mb-2 text-xs font-normal rounded-sm"
+        >
           In-Active
         </Badge>
       );
@@ -209,6 +216,7 @@ export default function UserManagement() {
       logisticName: "Lai-Warehouse",
       applicantType: userType,
       contactNumber: mobileNumber,
+      userLevel: getTypeOfUser(),
       branch: branch,
     };
     const service = async () => {
@@ -263,7 +271,10 @@ export default function UserManagement() {
       throw error;
     }
   };
-
+  function capitalizeFirst(str: String) {
+    if (!str) return ""; // handle empty string
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
   const deleteThis = async (id: string) => {
     try {
       const toastId = toast.loading("Loading...");
@@ -316,6 +327,7 @@ export default function UserManagement() {
         </Button> */}
 
         <AddUser
+          buttonTitle="Add user"
           dimissed={dismissedCallBack}
           didSelectAccount={(e: string) => setUserType(e)}
           username={(e: string) => setUsername(e)}
@@ -330,7 +342,7 @@ export default function UserManagement() {
             <thead>
               <tr className="bg-gray-50 border-b">
                 <th className="px-4 py-2">User name</th>
-                <th className="px-4 py-2">Email</th>
+                <th className="px-4 py-2">Name</th>
                 <th className="px-4 py-2">Type</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Actions</th>
@@ -340,9 +352,12 @@ export default function UserManagement() {
               {allUsers.map((user: UserInfo) => (
                 <tr key={user.id} className="border-b">
                   <td className="px-4 py-2">#{user.id.slice(-6)} </td>
-                  <td className="px-4 py-2">{user.application_info?.name}</td>
                   <td className="px-4 py-2">
-                    {user.application_info?.applicantType}
+                    {user.application_info?.email}
+                    <AvatarUser name={user.application_info?.name} />
+                  </td>
+                  <td className="px-4 py-2">
+                    {capitalizeFirst(user.application_info?.applicantType)}
                   </td>
                   <td className="px-4 py-2">{getBadgeType(user)}</td>
                   <td className="px-4 py-2">
@@ -423,7 +438,7 @@ export default function UserManagement() {
         )}
       </div>
       <Toaster />
-      <UserValidation />
+      {/*<UserValidation />*/}
       {/*<Sample />*/}
     </div>
   );
