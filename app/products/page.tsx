@@ -522,7 +522,7 @@ export default function TableDemo() {
         <TabsContent value="Stockman">Change your password here.</TabsContent>
         <TabsContent value="Cashier">Change your password here.</TabsContent>
       </Tabs>
-      <UserValidation />
+      {/*<UserValidation />*/}
     </div>
   );
 }
