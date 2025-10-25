@@ -117,10 +117,10 @@ export default function Add(props: any) {
             />
           </div>
 
-          <ComboboxDemo
+          {/*<ComboboxDemo
             litters={props.litters}
             selectedItem={(e: string) => props.selectedLiters(e)}
-          />
+          />*/}
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 
           {/* <div className="flex items-center mb-4">

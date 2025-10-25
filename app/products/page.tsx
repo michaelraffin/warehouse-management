@@ -335,7 +335,7 @@ export default function TableDemo() {
           <div className=" top-0 right-0 w-full">
             <AddProduct
               litters={productLitters}
-              selectedLiters={(e: any) => setProductLiters(e)}
+              // selectedLiters={(e: any) => setProductLiters(e)}
               price={(e: any) => setProductPrice(e)}
               buttonTitle={"Add Product"}
               upload_here={UploadImageService}
