@@ -1,15 +1,15 @@
 import Axios from "axios";
 import axiosLocalV2 from "axios";
 export const axiosLocal = axiosLocalV2;
-export const url = "http://localhost:9091"; // "https://loogyapi.digital"; //  `https://looky-search-api.onrender.com`; // `https://laiwarehouse.onrender.com`; ////process.env.stagingEndpoint
+export const url = "https://fulfillmentph.com"; // "https://loogyapi.digital"; //  `https://looky-search-api.onrender.com`; // `https://laiwarehouse.onrender.com`; ////process.env.stagingEndpoint
 // "http://192.168.1.148:9091"; //
-export const urlFirebase = "https://loogyapi.digital"; //process.env.urlFirebase;
-export const urlSupBase = "https://loogyapi.digital"; //process.env.urlSupaBase;
-export const mapBoxUrl = "https://loogyapi.digital"; //process.env.mapBoxEndpoint;
+export const urlFirebase = url; //"https://loogyapi.digital"; //process.env.urlFirebase;
+export const urlSupBase = url; //"https://loogyapi.digital"; //process.env.urlSupaBase;
+export const mapBoxUrl = url; //"https://loogyapi.digital"; //process.env.mapBoxEndpoint;
 
 export const axiosV2Local = (token, id) =>
   Axios.create({
-    baseURL: "http://192.168.1.148:9091",
+    baseURL: "https://fulfillmentph.com", // "http://192.168.1.148:9091",
     timeOut: 3000,
     headers: {
       "Content-Type": "application/json",
