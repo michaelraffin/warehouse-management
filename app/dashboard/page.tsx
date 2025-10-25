@@ -393,9 +393,7 @@ export default function TableDemo() {
       </div>*/}
       {/* //TABLE */}
       <div className="mt-10 ml-24 text-lg font-bold">Your Transactions</div>
-      <div className="ml-20">
-        <ProfileCard />
-      </div>
+      <div className="ml-20">{/*<ProfileCard />*/}</div>
       <DropdownV1 exportCSV={() => exportToCSV()} />
       {/* <Tabs
         defaultValue="account"
