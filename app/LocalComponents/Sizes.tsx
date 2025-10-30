@@ -124,24 +124,20 @@ export function ComboboxDemo(props: any) {
   return (
     <Select
       defaultValue={
-        props.defaultValue != undefined
+        props.defaultValue !== undefined
           ? props.defaultValue
           : "Regular can - 0.33 liters"
       }
+      onValueChange={(value) => props.selectedItem(value)} // onChange goes here
     >
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Select a Litter" />
       </SelectTrigger>
-      <SelectContent onChange={(e) => console.log(e)}>
+      <SelectContent>
         <SelectGroup>
           <SelectLabel>Select Litter</SelectLabel>
           {productLitters?.map((framework) => (
-            <SelectItem
-              key={framework.title}
-              onChange={(e) => console.log(e)}
-              onClick={() => console.log(framework.title)}
-              value={framework.title}
-            >
+            <SelectItem key={framework.title} value={framework.title}>
               {framework.title}
             </SelectItem>
           ))}
