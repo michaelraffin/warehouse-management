@@ -114,11 +114,12 @@ import {
 import {
   StoreSettingsResponse,
   ProductLitterCategory,
+  PackagingOption,
 } from "@/model/storeModel";
 export function ComboboxDemo(props: any) {
   const [productLitters, setProductCategory] = React.useState<
-    [ProductLitterCategory] | null
-  >(props.litters);
+    [PackagingOption] | null
+  >(props.packType);
   console.log("productLitters", productLitters, props);
   return (
     <Select
@@ -135,29 +136,15 @@ export function ComboboxDemo(props: any) {
         <SelectGroup>
           <SelectLabel>Select Litter</SelectLabel>
           {productLitters?.map((framework) => (
-            // <CommandItem
-            //   key={framework.value}
-            //   value={framework.value}
-            //   onSelect={(currentValue) => {
-            //     didSelect(currentValue);
-            //   }}
-            // >
-            //   {framework.label}
-            // </CommandItem>
             <SelectItem
-              key={framework.value}
-              onClick={() => props.selectedItem(framework.value)}
-              value={framework.value}
+              key={framework.title}
+              onChange={(e) => console.log(e)}
+              onClick={() => console.log(framework.title)}
+              value={framework.title}
             >
-              {framework.label}
+              {framework.title}
             </SelectItem>
           ))}
-
-          {/* <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem> */}
         </SelectGroup>
       </SelectContent>
     </Select>

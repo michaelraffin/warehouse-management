@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   StoreSettingsResponse,
   ProductLitterCategory,
+  PackagingOption,
 } from "@/model/storeModel";
 type ProductDetails = {
   example: string;
@@ -40,8 +41,8 @@ export default function Add(props: any) {
   //   formState: { errors },
   // } = useForm<ProductDetails>()
   const [productLitters, setProductCategory] = useState<
-    [ProductLitterCategory] | null
-  >(props.litters);
+    [PackagingOption] | null
+  >(props.packType);
   const [isLoading, setStatus] = useState(false);
   const [logo, setLogo] = useState("");
   const didUpload = (e: any) => {
@@ -90,14 +91,21 @@ export default function Add(props: any) {
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           <input
-            onChange={(e: any) => props.price(e.nativeEvent.target.value)}
+            onChange={(e: any) => props.packingType(e.nativeEvent.target.value)}
             placeholder="Add Price"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
-          <input
+          {/*<input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Default quantity"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
+          />*/}
+          <span>Add Packing Type</span>
+          <ComboboxDemo
+            defaultValue="Select Packing type"
+            packType={props.packType}
+            litters={props.litters}
+            selectedItem={(e: string) => console.log(e)}
           />
           <div className="grid w-full max-w-sm items-center gap-1.5">
             {/* image_file */}
@@ -116,11 +124,6 @@ export default function Add(props: any) {
               onChange={(e) => didUpload(e)}
             />
           </div>
-
-          {/*<ComboboxDemo
-            litters={props.litters}
-            selectedItem={(e: string) => props.selectedLiters(e)}
-          />*/}
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 
           {/* <div className="flex items-center mb-4">

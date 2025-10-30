@@ -42,6 +42,7 @@ import { axiosV2Local, axiosV2, url } from "../../Utils/axios";
 import {
   StoreSettingsResponse,
   ProductLitterCategory,
+  PackagingOption,
 } from "@/model/storeModel";
 interface UserDetails {
   firstName?: String;
@@ -91,11 +92,18 @@ export default function TableDemo() {
   const [productTitle, setProducTitle] = useState<string>("");
   const [productLiters, setProductLiters] = useState<string>("");
   const [price, setProductPrice] = useState(0);
+  const [packingType, setPackingType] = useState("none");
+
   const [productQuantity, setProducQuantity] = useState(null);
   const [imageLink, setImageLink] = useState<string>("");
   const [productLitters, setProductCategory] = useState<
     [ProductLitterCategory] | null
   >(null);
+  const [productPackingType, setPackType] = useState<[PackagingOption] | null>(
+    null,
+  );
+
+  productPackingType;
   useEffect(() => {
     UserProfile().then((profile) => {
       setUser(profile);
@@ -137,6 +145,7 @@ export default function TableDemo() {
 
       console.log("SHITT", productList.data.results[0]?.productLittersCategory);
       setProductCategory(productList.data.results[0]?.productLittersCategory);
+      setPackType(productList.data.results[0]?.productPackingType);
       return productList;
     } catch (error) {
       console.log("error Product", error);
@@ -247,6 +256,7 @@ export default function TableDemo() {
           dateAdded: moment(new Date()).toString(),
           transactionLogs: [dateAdded],
           restockLogs: null,
+          packingType: packingType,
         };
 
         let productList = await axios.post(
@@ -335,8 +345,10 @@ export default function TableDemo() {
           <div className=" top-0 right-0 w-full">
             <AddProduct
               litters={productLitters}
+              packType={productPackingType}
               // selectedLiters={(e: any) => setProductLiters(e)}
               price={(e: any) => setProductPrice(e)}
+              packingType={(e: any) => setPackingType(e)}
               buttonTitle={"Add Product"}
               upload_here={UploadImageService}
               image_file={(e: any) => setImageLink(e)}

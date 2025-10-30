@@ -7,7 +7,10 @@ export interface StoreSetup {
   // Add the actual fields here based on your schema
   [key: string]: any;
 }
-
+export interface PackagingOption {
+  status: string;
+  title: string;
+}
 export interface ServiceItem {
   // Define properties if known
   [key: string]: any;
