@@ -393,7 +393,7 @@ export default function TableDemo() {
                     {/* {invoice.paymentMethod} */}
                   </TableCell>
                   <TableCell className="text-xs text-right font-light text-red-500">
-                    {invoice.stocks}/20
+                    {invoice.stocks}/{invoice?.packingType ?? "N/A"}
                     <Badge className="ml-4 bg-red-500">Out of stock</Badge>
                   </TableCell>
                   <TableCell className="text-right">
