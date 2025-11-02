@@ -95,11 +95,11 @@ export default function Add(props: any) {
             placeholder="Add Price"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
-          {/*<input
+          <input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Default quantity"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
-          />*/}
+          />
           <div className="mt-20" />
           <p className="text-xs mt-10">Add Packing Type</p>
           <ComboboxDemo
