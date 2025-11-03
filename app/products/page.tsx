@@ -77,6 +77,7 @@ interface ProductDetails {
   paymentStatus: any;
   price: number;
   totalAmount: string;
+  packingType?: string;
   transactionLogs?: [transactionLogsItem] | null;
   restockLogs?: [transactionLogsItem] | null;
 }
