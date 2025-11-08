@@ -233,6 +233,11 @@ export default function TableDemo() {
       toast("successfully updated");
     });
   };
+  const retainNumbers = (s: string) => (s.match(/[0-9]+/g) || []).join("");
+
+  const filterStocks = (data: String) => {
+    return retainNumbers(data);
+  };
   const submitProduct = () => {
     const asyncService = async () => {
       try {
@@ -250,8 +255,8 @@ export default function TableDemo() {
           paymentStatus: "Unpaid",
           title: productTitle,
           totalAmount: "$300.00",
-          price: price,
-          stocks: productQuantity,
+          price: filterStocks(price),
+          stocks: filterStocks(productQuantity),
           img: imageLink,
           status: false,
           totalSold: 0,
@@ -260,7 +265,7 @@ export default function TableDemo() {
           transactionLogs: [dateAdded],
           restockLogs: null,
           packingType: packingType,
-          bundlePrice: bundlePrice,
+          bundlePrice: filterStocks(bundlePrice),
         };
 
         let productList = await axios.post(

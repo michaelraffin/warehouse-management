@@ -73,6 +73,11 @@ export default function Add(props: any) {
     }
   };
 
+  const retainNumbers = (s: string) => (s.match(/[0-9]+/g) || []).join("");
+  const filterStocks = (data: String) => {
+    let filtered = retainNumbers(data);
+    props.quantity(filtered);
+  };
   return (
     <Sheet>
       <SheetTrigger className=" mb-20 bg-gray-900 hover:bg-gray-600 h-9 m-2 rounded-full">
@@ -105,7 +110,7 @@ export default function Add(props: any) {
             />
           </div>
           <input
-            onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
+            onChange={(e: any) => filterStocks(e.nativeEvent.target.value)}
             placeholder="Default quantity"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
