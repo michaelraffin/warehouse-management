@@ -235,7 +235,7 @@ export default function TableDemo() {
   };
   const retainNumbers = (s: string) => (s.match(/[0-9]+/g) || []).join("");
 
-  const filterStocks = (data: String) => {
+  const filterStocks = (data: string) => {
     return retainNumbers(data);
   };
   const submitProduct = () => {
@@ -255,8 +255,8 @@ export default function TableDemo() {
           paymentStatus: "Unpaid",
           title: productTitle,
           totalAmount: "$300.00",
-          price: filterStocks(price),
-          stocks: filterStocks(productQuantity),
+          price: Number(filterStocks(String(price))),
+          stocks: filterStocks(String(productQuantity)),
           img: imageLink,
           status: false,
           totalSold: 0,
@@ -265,7 +265,7 @@ export default function TableDemo() {
           transactionLogs: [dateAdded],
           restockLogs: null,
           packingType: packingType,
-          bundlePrice: filterStocks(bundlePrice),
+          bundlePrice: filterStocks(String(bundlePrice)),
         };
 
         let productList = await axios.post(

@@ -74,7 +74,7 @@ export default function Add(props: any) {
   };
 
   const retainNumbers = (s: string) => (s.match(/[0-9]+/g) || []).join("");
-  const filterStocks = (data: String) => {
+  const filterStocks = (data: string) => {
     let filtered = retainNumbers(data);
     props.quantity(filtered);
   };
