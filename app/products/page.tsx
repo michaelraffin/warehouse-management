@@ -78,6 +78,7 @@ interface ProductDetails {
   price: number;
   totalAmount: string;
   packingType?: string;
+  bundledPrice?: string;
   transactionLogs?: [transactionLogsItem] | null;
   restockLogs?: [transactionLogsItem] | null;
 }
@@ -88,6 +89,7 @@ interface transactionLogsItem {
 export default function TableDemo() {
   const [products, setProducts] = useState<ProductDetails[] | []>([]);
 
+  const [bundlePrice, setBundlePrice] = useState(0);
   const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState<string>("");
@@ -258,6 +260,7 @@ export default function TableDemo() {
           transactionLogs: [dateAdded],
           restockLogs: null,
           packingType: packingType,
+          bundlePrice: bundlePrice,
         };
 
         let productList = await axios.post(
@@ -356,6 +359,7 @@ export default function TableDemo() {
               title={(e: any) => setProducTitle(e)}
               quantity={(e: any) => setProducQuantity(e)}
               didSubmit={(e: any) => submitProduct()}
+              bundlePrice={(e: any) => setBundlePrice(e)}
             />
           </div>
           <Table className="w-[90%] mb-20">

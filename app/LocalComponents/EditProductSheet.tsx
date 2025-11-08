@@ -134,7 +134,7 @@ export default function ProductDetailsSheet(props: any) {
               </span>
             </div>
           </div>
-          <div className="flex items-center justify-between">
+          {/*<div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Liters</p>
             <div className="flex space-x-2">
               <ComboboxDemo
@@ -143,14 +143,14 @@ export default function ProductDetailsSheet(props: any) {
                 // defaultValue={props.}
               />
 
-              {/* <input
+               <input
                   value={title}
                   placeholder={props.details.title}
                   className="border-0 ring-2 outline-2 p-2 rounded-md"
                   onChange={(e: any) => setTitle(e.nativeEvent.target.value)}
-                /> */}
+                />
             </div>
-          </div>
+          </div>*/}
 
           <Separator className="my-4" />
           {/* General Info */}
@@ -203,9 +203,9 @@ export default function ProductDetailsSheet(props: any) {
           </div>
           {/* Status */}
           <div className="flex items-center justify-between">
-            <p className="font-medium text-gray-700">Status</p>
+            <p className="font-medium text-gray-700">Packing Type</p>
             <Badge variant="outline" className="text-yellow-700 bg-yellow-200">
-              Pulled by company
+              {props.details?.packingType}
             </Badge>
           </div>
           {/* Date */}
@@ -283,7 +283,7 @@ export default function ProductDetailsSheet(props: any) {
       </SheetTrigger>
       <SheetContent side="right" className="w-full max-w-md bg-white p-6">
         <SheetHeader>
-          <SheetTitle className="text-lg font-semibold">
+          <SheetTitle className="text-lg  bg-green-500 w-32  pl-2 rounded-full ">
             #{props.details.productID}
           </SheetTitle>
           <div className="grid-cols-2 flex ">
@@ -292,13 +292,25 @@ export default function ProductDetailsSheet(props: any) {
               className=" h-10 w-10 rounded-lg  object-cover hover:shadow-lg "
             />
             {isEditing ? (
-              <Button
-                onClick={() => setEditing(!isEditing)}
-                variant="secondary"
-                className="w-19 rounded-full text-xs font-light ml-4"
-              >
-                Cancel Editing
-              </Button>
+              <>
+                <Button
+                  onClick={() => setEditing(!isEditing)}
+                  variant="ghost"
+                  className="w-19 rounded-full text-xs font-light  bg-none"
+                >
+                  <svg
+                    onClick={() => setEditing(!isEditing)}
+                    fill="#000000"
+                    width="20px"
+                    height="20px"
+                    viewBox="0 0 1024 1024"
+                    xmlns="http://www.w3.org/2000/svg"
+                    {...props}
+                  >
+                    <path d="M512 0C229.232 0 0 229.232 0 512c0 282.784 229.232 512 512 512 282.784 0 512-229.216 512-512C1024 229.232 794.784 0 512 0zm0 961.008c-247.024 0-448-201.984-448-449.01 0-247.024 200.976-448 448-448s448 200.977 448 448-200.976 449.01-448 449.01zm181.008-630.016c-12.496-12.496-32.752-12.496-45.248 0L512 466.752l-135.76-135.76c-12.496-12.496-32.752-12.496-45.264 0-12.496 12.496-12.496 32.752 0 45.248L466.736 512l-135.76 135.76c-12.496 12.48-12.496 32.769 0 45.249 12.496 12.496 32.752 12.496 45.264 0L512 557.249l135.76 135.76c12.496 12.496 32.752 12.496 45.248 0 12.496-12.48 12.496-32.769 0-45.249L557.248 512l135.76-135.76c12.512-12.512 12.512-32.768 0-45.248z" />
+                  </svg>
+                </Button>
+              </>
             ) : (
               <a
                 href="javascript:void(0)"

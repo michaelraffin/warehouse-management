@@ -90,11 +90,20 @@ export default function Add(props: any) {
             placeholder="Give your title"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
-          <input
-            onChange={(e: any) => props.packingType(e.nativeEvent.target.value)}
-            placeholder="Add Price"
-            className="h-10 p-2 border border-gray-400 rounded-md text-sm"
-          />
+          <div className="grid-rows-2 flex gap-2">
+            <input
+              onChange={(e: any) =>
+                props.bundlePrice(e.nativeEvent.target.value)
+              }
+              placeholder="Bundled Price"
+              className="h-10 p-2 w-32  border border-gray-400 rounded-md text-sm"
+            />
+            <input
+              onChange={(e: any) => props.price(e.nativeEvent.target.value)}
+              placeholder="Price per item"
+              className="h-10 p-2 w-32 border border-gray-400 rounded-md text-sm"
+            />
+          </div>
           <input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Default quantity"
