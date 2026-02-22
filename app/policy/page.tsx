@@ -268,7 +268,7 @@ const sections = [
   },
 ];
 
-function renderContent(content, idx) {
+function renderContent(content: any, idx: any) {
   switch (content.type) {
     case "text":
       return (
@@ -291,7 +291,7 @@ function renderContent(content, idx) {
     case "bullets":
       return (
         <ul key={idx} className="mb-4 space-y-2">
-          {content.items.map((item, i) => (
+          {content.items.map((item: any, i: any) => (
             <li key={i} className="flex gap-3 text-slate-600 text-[15px]">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
               <span className="leading-relaxed">{item}</span>
@@ -305,7 +305,7 @@ function renderContent(content, idx) {
           key={idx}
           className="mt-4 rounded-xl border border-slate-200 overflow-hidden"
         >
-          {content.lines.map((line, i) => (
+          {content.lines.map((line: any, i: any) => (
             <div
               key={i}
               className={`flex items-center gap-4 px-5 py-3 ${
