@@ -117,47 +117,27 @@ import {
 } from "@/model/storeModel";
 export function ComboboxDemo(props: any) {
   const [productLitters, setProductCategory] = React.useState<
-    [ProductLitterCategory] | null
-  >(props.litters);
-  console.log("productLitters", productLitters, props);
+    ProductLitterCategory[] | null
+  >(props.litters || null);
+
   return (
     <Select
-      defaultValue={
-        props.defaultValue != undefined
-          ? props.defaultValue
-          : "Regular can - 0.33 liters"
-      }
+      value={props.value}
+      onValueChange={(value) => props.selectedItem(value)}
     >
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Select a Litter" />
       </SelectTrigger>
-      <SelectContent onChange={(e) => console.log(e)}>
+
+      <SelectContent>
         <SelectGroup>
           <SelectLabel>Select Litter</SelectLabel>
+
           {productLitters?.map((framework) => (
-            // <CommandItem
-            //   key={framework.value}
-            //   value={framework.value}
-            //   onSelect={(currentValue) => {
-            //     didSelect(currentValue);
-            //   }}
-            // >
-            //   {framework.label}
-            // </CommandItem>
-            <SelectItem
-              key={framework.value}
-              onClick={() => props.selectedItem(framework.value)}
-              value={framework.value}
-            >
+            <SelectItem key={framework.value} value={framework.value}>
               {framework.label}
             </SelectItem>
           ))}
-
-          {/* <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem> */}
         </SelectGroup>
       </SelectContent>
     </Select>

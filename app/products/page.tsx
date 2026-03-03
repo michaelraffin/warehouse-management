@@ -226,7 +226,7 @@ export default function TableDemo() {
       try {
         let dateAdded = [
           {
-            stocks: productQuantity,
+            stocks: 0, // Default 0productQuantity
             price: price,
             date: moment(new Date()).toString(),
           },
@@ -239,7 +239,8 @@ export default function TableDemo() {
           title: productTitle,
           totalAmount: "$300.00",
           price: price,
-          stocks: productQuantity,
+          // stocks: productQuantity,
+          stocks: 0, //Default
           img: imageLink,
           status: false,
           totalSold: 0,
@@ -335,7 +336,7 @@ export default function TableDemo() {
           <div className=" top-0 right-0 w-full">
             <AddProduct
               litters={productLitters}
-              // selectedLiters={(e: any) => setProductLiters(e)}
+              selectedLiters={(e: any) => setProductLiters(e)}
               price={(e: any) => setProductPrice(e)}
               buttonTitle={"Add Product"}
               upload_here={UploadImageService}

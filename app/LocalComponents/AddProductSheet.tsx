@@ -94,11 +94,15 @@ export default function Add(props: any) {
             placeholder="Add Price"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
-          <input
+          <ComboboxDemo
+            litters={props.litters}
+            selectedItem={(e: string) => props.selectedLiters(e)}
+          />
+          {/*<input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Default quantity"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
-          />
+          />*/}
           <div className="grid w-full max-w-sm items-center gap-1.5">
             {/* image_file */}
 
@@ -117,10 +121,6 @@ export default function Add(props: any) {
             />
           </div>
 
-          {/*<ComboboxDemo
-            litters={props.litters}
-            selectedItem={(e: string) => props.selectedLiters(e)}
-          />*/}
           {/* <input onChange={(e)=>props.quantity(e.nativeEvent.target.value)} placeholder="Quantity" className="h-10 p-2 border border-gray-400 rounded-md"/> */}
 
           {/* <div className="flex items-center mb-4">
