@@ -126,7 +126,7 @@ export function ComboboxDemo(props: any) {
       onValueChange={(value) => props.selectedItem(value)}
     >
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select a Litter" />
+        <SelectValue placeholder="Select unit type" />
       </SelectTrigger>
 
       <SelectContent>
