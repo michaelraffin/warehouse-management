@@ -86,18 +86,23 @@ export default function Add(props: any) {
           <SheetTitle className="text-xs">Add Product</SheetTitle>
           <input
             onChange={(e: any) => props.title(e.nativeEvent.target.value)}
-            placeholder="Give your title"
+            placeholder="PRODUCT NAME"
+            className="h-10 p-2 border border-gray-400 rounded-md text-sm"
+          />
+          <input
+            onChange={(e: any) => props.bundlePrice(e.nativeEvent.target.value)}
+            placeholder="PRICE PER CASE/BOX"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           <input
             onChange={(e: any) => props.price(e.nativeEvent.target.value)}
-            placeholder="Add Price"
+            placeholder="PRODUCT PER PC"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
-          <ComboboxDemo
+          {/*<ComboboxDemo
             litters={props.litters}
             selectedItem={(e: string) => props.selectedLiters(e)}
-          />
+          />*/}
           {/*<input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
             placeholder="Default quantity"
@@ -110,7 +115,7 @@ export default function Add(props: any) {
 
             {/* <DropdownLiters /> */}
             {displayLogo()}
-            <Label htmlFor="picture" className="mt-10 text-sm">
+            <Label htmlFor="picture" className="mt-10 text-sm uppercase">
               {isLoading ? "Loading..." : "Product Picture"}
             </Label>
             <Input

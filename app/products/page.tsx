@@ -90,6 +90,8 @@ export default function TableDemo() {
   const [status, setStatus] = useState(true);
   const [productTitle, setProducTitle] = useState<string>("");
   const [productLiters, setProductLiters] = useState<string>("");
+  const [bundlePrice, setBundlePrice] = useState(0);
+  useState(0);
   const [price, setProductPrice] = useState(0);
   const [productQuantity, setProducQuantity] = useState(null);
   const [imageLink, setImageLink] = useState<string>("");
@@ -239,6 +241,7 @@ export default function TableDemo() {
           title: productTitle,
           totalAmount: "$300.00",
           price: price,
+          bundlePrice: bundlePrice,
           // stocks: productQuantity,
           stocks: 0, //Default
           img: imageLink,
@@ -344,6 +347,7 @@ export default function TableDemo() {
               title={(e: any) => setProducTitle(e)}
               quantity={(e: any) => setProducQuantity(e)}
               didSubmit={(e: any) => submitProduct()}
+              bundlePrice={(e: any) => setBundlePrice(e)}
             />
           </div>
           <Table className="w-[90%] mb-20">
