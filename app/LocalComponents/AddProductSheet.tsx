@@ -96,7 +96,7 @@ export default function Add(props: any) {
           />
           <input
             onChange={(e: any) => props.price(e.nativeEvent.target.value)}
-            placeholder="PRODUCT PER PC"
+            placeholder="PRICE PER PC"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           {/*<ComboboxDemo
