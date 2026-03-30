@@ -392,7 +392,7 @@ export default function TableDemo() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-gray-600 font-semibold">
                         PC/{formatter.format(invoice.price)}
                       </span>
 
