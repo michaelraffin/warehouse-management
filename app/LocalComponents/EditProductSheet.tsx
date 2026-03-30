@@ -62,13 +62,12 @@ export default function ProductDetailsSheet(props: any) {
   let [title, setTitle] = React.useState(props.details.title);
   let [litters, setProductLitters] = React.useState(props.litters);
   let [price, setPrice] = React.useState(props.details.price);
+  let [bundlePrice, setBundlePrice] = React.useState(props.details.bundlePrice);
   let [isEditing, setEditing] = React.useState<boolean>(false);
   let [details, setFinalDetails] = React.useState<ProductDetails>(
     props.details,
   );
   let [update, setDidUpdate] = React.useState(0);
-
-  console.log("detailsdetails", details);
 
   const validateDetails = () => {
     setFinalDetails((prevDetails: ProductDetails) => ({
@@ -88,10 +87,12 @@ export default function ProductDetailsSheet(props: any) {
   }, [props.details]);
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-
+    console.log("e", e.target);
     // Allow only numbers
-    if (/^\d*$/.test(value)) {
+    if (/^\d*$/.test(value) && e.target.id === "Price") {
       setPrice(value);
+    } else if (/^\d*$/.test(value) && e.target.id === "Bundle") {
+      setBundlePrice(value);
     }
   };
 
@@ -130,27 +131,42 @@ export default function ProductDetailsSheet(props: any) {
                   placeholder={props.details.price}
                   className="border-0 ring-2 outline-2 p-2 rounded-md"
                   onChange={handleNumberChange}
+                  id={"Price"}
                 />
               </span>
             </div>
           </div>
           <div className="flex items-center justify-between">
+            <p className="font-medium text-gray-700">Bundle Price</p>
+            <div className="flex space-x-2">
+              <span className="font-light">
+                <input
+                  value={bundlePrice}
+                  placeholder={props.details.bundlePrice}
+                  className="border-0 ring-2 outline-2 p-2 rounded-md"
+                  onChange={handleNumberChange}
+                  id={"Bundle"}
+                />
+              </span>
+            </div>
+          </div>
+
+          {/*<div className="flex items-center justify-between">
             <p className="font-medium text-gray-700">Liters</p>
             <div className="flex space-x-2">
               <ComboboxDemo
                 litters={props.litters}
                 selectedItem={(e: string) => props.selectedLiters(e)}
-                // defaultValue={props.}
               />
 
-              {/* <input
+               <input
                   value={title}
                   placeholder={props.details.title}
                   className="border-0 ring-2 outline-2 p-2 rounded-md"
                   onChange={(e: any) => setTitle(e.nativeEvent.target.value)}
-                /> */}
+                />
             </div>
-          </div>
+          </div>*/}
 
           <Separator className="my-4" />
           {/* General Info */}

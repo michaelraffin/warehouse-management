@@ -205,6 +205,10 @@ export default function TableDemo() {
 
     return result;
   };
+  const formatter = new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+  });
   const displayAlert = () => {
     toast.warning("Please try again");
   };
@@ -357,6 +361,7 @@ export default function TableDemo() {
                 <TableHead className="w-[100px]">Title</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Warehouse</TableHead>
+                <TableHead>Price</TableHead>
                 <TableHead className="text-right">Stocks</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
@@ -384,6 +389,17 @@ export default function TableDemo() {
                       {moment(invoice.dateAdded).format("MM-DD-YYYY hh:mm A")}
                     </span>{" "}
                     {/* {invoice.paymentMethod} */}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-gray-400">
+                        PC/{formatter.format(invoice.price)}
+                      </span>
+
+                      <span className="text-xs text-gray-400">
+                        Bundle: {formatter.format(invoice.bundlePrice ?? 0)}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-xs text-right font-light text-red-500">
                     {invoice.stocks}/20
