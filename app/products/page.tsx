@@ -76,6 +76,7 @@ interface ProductDetails {
   paymentStatus: any;
   price: number;
   totalAmount: string;
+  bundlePrice: number;
   transactionLogs?: [transactionLogsItem] | null;
   restockLogs?: [transactionLogsItem] | null;
 }
@@ -412,6 +413,8 @@ export default function TableDemo() {
                       details={invoice}
                       updateProduce={(item: any) => updateProduce(item)}
                       selectedLiters={(e: any) => setProductLiters(e)}
+                      upload_here={UploadImageService}
+                      image_file={(e: any) => setImageLink(e)}
                     />
                     <ViewHistorySheet
                       details={invoice}

@@ -90,7 +90,9 @@ export default function Add(props: any) {
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />
           <input
-            onChange={(e: any) => props.bundlePrice(e.nativeEvent.target.value)}
+            onChange={(e: any) =>
+              props.bundlePrice(Number(e.nativeEvent.target.value) || 0)
+            }
             placeholder="PRICE PER CASE/BOX"
             className="h-10 p-2 border border-gray-400 rounded-md text-sm"
           />

@@ -64,6 +64,7 @@ export default function ProductDetailsSheet(props: any) {
   let [price, setPrice] = React.useState(props.details.price);
   let [bundlePrice, setBundlePrice] = React.useState(props.details.bundlePrice);
   let [isEditing, setEditing] = React.useState<boolean>(false);
+  let [editImage, setImage] = React.useState(props.details.img);
   let [details, setFinalDetails] = React.useState<ProductDetails>(
     props.details,
   );
@@ -114,7 +115,15 @@ export default function ProductDetailsSheet(props: any) {
     style: "currency",
     currency: "PHP",
   });
-
+  const didUpload = (e: any) => {
+    props.upload_here(e.target.files[0], 1).then((results: any) => {
+      setFinalDetails((prevDetails: ProductDetails) => ({
+        ...prevDetails,
+        img: results.data.storage.link,
+      }));
+      setImage(results.data.storage.link);
+    });
+  };
   const editingContent = () => {
     if (isEditing) {
       return (
@@ -198,7 +207,13 @@ export default function ProductDetailsSheet(props: any) {
               <Label htmlFor="picture" className="mt-10">
                 Upload your photo
               </Label>
-              <Input id="picture" type="file" />
+              {/*<Input id="picture" type="file" />*/}
+              <Input
+                // contentEditable={!isLoading}
+                id="picture"
+                type="file"
+                onChange={(e) => didUpload(e)}
+              />
             </div>
           </div>
         </>
@@ -323,10 +338,22 @@ export default function ProductDetailsSheet(props: any) {
             #{props.details.productID}
           </SheetTitle>
           <div className="grid-cols-2 flex ">
-            <img
-              src={props.details.img}
-              className=" h-10 w-10 rounded-lg  object-cover hover:shadow-lg "
-            />
+            <>
+              <input
+                disabled={!isEditing}
+                id="picture"
+                type="file"
+                onChange={(e) => didUpload(e)}
+                className="hidden"
+              />
+              <label htmlFor="picture" className="cursor-pointer">
+                <img
+                  src={editImage}
+                  className="h-10 w-10 rounded-lg object-cover hover:shadow-lg"
+                />
+              </label>
+            </>
+
             {isEditing ? (
               <Button
                 onClick={() => setEditing(!isEditing)}
