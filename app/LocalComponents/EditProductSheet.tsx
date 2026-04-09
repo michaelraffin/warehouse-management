@@ -74,6 +74,8 @@ export default function ProductDetailsSheet(props: any) {
     setFinalDetails((prevDetails: ProductDetails) => ({
       ...prevDetails,
       price: price,
+      bundlePrice: bundlePrice,
+      img: editImage,
       title: title, // Replace with the desired new title
     }));
     setDidUpdate(update + 1);
@@ -143,6 +145,20 @@ export default function ProductDetailsSheet(props: any) {
           </div>
 
           <div className="flex items-center justify-between">
+            <p className="font-medium  text-gray-700 uppercase">price per PC</p>
+            <div className="flex space-x-2">
+              <span className="font-light">
+                <input
+                  value={price}
+                  placeholder={props.details.price}
+                  className="border-0 ring-2 outline-2 p-2 rounded-md"
+                  onChange={handleNumberChange}
+                  id={"Price"}
+                />
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
             <p className="font-medium  text-gray-700 uppercase">
               Price per Case/Box
             </p>
@@ -159,21 +175,6 @@ export default function ProductDetailsSheet(props: any) {
               </span>
             </div>
           </div>
-          <div className="flex items-center justify-between">
-            <p className="font-medium  text-gray-700 uppercase">price per PC</p>
-            <div className="flex space-x-2">
-              <span className="font-light">
-                <input
-                  value={price}
-                  placeholder={props.details.price}
-                  className="border-0 ring-2 outline-2 p-2 rounded-md"
-                  onChange={handleNumberChange}
-                  id={"Price"}
-                />
-              </span>
-            </div>
-          </div>
-
           {/*<div className="flex items-center justify-between">
             <p className="font-medium text-gray-700 uppercase">Stocks</p>
             <Progress value={props.details.stocks} className="w-[60%] h-2" />
