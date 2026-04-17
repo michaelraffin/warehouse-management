@@ -89,16 +89,19 @@ export default function ProductDetailsSheet(props: any) {
     setEditing(false);
   }, [props.details]);
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    console.log("e", e.target);
-    // Allow only numbers
-    if (/^\d*$/.test(value) && e.target.id === "Price") {
-      setPrice(value);
-    } else if (/^\d*$/.test(value) && e.target.id === "Bundle") {
-      setBundlePrice(value);
+    const { value, id } = e.target;
+
+    // Allow: 123, 123.45
+    const priceRegex = /^\d*\.?\d{0,2}$/;
+
+    if (priceRegex.test(value)) {
+      if (id === "Price") {
+        setPrice(value);
+      } else if (id === "Bundle") {
+        setBundlePrice(value);
+      }
     }
   };
-
   function TagIcon({ size = 24, color = "#000", className = "" }) {
     return (
       <svg
