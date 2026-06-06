@@ -83,7 +83,7 @@ export default function Add(props: any) {
           />
           <input
             onChange={(e: any) => props.quantity(e.nativeEvent.target.value)}
-            placeholder="Vendor Description"
+            placeholder="Vendor Address"
             className="h-10 p-2 border border-gray-400 rounded-md"
           />
           <input
@@ -91,6 +91,11 @@ export default function Add(props: any) {
               props.contactNumber(e.nativeEvent.target.value)
             }
             placeholder="Mobile Number"
+            className="h-10 p-2 border border-gray-400 rounded-md"
+          />
+          <input
+            onChange={(e: any) => props.vendorTIN(e.nativeEvent.target.value)}
+            placeholder="Vendor TIN"
             className="h-10 p-2 border border-gray-400 rounded-md"
           />
           <div className="grid w-full max-w-sm items-center gap-1.5">

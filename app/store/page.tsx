@@ -57,6 +57,7 @@ const StocksUI = () => {
   const [productTitle, setProducTitle] = useState<String | null>(null);
   const [productQuantity, setProducQuantity] = useState(null);
   const [contactNumber, setContactNumber] = useState<String | null>(null);
+  const [vendorTIN, setVendorTIN] = useState<String | null>(null);
   const [storeCoordinates, setStoreCoordinates] = useState(null);
   const [imageLink, setImageLink] = useState<String | null>(null);
   const [vendorBranch, setVendorBranch] = useState<String | null>(null);
@@ -83,6 +84,7 @@ const StocksUI = () => {
           vendorDescription: productQuantity,
           vendorContactNumber: contactNumber,
           paymentMethod: "N/A",
+          business_TIN: vendorTIN,
           branch: vendorBranch,
           stocks: 0,
           img: imageLink,
@@ -400,6 +402,7 @@ const StocksUI = () => {
                   quantity={(e: any) => setProducQuantity(e)}
                   didSubmit={(e: any) => addVendor()}
                   contactNumber={(e: any) => setContactNumber(e)}
+                  vendorTIN={(e: any) => setVendorTIN(e)}
                 />
               </div>
             </div>

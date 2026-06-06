@@ -165,6 +165,19 @@ export default function AddUserPopup(props: any) {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="vendorTitle" className="text-right">
+              TIN:
+            </Label>
+            <Input
+              id="business_TIN"
+              name="business_TIN"
+              value={vendor?.business_TIN || ""}
+              onChange={handleChange}
+              placeholder="Type your Business TIN"
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
               Edit City
             </Label>

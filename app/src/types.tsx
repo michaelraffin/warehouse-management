@@ -14,6 +14,7 @@ export interface Vendor {
   _id: string; // The unique identifier for the product
   vendorID: string; // The unique identifier for the vendor
   vendorTitle: string; // The title of the vendor
+  business_TIN: string; // The title of the vendor
   paymentMethod: string; // The payment method used
   stocks: string; // The number of stocks available
   img: string; // The image URL for the product

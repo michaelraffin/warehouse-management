@@ -60,7 +60,10 @@ export default function ProfileCard(props: any) {
             {vendor?.vendorContactNumber}
           </p>
         </div>
-
+        <div>
+          <p className="text-xs text-gray-500">TIN</p>
+          <p className="font-medium text-gray-700">{vendor?.business_TIN}</p>
+        </div>
         <div>
           <p className="text-xs text-gray-500">Amount Spent</p>
           <p className="font-mono font-medium text-gray-700">
