@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["F66UCT87YC.com.gcash.test.GcashNFCWritterSUI"],
+        "components": [
+          {
+            "/": "/bluetap",
+            "comment": "Matches the /bluetap path"
+          },
+          {
+            "/": "/bluetap/*",
+            "comment": "Matches any sub-path under /bluetap"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["F66UCT87YC.com.gcash.test.GcashNFCWritterSUI"]
+  }
+}
